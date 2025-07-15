@@ -1,19 +1,27 @@
-"use client";
-
+'use client'
 import React, { useState, useEffect } from 'react';
-import { FileText, Upload, Star, AlertCircle, CheckCircle, Phone, User, Hash, Link, Type, Tag, Crown, MessageCircle, Award, Target } from 'lucide-react';
+import { FileText, Upload, Star, AlertCircle, CheckCircle, Phone, User, Hash, Link, Type, Crown, MessageCircle, Award, Target } from 'lucide-react';
 import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
-import { collection, addDoc, doc, getDoc, setDoc, updateDoc, increment } from 'firebase/firestore';
+import { collection, addDoc } from 'firebase/firestore';
 import { auth, db } from '../../lib/firebase';
 import './styles.css';
 
 const PDFUploadHub = () => {
+  // Mock points data
+  const mockPointsData = {
+    "23053769": 45,
+    "2106002": 25,
+    "2106003": 60,
+    "2106004": 15,
+    "2106005": 0
+  };
+
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     kiitRoll: '',
     pdfLinks: [
-      { link: '', name: '', type: '' }
+      { link: '', name: '' }
     ]
   });
   const [loading, setLoading] = useState(false);
@@ -23,42 +31,6 @@ const PDFUploadHub = () => {
   const [userPoints, setUserPoints] = useState(0);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
-  // Firebase functions
-  const getUserPoints = async (rollNumber) => {
-    try {
-      const userDoc = await getDoc(doc(db, 'users', rollNumber));
-      if (userDoc.exists()) {
-        return userDoc.data().points || 0;
-      }
-      return 0;
-    } catch (error) {
-      console.error('Error getting user points:', error);
-      return 0;
-    }
-  };
-
-  const updateUserPoints = async (rollNumber, pointsToAdd) => {
-    try {
-      const userRef = doc(db, 'users', rollNumber);
-      const userDoc = await getDoc(userRef);
-      
-      if (userDoc.exists()) {
-        await updateDoc(userRef, {
-          points: increment(pointsToAdd)
-        });
-      } else {
-        await setDoc(userRef, {
-          points: pointsToAdd,
-          rollNumber: rollNumber,
-          createdAt: new Date().toISOString()
-        });
-      }
-    } catch (error) {
-      console.error('Error updating user points:', error);
-      throw error;
-    }
-  };
-
   const submitPDFUpload = async (data) => {
     try {
       const docRef = await addDoc(collection(db, 'pdf-uploads'), {
@@ -66,9 +38,6 @@ const PDFUploadHub = () => {
         submittedAt: new Date().toISOString(),
         status: 'pending'
       });
-      
-      // Update user points
-      await updateUserPoints(data.kiitRoll, data.pointsEarned);
       
       return docRef;
     } catch (error) {
@@ -118,10 +87,11 @@ const PDFUploadHub = () => {
           kiitRoll: rollNumber
         }));
 
-        // Load user points from Firebase
-        if (rollNumber) {
-          const points = await getUserPoints(rollNumber);
-          setUserPoints(points);
+        // Load user points from mock data
+        if (rollNumber && mockPointsData[rollNumber] !== undefined) {
+          setUserPoints(mockPointsData[rollNumber]);
+        } else {
+          setUserPoints(0);
         }
       } else {
         setUser(null);
@@ -148,7 +118,7 @@ const PDFUploadHub = () => {
   const addPDFField = () => {
     setFormData(prev => ({
       ...prev,
-      pdfLinks: [...prev.pdfLinks, { link: '', name: '', type: '' }]
+      pdfLinks: [...prev.pdfLinks, { link: '', name: '' }]
     }));
   };
 
@@ -194,11 +164,11 @@ const PDFUploadHub = () => {
     }
 
     const validPDFs = formData.pdfLinks.filter(pdf => 
-      pdf.link.trim() && pdf.name.trim() && pdf.type.trim()
+      pdf.link.trim() && pdf.name.trim()
     );
 
     if (validPDFs.length === 0) {
-      setMessage({ type: 'error', text: 'At least one PDF link with name and type is required' });
+      setMessage({ type: 'error', text: 'At least one PDF link with name is required' });
       return false;
     }
 
@@ -226,7 +196,7 @@ const PDFUploadHub = () => {
     try {
       // Filter out empty PDF links
       const validPDFs = formData.pdfLinks.filter(pdf => 
-        pdf.link.trim() && pdf.name.trim() && pdf.type.trim()
+        pdf.link.trim() && pdf.name.trim()
       );
 
       const pointsEarned = validPDFs.length * 5;
@@ -243,14 +213,11 @@ const PDFUploadHub = () => {
         text: `PDF links submitted successfully! You earned ${pointsEarned} points. We will review and process your submission within 24 hours.` 
       });
 
-      // Update local points state
-      setUserPoints(prev => prev + pointsEarned);
-
       // Reset form (keep name and roll)
       setFormData(prev => ({
         ...prev,
         phone: '',
-        pdfLinks: [{ link: '', name: '', type: '' }]
+        pdfLinks: [{ link: '', name: '' }]
       }));
 
     } catch (error) {
@@ -285,7 +252,7 @@ const PDFUploadHub = () => {
 
   const isPremium = userPoints >= 50;
   const validPDFCount = formData.pdfLinks.filter(pdf => 
-    pdf.link.trim() && pdf.name.trim() && pdf.type.trim()
+    pdf.link.trim() && pdf.name.trim()
   ).length;
 
   return (
@@ -294,7 +261,7 @@ const PDFUploadHub = () => {
       <div className="top-nav">
         <div className="logo">
           <FileText size={28} />
-          PDF Upload Hub
+          KIITHUB - PDF Upload
         </div>
         
         <div className="profile-circle">
@@ -507,27 +474,6 @@ const PDFUploadHub = () => {
                     onChange={(e) => handlePDFLinkChange(index, 'name', e.target.value)}
                     placeholder="e.g., Advanced Java Notes"
                   />
-                </div>
-
-                <div className="form-group">
-                  <label>
-                    <Tag size={14} />
-                    PDF Type
-                  </label>
-                  <select
-                    value={pdfLink.type}
-                    onChange={(e) => handlePDFLinkChange(index, 'type', e.target.value)}
-                  >
-                    <option value="">Select type</option>
-                    <option value="notes">Lecture Notes</option>
-                    <option value="assignment">Assignment</option>
-                    <option value="question-paper">Question Paper</option>
-                    <option value="practical">Practical Manual</option>
-                    <option value="syllabus">Syllabus</option>
-                    <option value="tutorial">Tutorial</option>
-                    <option value="presentation">Presentation</option>
-                    <option value="other">Other</option>
-                  </select>
                 </div>
               </div>
             ))}
