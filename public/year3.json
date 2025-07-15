@@ -1,0 +1,923 @@
+{
+  "teachers": [
+
+  {
+    "id": "2000",
+    "name": "Dr. Himansu Das",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "1",
+      "36"
+    ]
+  },
+  {
+    "id": "2001",
+    "name": "Prof.(Dr.) Biswajit Sahoo",
+    "subjects": [
+      "DAA"
+    ],
+    "sections": [
+      "2",
+      "22"
+    ]
+  },
+  {
+    "id": "2002",
+    "name": "Dr. Mukesh Kumar",
+    "subjects": [
+      "DAA(L)"
+    ],
+    "sections": [
+      "2"
+    ]
+  },
+  {
+    "id": "2003",
+    "name": "Dr. Mukesh Kumar",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "5"
+    ]
+  },
+  {
+    "id": "2004",
+    "name": "Dr. Bindu Agarwalla",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "3",
+      "40"
+    ]
+  },
+  {
+    "id": "2005",
+    "name": "Dr. Santwana Sagnika",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "4",
+      "48"
+    ]
+  },
+  {
+    "id": "2006",
+    "name": "Dr. Adyasha Dash",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "6"
+    ]
+  },
+  {
+    "id": "2007",
+    "name": "Dr. Nibedan Panda",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "7"
+    ]
+  },
+  {
+    "id": "2008",
+    "name": "Dr. Partha Sarathi Paul",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "8",
+      "43"
+    ]
+  },
+  {
+    "id": "2009",
+    "name": "Dr. Rinku Datta Rakshit",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "9"
+    ]
+  },
+  {
+    "id": "2010",
+    "name": "Dr. Rinku Datta Rakshit",
+    "subjects": [
+      "DAA(L)"
+    ],
+    "sections": [
+      "38"
+    ]
+  },
+  {
+    "id": "2011",
+    "name": "Prof.(Dr.) Ganga Bishnu Mund",
+    "subjects": [
+      "DAA"
+    ],
+    "sections": [
+      "10",
+      "17",
+      "38"
+    ]
+  },
+  {
+    "id": "2012",
+    "name": "Dr. Debachudamani Prusti",
+    "subjects": [
+      "DAA(L)"
+    ],
+    "sections": [
+      "10"
+    ]
+  },
+  {
+    "id": "2013",
+    "name": "Dr. Debachudamani Prusti",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "16"
+    ]
+  },
+  {
+    "id": "2014",
+    "name": "Dr. Abir Sen",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "11",
+      "46"
+    ]
+  },
+  {
+    "id": "2015",
+    "name": "Dr. Manoj Kumar Mishra",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "12"
+    ]
+  },
+  {
+    "id": "2016",
+    "name": "Mr. Ajay Anand",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "13",
+      "45"
+    ]
+  },
+  {
+    "id": "2017",
+    "name": "Dr. Anisha Kumari",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "14",
+      "19"
+    ]
+  },
+  {
+    "id": "2018",
+    "name": "Dr. Dayal Kumar Behera",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "15"
+    ]
+  },
+  {
+    "id": "2019",
+    "name": "Mr. Pradeep Kandula",
+    "subjects": [
+      "DAA(L)"
+    ],
+    "sections": [
+      "17"
+    ]
+  },
+  {
+    "id": "2020",
+    "name": "Mr. Pradeep Kandula",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "31"
+    ]
+  },
+  {
+    "id": "2021",
+    "name": "Dr. Murari Mandal",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "18"
+    ]
+  },
+  {
+    "id": "2022",
+    "name": "Dr. Murari Mandal",
+    "subjects": [
+      "DAA(L)"
+    ],
+    "sections": [
+      "37"
+    ]
+  },
+  {
+    "id": "2023",
+    "name": "Dr. Sricheta Parui",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "20"
+    ]
+  },
+  {
+    "id": "2024",
+    "name": "Dr. Subhadip Pramanik",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "21"
+    ]
+  },
+  {
+    "id": "2025",
+    "name": "Mr. Abhijit Deuri",
+    "subjects": [
+      "DAA(L)"
+    ],
+    "sections": [
+      "22"
+    ]
+  },
+  {
+    "id": "2026",
+    "name": "Mr. Abhijit Deuri",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "25"
+    ]
+  },
+  {
+    "id": "2027",
+    "name": "Ms. Aradhana Behura",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "23"
+    ]
+  },
+  {
+    "id": "2028",
+    "name": "Mr. Amit Kumar",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "24"
+    ]
+  },
+  {
+    "id": "2029",
+    "name": "Mr. Amit Kumar",
+    "subjects": [
+      "DAA(L)"
+    ],
+    "sections": [
+      "35"
+    ]
+  },
+  {
+    "id": "2030",
+    "name": "Mr. Prasenjit Maiti",
+    "subjects": [
+      "DAA"
+    ],
+    "sections": [
+      "26"
+    ]
+  },
+  {
+    "id": "2031",
+    "name": "Mr. Prasenjit Maiti",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "32"
+    ]
+  },
+  {
+    "id": "2032",
+    "name": "Mr. Krishnendu Maity",
+    "subjects": [
+      "DAA(L)"
+    ],
+    "sections": [
+      "26"
+    ]
+  },
+  {
+    "id": "2033",
+    "name": "Mr. Krishnendu Maity",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "28"
+    ]
+  },
+  {
+    "id": "2034",
+    "name": "Dr. Dipti Dash",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "27",
+      "41"
+    ]
+  },
+  {
+    "id": "2035",
+    "name": "Mrs. Lipika Mohanty",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "29"
+    ]
+  },
+  {
+    "id": "2036",
+    "name": "Mr. N. Biraja Isac",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "30"
+    ]
+  },
+  {
+    "id": "2037",
+    "name": "Dr. Sujata Swain",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "33"
+    ]
+  },
+  {
+    "id": "2038",
+    "name": "Mr. Sohail Khan",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "34"
+    ]
+  },
+  {
+    "id": "2039",
+    "name": "Mrs. Chandani Kumari",
+    "subjects": [
+      "DAA"
+    ],
+    "sections": [
+      "35"
+    ]
+  },
+  {
+    "id": "2040",
+    "name": "New Faculty6",
+    "subjects": [
+      "DAA"
+    ],
+    "sections": [
+      "37"
+    ]
+  },
+  {
+    "id": "2041",
+    "name": "Dr. Debanjan Pathak",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "39"
+    ]
+  },
+  {
+    "id": "2042",
+    "name": "New Faculty4",
+    "subjects": [
+      "DAA"
+    ],
+    "sections": [
+      "42"
+    ]
+  },
+  {
+    "id": "2043",
+    "name": "Mr. Manas Ranjan Biswal",
+    "subjects": [
+      "DAA(L)"
+    ],
+    "sections": [
+      "42"
+    ]
+  },
+  {
+    "id": "2044",
+    "name": "New Faculty11",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "44"
+    ]
+  },
+  {
+    "id": "2045",
+    "name": "Dr. Kumar Surjeet Chaudhury",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "47"
+    ]
+  },
+
+
+
+
+
+
+  {
+    "id": "2100",
+    "name": "Dr. Nitin Varyani",
+    "subjects": [
+      "CN | CN(L)"
+    ],
+    "sections": [
+      "1"
+    ]
+  },
+  {
+    "id": "2101",
+    "name": "Dr. Nitin Varyani",
+    "subjects": [
+      "CN"
+    ],
+    "sections": [
+      "43"
+    ]
+  },
+  {
+    "id": "2102",
+    "name": "Ms. Uppada Gautami",
+    "subjects": [
+      "CN | CN(L)"
+    ],
+    "sections": [
+      "2"
+    ]
+  },
+  {
+    "id": "2103",
+    "name": "Dr. Sushruta Mishra",
+    "subjects": [
+      "CN | CN(L)"
+    ],
+    "sections": [
+      "3",
+      "40"
+    ]
+  },
+  {
+    "id": "2104",
+    "name": "Ms. Krutika Verma",
+    "subjects": [
+      "CN | CN(L)"
+    ],
+    "sections": [
+      "4",
+      "22"
+    ]
+  },
+  {
+    "id": "2105",
+    "name": "Dr. Manas Ranjan Lenka",
+    "subjects": [
+      "CN | CN(L)"
+    ],
+    "sections": [
+      "5",
+      "30"
+    ]
+  },
+  {
+    "id": "2106",
+    "name": "Dr. Soumya Ranjan Mishra",
+    "subjects": [
+      "CN | CN(L)"
+    ],
+    "sections": [
+      "6",
+      "16"
+    ]
+  },
+  {
+    "id": "2107",
+    "name": "Dr. Ajit Kumar Pasayat",
+    "subjects": [
+      "CN | CN(L)"
+    ],
+    "sections": [
+      "7",
+      "48"
+    ]
+  },
+  {
+    "id": "2108",
+    "name": "Dr. Ashish Singh",
+    "subjects": [
+      "CN | CN(L)"
+    ],
+    "sections": [
+      "8",
+      "31"
+    ]
+  },
+  {
+    "id": "2109",
+    "name": "Dr. Asif Uddin Khan",
+    "subjects": [
+      "CN | CN(L)"
+    ],
+    "sections": [
+      "9",
+      "37"
+    ]
+  },
+  {
+    "id": "2110",
+    "name": "Dr. Bhaswati Sahoo",
+    "subjects": [
+      "CN | CN(L)"
+    ],
+    "sections": [
+      "10",
+      "24"
+    ]
+  },
+  {
+    "id": "2111",
+    "name": "Dr. Niranjan Kumar Ray",
+    "subjects": [
+      "CN | CN(L)"
+    ],
+    "sections": [
+      "11",
+      "29"
+    ]
+  },
+  {
+    "id": "2112",
+    "name": "Dr. Suneeta Mohanty",
+    "subjects": [
+      "CN | CN(L)"
+    ],
+    "sections": [
+      "12",
+      "25"
+    ]
+  },
+  {
+    "id": "2113",
+    "name": "Dr. Jaydeep Das",
+    "subjects": [
+      "CN | CN(L)"
+    ],
+    "sections": [
+      "13",
+      "41"
+    ]
+  },
+  {
+    "id": "2114",
+    "name": "Mr. Jyotiprakash Mishra",
+    "subjects": [
+      "CN | CN(L)"
+    ],
+    "sections": [
+      "14"
+    ]
+  },
+  {
+    "id": "2115",
+    "name": "Mr. Jyotiprakash Mishra",
+    "subjects": [
+      "CN"
+    ],
+    "sections": [
+      "19"
+    ]
+  },
+  {
+    "id": "2116",
+    "name": "Dr. Jay Sarraf",
+    "subjects": [
+      "CN"
+    ],
+    "sections": [
+      "15",
+      "39"
+    ]
+  },
+  {
+    "id": "2117",
+    "name": "Dr. Hitesh Mohapatra",
+    "subjects": [
+      "CN(L)"
+    ],
+    "sections": [
+      "15"
+    ]
+  },
+  {
+    "id": "2118",
+    "name": "Dr. Jayanti Dansana",
+    "subjects": [
+      "CN | CN(L)"
+    ],
+    "sections": [
+      "17",
+      "46"
+    ]
+  },
+  {
+    "id": "2119",
+    "name": "Mr. Biraja Prasad Nayak",
+    "subjects": [
+      "CN | CN(L)"
+    ],
+    "sections": [
+      "18"
+    ]
+  },
+  {
+    "id": "2120",
+    "name": "Dr. Suchismita Rout",
+    "subjects": [
+      "CN(L)"
+    ],
+    "sections": [
+      "19"
+    ]
+  },
+  {
+    "id": "2121",
+    "name": "Mr. Arup Sarkar",
+    "subjects": [
+      "CN | CN(L)"
+    ],
+    "sections": [
+      "20"
+    ]
+  },
+  {
+    "id": "2122",
+    "name": "Ms. Kajal Kishori",
+    "subjects": [
+      "CN | CN(L)"
+    ],
+    "sections": [
+      "21"
+    ]
+  },
+  {
+    "id": "2123",
+    "name": "Mr. Rakesh Kumar Rai",
+    "subjects": [
+      "CN | CN(L)"
+    ],
+    "sections": [
+      "23"
+    ]
+  },
+  {
+    "id": "2124",
+    "name": "Dr. Aleena Swetapadma",
+    "subjects": [
+      "CN | CN(L)"
+    ],
+    "sections": [
+      "26",
+      "36"
+    ]
+  },
+  {
+    "id": "2125",
+    "name": "Mr. Vishal Meena",
+    "subjects": [
+      "CN | CN(L)"
+    ],
+    "sections": [
+      "27"
+    ]
+  },
+  {
+    "id": "2126",
+    "name": "Ms. Subhra Priyadarshini Biswal",
+    "subjects": [
+      "CN | CN(L)"
+    ],
+    "sections": [
+      "28"
+    ]
+  },
+  {
+    "id": "2127",
+    "name": "New Faculty3",
+    "subjects": [
+      "CN"
+    ],
+    "sections": [
+      "32"
+    ]
+  },
+  {
+    "id": "2128",
+    "name": "New Faculty5",
+    "subjects": [
+      "CN(L)"
+    ],
+    "sections": [
+      "32"
+    ]
+  },
+  {
+    "id": "2129",
+    "name": "Dr. Tanmoy Maitra",
+    "subjects": [
+      "CN | CN(L)"
+    ],
+    "sections": [
+      "33",
+      "45"
+    ]
+  },
+  {
+    "id": "2130",
+    "name": "Dr. VIkas Hassija",
+    "subjects": [
+      "CN | CN(L)"
+    ],
+    "sections": [
+      "34"
+    ]
+  },
+  {
+    "id": "2131",
+    "name": "Dr. Anjan Bandyopadhyay",
+    "subjects": [
+      "CN | CN(L)"
+    ],
+    "sections": [
+      "35",
+      "47"
+    ]
+  },
+  {
+    "id": "2132",
+    "name": "Mr. Sankalp Nayak",
+    "subjects": [
+      "CN | CN(L)"
+    ],
+    "sections": [
+      "38"
+    ]
+  },
+  {
+    "id": "2133",
+    "name": "Dr. Subhranshu Sekhar Tripathy",
+    "subjects": [
+      "CN(L)"
+    ],
+    "sections": [
+      "39"
+    ]
+  },
+  {
+    "id": "2134",
+    "name": "Dr. Pinaki Sankar Chatterjee",
+    "subjects": [
+      "CN | CN(L)"
+    ],
+    "sections": [
+      "42"
+    ]
+  },
+  {
+    "id": "2135",
+    "name": "Ms. Shilpa Das",
+    "subjects": [
+      "CN(L)"
+    ],
+    "sections": [
+      "43"
+    ]
+  },
+  {
+    "id": "2136",
+    "name": "Dr. Subhashree Darshana",
+    "subjects": [
+      "CN | CN(L)"
+    ],
+    "sections": [
+      "44"
+    ]
+  },
+
+
+
+
+  { "id": "2300", "name": "Dr. Sugyanta Priyadarshini", "subjects": ["EE"], "sections": ["1", "3", "5", "7", "9"] },
+  { "id": "2301", "name": "Dr. Gayatri Nayak", "subjects": ["EE"], "sections": ["2", "4", "6", "8", "10"] },
+  { "id": "2302", "name": "Ms. Mamita Dash", "subjects": ["EE"], "sections": ["11", "13", "15", "17", "19"] },
+  { "id": "2303", "name": "Dr. Sarbeswar Mohanty", "subjects": ["EE"], "sections": ["12", "14", "16", "18"] },
+  { "id": "2304", "name": "Dr. Ananya Mitra", "subjects": ["EE"], "sections": ["20", "22", "24", "26"] },
+  { "id": "2305", "name": "Dr. Tulasi Malini Maharatha", "subjects": ["EE"], "sections": ["21", "23", "25", "27"] },
+  { "id": "2306", "name": "Dr. Subhrajit Rath", "subjects": ["EE"], "sections": ["28", "30", "32", "34"] },
+  { "id": "2307", "name": "Dr. Seba Mohanty", "subjects": ["EE"], "sections": ["29", "31", "33"] },
+  { "id": "2308", "name": "Dr. Smrutirekha Mohanty", "subjects": ["EE"], "sections": ["35", "37", "39"] },
+  { "id": "2309", "name": "Dr. Suvendu Barik", "subjects": ["EE"], "sections": ["36", "46", "48"] },
+  { "id": "2310", "name": "Dr. Prasanta Patri", "subjects": ["EE"], "sections": ["38", "40", "42"] },
+  { "id": "2311", "name": "Dr. Arvind Kumar Yadav", "subjects": ["EE"], "sections": ["41", "43", "45"] },
+  { "id": "2312", "name": "Dr. Sanjaya Kumar Lenka", "subjects": ["EE"], "sections": ["44"] },
+  { "id": "2313", "name": "Eco Faculty 1", "subjects": ["EE"], "sections": ["47"] },
+
+  
+
+
+  { "id": "2200", "name": "Dr. Leena Das", "subjects": ["SE"], "sections": ["1", "32"] },
+  { "id": "2201", "name": "Ms. Ipsita Paul", "subjects": ["SE"], "sections": ["2", "43"] },
+  { "id": "2202", "name": "Dr. Ambika Prasad Mishra", "subjects": ["SE"], "sections": ["3", "27"] },
+  { "id": "2203", "name": "Prof. (Dr.) Arghya Kundu", "subjects": ["SE"], "sections": ["4", "26"] },
+  { "id": "2204", "name": "Dr. Raghunath Dey", "subjects": ["SE"], "sections": ["5", "44"] },
+  { "id": "2205", "name": "Dr. Siddharth Swarup Rautaray", "subjects": ["SE"], "sections": ["6", "20"] },
+  { "id": "2206", "name": "Ms. Shilpa Das", "subjects": ["SE"], "sections": ["7", "45"] },
+  { "id": "2207", "name": "Ms. Sarita Mishra", "subjects": ["SE"], "sections": ["8"] },
+  { "id": "2208", "name": "Mr. Kunal Anand", "subjects": ["SE"], "sections": ["9", "41"] },
+  { "id": "2209", "name": "Dr. Kumar Devadutta", "subjects": ["SE"], "sections": ["10"] },
+  { "id": "2210", "name": "Prof. (Dr.) Prachet Bhuyan", "subjects": ["SE"], "sections": ["11", "28"] },
+  { "id": "2211", "name": "Dr. Subhranshu Sekhar Tripathy", "subjects": ["SE"], "sections": ["12", "42"] },
+  { "id": "2212", "name": "Dr. Suchismita Rout", "subjects": ["SE"], "sections": ["13", "47"] },
+  { "id": "2213", "name": "Dr. Banchhanidhi Dash", "subjects": ["SE"], "sections": ["14", "39"] },
+  { "id": "2214", "name": "Dr. Namita Panda", "subjects": ["SE"], "sections": ["15"] },
+  { "id": "2215", "name": "Dr. Krishna Chakravarty", "subjects": ["SE"], "sections": ["16", "34"] },
+  { "id": "2216", "name": "Dr. Saurabh Bilgaiyan", "subjects": ["SE"], "sections": ["17", "38"] },
+  { "id": "2217", "name": "Dr. Junali Jasmine Jena", "subjects": ["SE"], "sections": ["18", "37"] },
+  { "id": "2218", "name": "Mr. Manas Ranjan Biswal", "subjects": ["SE"], "sections": ["19", "25", "36"] },
+  { "id": "2219", "name": "Prof. (Dr.) Santosh Kumar Swain", "subjects": ["SE"], "sections": ["21"] },
+  { "id": "2220", "name": "Dr. Hitesh Mohapatra", "subjects": ["SE"], "sections": ["22", "33"] },
+  { "id": "2221", "name": "Prof. (Dr.) Samaresh Mishra", "subjects": ["SE"], "sections": ["23", "35"] },
+  { "id": "2222", "name": "Dr. Jagannath Singh", "subjects": ["SE"], "sections": ["24"] },
+  { "id": "2223", "name": "Mr. Sovan Kumar Sahoo", "subjects": ["SE"], "sections": ["29"] },
+  { "id": "2224", "name": "Ms. Mandakini Priyadarshani Behera", "subjects": ["SE"], "sections": ["30", "48"] },
+  { "id": "2225", "name": "Prof. (Dr.) Prasant Kumar Pattnaik", "subjects": ["SE"], "sections": ["31"] },
+  { "id": "2226", "name": "Dr. Biswajeet Sethi", "subjects": ["SE"], "sections": ["40"] },
+  { "id": "2227", "name": "Mrs. Chandani Kumari", "subjects": ["SE"], "sections": ["46"] }
+
+
+
+
+
+  ]
+}

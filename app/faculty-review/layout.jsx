@@ -1,8 +1,8 @@
-import './globals.css'
+import '../globals.css'
 import { Toaster } from 'react-hot-toast'
 
 export const metadata = {
-  title: 'KIITHub | The PYQ Hub for KIITians',
+  title: 'KIITHub | Faculty Review',
   description: 'Access previous year question papers for KIIT University',
 }
 
@@ -10,10 +10,6 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        {/* ✅ Favicon */}
-        <link rel="icon" href="/icon.png" />
-
-        {/* ✅ Google Fonts & Icons */}
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
@@ -22,24 +18,9 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=notifications_active"
         />
-
-        {/* ✅ Google Analytics */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-RM0XQTBF6J"></script>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-RM0XQTBF6J');
-            `,
-          }}
-        />
       </head>
       <body>
-        {/* ✅ Toast Notification (optional, uncomment if needed) */}
         {/* <Toaster position="top-center" reverseOrder={false} /> */}
-
         {children}
       </body>
     </html>

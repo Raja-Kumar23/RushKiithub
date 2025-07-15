@@ -1,0 +1,111 @@
+.support-container {
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.support-card {
+  background: #1e293b;
+  border-radius: 24px;
+  padding: 3rem 4rem;
+  text-align: center;
+  width: 100%;
+  max-width: 700px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  border: 2px solid #334155;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.support-icon {
+  font-size: 3rem;
+  color: #34d399;
+  margin-bottom: 2rem;
+}
+
+.support-title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  color: #f1f5f9;
+  margin-bottom: 0.5rem;
+}
+
+.support-divider {
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+  margin: 0 auto 2rem auto;
+  border-radius: 2px;
+}
+
+.support-description {
+  font-size: 1.2rem;
+  color: #cbd5e1;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.support-subtitle {
+  font-size: 1rem;
+  color: #94a3b8;
+  margin-bottom: 2rem;
+}
+
+.support-buttons {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.whatsapp-btn {
+  background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+  color: #ffffff;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+  text-decoration: none;
+}
+
+.whatsapp-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .support-card {
+    padding: 2rem;
+  }
+
+  .support-description {
+    font-size: 1.05rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .support-card {
+    padding: 1.5rem;
+  }
+
+  .support-description {
+    font-size: 1rem;
+  }
+}

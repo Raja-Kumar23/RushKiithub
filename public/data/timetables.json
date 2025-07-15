@@ -1,0 +1,246 @@
+{
+  "CSE1": {
+    "coreSubjects": {
+      "monday": [
+        { "time": "20:00-21:00", "subject": "Data Structures", "room": "Room 101", "faculty": "Dr. Smith" },
+        { "time": "10:00-11:00", "subject": "Algorithms", "room": "Room 102", "faculty": "Dr. Johnson" },
+        { "time": "11:30-12:30", "subject": "Database Systems", "room": "Room 103", "faculty": "Dr. Brown" },
+        { "time": "1:30-2:30", "subject": "Operating Systems", "room": "Room 104", "faculty": "Dr. Davis" },
+        { "time": "2:30-3:30", "subject": "Computer Networks", "room": "Room 105", "faculty": "Dr. Wilson" }
+      ],
+      "tuesday": [
+        { "time": "9:00-10:00", "subject": "Software Engineering", "room": "Room 106", "faculty": "Dr. Taylor" },
+        { "time": "10:00-11:00", "subject": "Web Development", "room": "Room 107", "faculty": "Dr. Anderson" },
+        { "time": "11:30-12:30", "subject": "Data Structures Lab", "room": "Lab 201", "faculty": "Dr. Smith" },
+        { "time": "1:30-2:30", "subject": "Algorithms Lab", "room": "Lab 202", "faculty": "Dr. Johnson" },
+        { "time": "2:30-3:30", "subject": "Database Lab", "room": "Lab 203", "faculty": "Dr. Brown" }
+      ],
+      "wednesday": [
+        { "time": "9:00-10:00", "subject": "Machine Learning", "room": "Room 108", "faculty": "Dr. Garcia" },
+        { "time": "10:00-11:00", "subject": "Artificial Intelligence", "room": "Room 109", "faculty": "Dr. Martinez" },
+        { "time": "11:30-12:30", "subject": "Computer Graphics", "room": "Room 110", "faculty": "Dr. Lee" },
+        { "time": "1:30-2:30", "subject": "Mobile Development", "room": "Room 111", "faculty": "Dr. Clark" },
+        { "time": "2:30-3:30", "subject": "Cybersecurity", "room": "Room 112", "faculty": "Dr. Lewis" }
+      ],
+      "thursday": [
+        { "time": "9:00-10:00", "subject": "Object Oriented Programming", "room": "Room 113", "faculty": "Dr. Walker" },
+        { "time": "10:00-11:00", "subject": "Discrete Mathematics", "room": "Room 114", "faculty": "Dr. Hall" },
+        { "time": "11:30-12:30", "subject": "Computer Architecture", "room": "Room 115", "faculty": "Dr. Young" },
+        { "time": "1:30-2:30", "subject": "Theory of Computation", "room": "Room 116", "faculty": "Dr. King" },
+        { "time": "2:30-3:30", "subject": "Compiler Design", "room": "Room 117", "faculty": "Dr. Wright" }
+      ],
+      "friday": [
+        { "time": "9:00-10:00", "subject": "Software Testing", "room": "Room 118", "faculty": "Dr. Lopez" },
+        { "time": "10:00-11:00", "subject": "Project Management", "room": "Room 119", "faculty": "Dr. Hill" },
+        { "time": "11:30-12:30", "subject": "System Design", "room": "Room 120", "faculty": "Dr. Scott" },
+        { "time": "1:30-2:30", "subject": "Cloud Computing", "room": "Room 121", "faculty": "Dr. Green" },
+        { "time": "2:30-3:30", "subject": "DevOps", "room": "Room 122", "faculty": "Dr. Adams" }
+      ]
+    },
+    "electiveSubjects": {
+      "monday": [
+        { "time": "3:30-4:30", "subject": "Blockchain Technology", "room": "Room 201", "faculty": "Dr. Baker" },
+        { "time": "4:30-5:30", "subject": "Internet of Things", "room": "Room 202", "faculty": "Dr. Gonzalez" }
+      ],
+      "tuesday": [
+        { "time": "3:30-4:30", "subject": "Data Mining", "room": "Room 203", "faculty": "Dr. Nelson" },
+        { "time": "4:30-5:30", "subject": "Big Data Analytics", "room": "Room 204", "faculty": "Dr. Carter" }
+      ],
+      "wednesday": [
+        { "time": "3:30-4:30", "subject": "Quantum Computing", "room": "Room 205", "faculty": "Dr. Mitchell" },
+        { "time": "4:30-5:30", "subject": "Robotics", "room": "Room 206", "faculty": "Dr. Perez" }
+      ],
+      "thursday": [
+        { "time": "3:30-4:30", "subject": "Game Development", "room": "Room 207", "faculty": "Dr. Roberts" },
+        { "time": "4:30-5:30", "subject": "Virtual Reality", "room": "Room 208", "faculty": "Dr. Turner" }
+      ],
+      "friday": [
+        { "time": "3:30-4:30", "subject": "Ethical Hacking", "room": "Room 209", "faculty": "Dr. Phillips" },
+        { "time": "4:30-5:30", "subject": "Digital Forensics", "room": "Room 210", "faculty": "Dr. Campbell" }
+      ]
+    }
+  },
+  "CSE2": {
+    "coreSubjects": {
+      "monday": [
+        { "time": "9:00-10:00", "subject": "Data Structures", "room": "Room 201", "faculty": "Dr. Smith" },
+        { "time": "10:00-11:00", "subject": "Algorithms", "room": "Room 202", "faculty": "Dr. Johnson" },
+        { "time": "11:30-12:30", "subject": "Database Systems", "room": "Room 203", "faculty": "Dr. Brown" },
+        { "time": "1:30-2:30", "subject": "Operating Systems", "room": "Room 204", "faculty": "Dr. Davis" },
+        { "time": "2:30-3:30", "subject": "Computer Networks", "room": "Room 205", "faculty": "Dr. Wilson" }
+      ],
+      "tuesday": [
+        { "time": "9:00-10:00", "subject": "Software Engineering", "room": "Room 206", "faculty": "Dr. Taylor" },
+        { "time": "10:00-11:00", "subject": "Web Development", "room": "Room 207", "faculty": "Dr. Anderson" },
+        { "time": "11:30-12:30", "subject": "Data Structures Lab", "room": "Lab 301", "faculty": "Dr. Smith" },
+        { "time": "1:30-2:30", "subject": "Algorithms Lab", "room": "Lab 302", "faculty": "Dr. Johnson" },
+        { "time": "2:30-3:30", "subject": "Database Lab", "room": "Lab 303", "faculty": "Dr. Brown" }
+      ],
+      "wednesday": [
+        { "time": "9:00-10:00", "subject": "Machine Learning", "room": "Room 208", "faculty": "Dr. Garcia" },
+        { "time": "10:00-11:00", "subject": "Artificial Intelligence", "room": "Room 209", "faculty": "Dr. Martinez" },
+        { "time": "11:30-12:30", "subject": "Computer Graphics", "room": "Room 210", "faculty": "Dr. Lee" },
+        { "time": "1:30-2:30", "subject": "Mobile Development", "room": "Room 211", "faculty": "Dr. Clark" },
+        { "time": "2:30-3:30", "subject": "Cybersecurity", "room": "Room 212", "faculty": "Dr. Lewis" }
+      ],
+      "thursday": [
+        { "time": "9:00-10:00", "subject": "Object Oriented Programming", "room": "Room 213", "faculty": "Dr. Walker" },
+        { "time": "10:00-11:00", "subject": "Discrete Mathematics", "room": "Room 214", "faculty": "Dr. Hall" },
+        { "time": "11:30-12:30", "subject": "Computer Architecture", "room": "Room 215", "faculty": "Dr. Young" },
+        { "time": "1:30-2:30", "subject": "Theory of Computation", "room": "Room 216", "faculty": "Dr. King" },
+        { "time": "2:30-3:30", "subject": "Compiler Design", "room": "Room 217", "faculty": "Dr. Wright" }
+      ],
+      "friday": [
+        { "time": "9:00-10:00", "subject": "Software Testing", "room": "Room 218", "faculty": "Dr. Lopez" },
+        { "time": "10:00-11:00", "subject": "Project Management", "room": "Room 219", "faculty": "Dr. Hill" },
+        { "time": "11:30-12:30", "subject": "System Design", "room": "Room 220", "faculty": "Dr. Scott" },
+        { "time": "1:30-2:30", "subject": "Cloud Computing", "room": "Room 221", "faculty": "Dr. Green" },
+        { "time": "2:30-3:30", "subject": "DevOps", "room": "Room 222", "faculty": "Dr. Adams" }
+      ]
+    },
+    "electiveSubjects": {
+      "monday": [
+        { "time": "3:30-4:30", "subject": "Blockchain Technology", "room": "Room 301", "faculty": "Dr. Baker" },
+        { "time": "4:30-5:30", "subject": "Internet of Things", "room": "Room 302", "faculty": "Dr. Gonzalez" }
+      ],
+      "tuesday": [
+        { "time": "3:30-4:30", "subject": "Data Mining", "room": "Room 303", "faculty": "Dr. Nelson" },
+        { "time": "4:30-5:30", "subject": "Big Data Analytics", "room": "Room 304", "faculty": "Dr. Carter" }
+      ],
+      "wednesday": [
+        { "time": "3:30-4:30", "subject": "Quantum Computing", "room": "Room 305", "faculty": "Dr. Mitchell" },
+        { "time": "4:30-5:30", "subject": "Robotics", "room": "Room 306", "faculty": "Dr. Perez" }
+      ],
+      "thursday": [
+        { "time": "3:30-4:30", "subject": "Game Development", "room": "Room 307", "faculty": "Dr. Roberts" },
+        { "time": "4:30-5:30", "subject": "Virtual Reality", "room": "Room 308", "faculty": "Dr. Turner" }
+      ],
+      "friday": [
+        { "time": "3:30-4:30", "subject": "Ethical Hacking", "room": "Room 309", "faculty": "Dr. Phillips" },
+        { "time": "4:30-5:30", "subject": "Digital Forensics", "room": "Room 310", "faculty": "Dr. Campbell" }
+      ]
+    }
+  },
+  "ECE1": {
+    "coreSubjects": {
+      "monday": [
+        { "time": "9:00-10:00", "subject": "Analog Electronics", "room": "Room 301", "faculty": "Dr. Kumar" },
+        { "time": "10:00-11:00", "subject": "Digital Electronics", "room": "Room 302", "faculty": "Dr. Sharma" },
+        { "time": "11:30-12:30", "subject": "Signal Processing", "room": "Room 303", "faculty": "Dr. Patel" },
+        { "time": "1:30-2:30", "subject": "Communication Systems", "room": "Room 304", "faculty": "Dr. Singh" },
+        { "time": "2:30-3:30", "subject": "Control Systems", "room": "Room 305", "faculty": "Dr. Gupta" }
+      ],
+      "tuesday": [
+        { "time": "9:00-10:00", "subject": "Microprocessors", "room": "Room 306", "faculty": "Dr. Verma" },
+        { "time": "10:00-11:00", "subject": "VLSI Design", "room": "Room 307", "faculty": "Dr. Jain" },
+        { "time": "11:30-12:30", "subject": "Electronics Lab", "room": "Lab 401", "faculty": "Dr. Kumar" },
+        { "time": "1:30-2:30", "subject": "Signal Processing Lab", "room": "Lab 402", "faculty": "Dr. Patel" },
+        { "time": "2:30-3:30", "subject": "Communication Lab", "room": "Lab 403", "faculty": "Dr. Singh" }
+      ],
+      "wednesday": [
+        { "time": "9:00-10:00", "subject": "Electromagnetic Theory", "room": "Room 308", "faculty": "Dr. Agarwal" },
+        { "time": "10:00-11:00", "subject": "Antenna Theory", "room": "Room 309", "faculty": "Dr. Mishra" },
+        { "time": "11:30-12:30", "subject": "Microwave Engineering", "room": "Room 310", "faculty": "Dr. Tiwari" },
+        { "time": "1:30-2:30", "subject": "Optical Communication", "room": "Room 311", "faculty": "Dr. Pandey" },
+        { "time": "2:30-3:30", "subject": "Wireless Communication", "room": "Room 312", "faculty": "Dr. Yadav" }
+      ],
+      "thursday": [
+        { "time": "9:00-10:00", "subject": "Power Electronics", "room": "Room 313", "faculty": "Dr. Saxena" },
+        { "time": "10:00-11:00", "subject": "Digital Signal Processing", "room": "Room 314", "faculty": "Dr. Srivastava" },
+        { "time": "11:30-12:30", "subject": "Embedded Systems", "room": "Room 315", "faculty": "Dr. Tripathi" },
+        { "time": "1:30-2:30", "subject": "Network Theory", "room": "Room 316", "faculty": "Dr. Chandra" },
+        { "time": "2:30-3:30", "subject": "Electronic Measurements", "room": "Room 317", "faculty": "Dr. Awasthi" }
+      ],
+      "friday": [
+        { "time": "9:00-10:00", "subject": "Semiconductor Devices", "room": "Room 318", "faculty": "Dr. Dixit" },
+        { "time": "10:00-11:00", "subject": "Electronic Circuits", "room": "Room 319", "faculty": "Dr. Rastogi" },
+        { "time": "11:30-12:30", "subject": "Project Work", "room": "Room 320", "faculty": "Dr. Bhatt" },
+        { "time": "1:30-2:30", "subject": "Industrial Training", "room": "Room 321", "faculty": "Dr. Joshi" },
+        { "time": "2:30-3:30", "subject": "Seminar", "room": "Room 322", "faculty": "Dr. Negi" }
+      ]
+    },
+    "electiveSubjects": {
+      "monday": [
+        { "time": "3:30-4:30", "subject": "Biomedical Engineering", "room": "Room 401", "faculty": "Dr. Kapoor" },
+        { "time": "4:30-5:30", "subject": "Nanotechnology", "room": "Room 402", "faculty": "Dr. Malhotra" }
+      ],
+      "tuesday": [
+        { "time": "3:30-4:30", "subject": "Robotics", "room": "Room 403", "faculty": "Dr. Bansal" },
+        { "time": "4:30-5:30", "subject": "Artificial Intelligence", "room": "Room 404", "faculty": "Dr. Goyal" }
+      ],
+      "wednesday": [
+        { "time": "3:30-4:30", "subject": "Renewable Energy", "room": "Room 405", "faculty": "Dr. Aggarwal" },
+        { "time": "4:30-5:30", "subject": "Smart Grid", "room": "Room 406", "faculty": "Dr. Chopra" }
+      ],
+      "thursday": [
+        { "time": "3:30-4:30", "subject": "Image Processing", "room": "Room 407", "faculty": "Dr. Khanna" },
+        { "time": "4:30-5:30", "subject": "Machine Vision", "room": "Room 408", "faculty": "Dr. Bhatia" }
+      ],
+      "friday": [
+        { "time": "3:30-4:30", "subject": "Internet of Things", "room": "Room 409", "faculty": "Dr. Sethi" },
+        { "time": "4:30-5:30", "subject": "Cyber Security", "room": "Room 410", "faculty": "Dr. Arora" }
+      ]
+    }
+  },
+  "MECH1": {
+    "coreSubjects": {
+      "monday": [
+        { "time": "9:00-10:00", "subject": "Thermodynamics", "room": "Room 501", "faculty": "Dr. Mehta" },
+        { "time": "10:00-11:00", "subject": "Fluid Mechanics", "room": "Room 502", "faculty": "Dr. Shah" },
+        { "time": "11:30-12:30", "subject": "Machine Design", "room": "Room 503", "faculty": "Dr. Patel" },
+        { "time": "1:30-2:30", "subject": "Manufacturing Processes", "room": "Room 504", "faculty": "Dr. Desai" },
+        { "time": "2:30-3:30", "subject": "Heat Transfer", "room": "Room 505", "faculty": "Dr. Modi" }
+      ],
+      "tuesday": [
+        { "time": "9:00-10:00", "subject": "Strength of Materials", "room": "Room 506", "faculty": "Dr. Trivedi" },
+        { "time": "10:00-11:00", "subject": "Engineering Materials", "room": "Room 507", "faculty": "Dr. Joshi" },
+        { "time": "11:30-12:30", "subject": "Mechanics Lab", "room": "Lab 501", "faculty": "Dr. Mehta" },
+        { "time": "1:30-2:30", "subject": "Manufacturing Lab", "room": "Lab 502", "faculty": "Dr. Desai" },
+        { "time": "2:30-3:30", "subject": "Materials Lab", "room": "Lab 503", "faculty": "Dr. Joshi" }
+      ],
+      "wednesday": [
+        { "time": "9:00-10:00", "subject": "Control Systems", "room": "Room 508", "faculty": "Dr. Pandya" },
+        { "time": "10:00-11:00", "subject": "Vibrations", "room": "Room 509", "faculty": "Dr. Vyas" },
+        { "time": "11:30-12:30", "subject": "IC Engines", "room": "Room 510", "faculty": "Dr. Parmar" },
+        { "time": "1:30-2:30", "subject": "Refrigeration", "room": "Room 511", "faculty": "Dr. Bhatt" },
+        { "time": "2:30-3:30", "subject": "Power Plant Engineering", "room": "Room 512", "faculty": "Dr. Amin" }
+      ],
+      "thursday": [
+        { "time": "9:00-10:00", "subject": "Automobile Engineering", "room": "Room 513", "faculty": "Dr. Solanki" },
+        { "time": "10:00-11:00", "subject": "Industrial Engineering", "room": "Room 514", "faculty": "Dr. Raval" },
+        { "time": "11:30-12:30", "subject": "CAD/CAM", "room": "Room 515", "faculty": "Dr. Chaudhary" },
+        { "time": "1:30-2:30", "subject": "Robotics", "room": "Room 516", "faculty": "Dr. Thakkar" },
+        { "time": "2:30-3:30", "subject": "Finite Element Analysis", "room": "Room 517", "faculty": "Dr. Gajjar" }
+      ],
+      "friday": [
+        { "time": "9:00-10:00", "subject": "Project Management", "room": "Room 518", "faculty": "Dr. Suthar" },
+        { "time": "10:00-11:00", "subject": "Quality Control", "room": "Room 519", "faculty": "Dr. Vasava" },
+        { "time": "11:30-12:30", "subject": "Project Work", "room": "Room 520", "faculty": "Dr. Makwana" },
+        { "time": "1:30-2:30", "subject": "Industrial Training", "room": "Room 521", "faculty": "Dr. Barot" },
+        { "time": "2:30-3:30", "subject": "Seminar", "room": "Room 522", "faculty": "Dr. Chauhan" }
+      ]
+    },
+    "electiveSubjects": {
+      "monday": [
+        { "time": "3:30-4:30", "subject": "Renewable Energy", "room": "Room 601", "faculty": "Dr. Jain" },
+        { "time": "4:30-5:30", "subject": "Green Technology", "room": "Room 602", "faculty": "Dr. Nair" }
+      ],
+      "tuesday": [
+        { "time": "3:30-4:30", "subject": "Additive Manufacturing", "room": "Room 603", "faculty": "Dr. Reddy" },
+        { "time": "4:30-5:30", "subject": "Nano Materials", "room": "Room 604", "faculty": "Dr. Iyer" }
+      ],
+      "wednesday": [
+        { "time": "3:30-4:30", "subject": "Mechatronics", "room": "Room 605", "faculty": "Dr. Kulkarni" },
+        { "time": "4:30-5:30", "subject": "Automation", "room": "Room 606", "faculty": "Dr. Menon" }
+      ],
+      "thursday": [
+        { "time": "3:30-4:30", "subject": "Advanced Manufacturing", "room": "Room 607", "faculty": "Dr. Pillai" },
+        { "time": "4:30-5:30", "subject": "Product Design", "room": "Room 608", "faculty": "Dr. Krishnan" }
+      ],
+      "friday": [
+        { "time": "3:30-4:30", "subject": "Operations Research", "room": "Room 609", "faculty": "Dr. Agarwal" },
+        { "time": "4:30-5:30", "subject": "Supply Chain Management", "room": "Room 610", "faculty": "Dr. Banerjee" }
+      ]
+    }
+  }
+}

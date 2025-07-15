@@ -1,0 +1,244 @@
+{
+    "teachers": [
+
+  { "id": "1", "name": "Dr. Prasanta Ku. Das", "subjects": ["PS"], "sections": ["3", "9", "18"] },
+  { "id": "2", "name": "Dr. Subhadarshan Sahoo", "subjects": ["PS"], "sections": ["10", "20", "49"] },
+ 
+  { "id": "4", "name": "Dr. Joydeb Pal", "subjects": ["PS"], "sections": ["12", "17", "22"] },
+ 
+  { "id": "6", "name": "Dr. Manas Ranjan Mohapa", "subjects": ["PS"], "sections": ["11", "13", "21"] },
+  { "id": "7", "name": "Dr. Utkal Keshari Dutta", "subjects": ["PS"], "sections": ["19", "26", "48"] },
+ 
+  { "id": "9", "name": "Dr. Suman Sarkar", "subjects": ["PS"], "sections": ["15", "24", "41"] },
+  { "id": "10", "name": "Dr. Vishal Pradhan", "subjects": ["PS"], "sections": ["16", "25", "45"] },
+  { "id": "11", "name": "Dr. Debdulal Ghosh", "subjects": ["PS"], "sections": ["27", "31", "39","46"] },
+  { "id": "12", "name": "Dr. Vijil Kumar", "subjects": ["PS"], "sections": ["34", "37", "41"] },
+  { "id": "13", "name": "Dr. Srikanta Behera", "subjects": ["PS"], "sections": ["29", "35", "38","43"] },
+  { "id": "14", "name": "Dr. Kartikeswar Mahalik", "subjects": ["PS"], "sections": ["30", "32", "42"] },
+  { "id": "15", "name": "Dr. Bapuji Sahoo", "subjects": ["PS"], "sections": ["40", "47", "53" ,"28"] },
+  
+  { "id": "10000", "name": "Dr. Mrutyunjay Das", "subjects": ["PS"], "sections": ["1"] },
+  { "id": "10100", "name": "Dr. Prasanta Ku. Mohanty", "subjects": ["PS"], "sections": ["2"] },
+   { "id": "10101", "name": "Dr. Debdulal Panda", "subjects": ["PS"], "sections": ["4"] },
+   { "id": "10111", "name": "Dr. Anita Nayak", "subjects": ["PS"], "sections": ["5"] },
+   { "id": "10112", "name": "Dr. Arun Kumar Gupta", "subjects": ["PS"], "sections": ["6"] },
+   { "id": "11112", "name": "Dr. Akshaya Kumar Panda", "subjects": ["PS"], "sections": ["7"] },
+      { "id": "11312", "name": "Dr. Manas Ranjan Mohapatra", "subjects": ["PS"], "sections": ["11","13","21"] },
+
+
+
+
+
+
+  { "id": "17", "name": "Dr. Subhra Debdas", "subjects": ["IND 4.0"], "sections": ["16", "17"] },
+  { "id": "18", "name": "Dr. Pampa Sinha", "subjects": ["IND 4.0"], "sections": ["18","19"] },
+  { "id": "19", "name": "Dr. Shubhasri Kundu", "subjects": ["IND 4.0"], "sections": ["28"] },
+  
+  { "id": "21", "name": "Dr. Manoj Kumar Moharan", "subjects": ["IND 4.0"], "sections": ["20"] },
+  { "id": "22", "name": "Dr. Sanhita Mishra", "subjects": ["IND 4.0"], "sections": ["21","22"] },
+  { "id": "23", "name": "Prof. Subodh Kumar Moha", "subjects": ["IND 4.0"], "sections": ["25","26"] },
+  { "id": "24", "name": "Prof. Snehalika", "subjects": ["IND 4.0"], "sections": ["29", "30"] },
+  { "id": "25", "name": "Prof. Tapaswini Biswal", "subjects": ["IND 4.0"], "sections": ["23","24"] },
+  
+
+  
+  { "id": "29", "name": "Prof. Subrat Behera", "subjects": ["IND 4.0"], "sections": ["31"] },
+  { "id": "30", "name": "Prof. R. Lenka", "subjects": ["IND 4.0"], "sections": ["1",  "2","3"] },
+  { "id": "31", "name": "Prof. P. Sunil", "subjects": ["IND 4.0"], "sections": ["4",  "5","6"] },
+  { "id": "32", "name": "Prof. Deepak Kumar Rout", "subjects": ["IND 4.0"], "sections": ["7", "8"] },
+  
+  { "id": "34", "name": "Prof. Makireddi Ramana", "subjects": ["IND 4.0"], "sections": ["11", "12", "13"] },
+  { "id": "35", "name": "Prof. D. Mukherjee", "subjects": ["IND 4.0"], "sections": ["14", "15"] },
+  
+
+  { "id": "38", "name": "Dr. Manoj Ukamanal", "subjects": ["IND 4.0"], "sections": ["36", "37"] },
+  { "id": "39", "name": "Dr. Rahul", "subjects": ["IND 4.0"], "sections": ["38","39"] },
+  
+  { "id": "41", "name": "Dr. Abhilas Swain", "subjects": ["IND 4.0"], "sections": ["42", "43"] },
+  { "id": "42", "name": "Dr. Md. Ehtesham Hasan", "subjects": ["IND 4.0"], "sections": ["40", "41"] },
+  { "id": "43", "name": "Dr. Anish Pandey", "subjects": ["IND 4.0"], "sections": ["44", "45"] },
+  { "id": "44", "name": "Dr. Smitirupa Pradhan", "subjects": ["IND 4.0"], "sections": ["52","53"] },
+  { "id": "45", "name": "Dr. Spandan Guha", "subjects": ["IND 4.0"], "sections": ["48","49"] },
+  
+ 
+
+
+
+
+  { "id": "47", "name": "Dr. Rajat Kumar Behera", "subjects": ["DS | DS(L)"], "sections": ["6"] },
+  
+ 
+  
+  { "id": "51", "name": "Dr. Monideepa Roy", "subjects": ["DS | DS(L)"], "sections": ["21"] },
+ 
+  { "id": "53", "name": "Dr. Abhaya Kumar Sahoo", "subjects": ["DS | DS(L)"], "sections": ["7"] },
+  { "id": "54", "name": "Dr. Anuja Kumar Acharya", "subjects": [" DS(L)"], "sections": ["32", "43"] },
+  { "id": "55", "name": "Dr. Jagannath Singh", "subjects": ["DS | DS(L)"], "sections": ["8"] },
+  { "id": "56", "name": "Dr. Nachiketa Tarasia", "subjects": ["DS | DS(L)"], "sections": ["2", "12"] },
+  { "id": "57", "name": "Mr. Deependra Singh", "subjects": ["DS | DS(L)"], "sections": ["48"] },
+  { "id": "58", "name": "Dr. Satarupa Mohanty", "subjects": ["DS"], "sections": ["15","34"] },
+  { "id": "59", "name": "Dr. Suchismita Das", "subjects": ["DS | DS(L)"], "sections": ["1"] },
+  { "id": "60", "name": "Dr. Chittaranjan Pradhan", "subjects": ["DS | DS(L)"], "sections": ["54"] },
+  { "id": "61", "name": "Mr. Debashis Hati", "subjects": ["DS | DS(L)"], "sections": ["19"] },
+  { "id": "62", "name": "Mr. Jyotiprakash Mishra", "subjects": ["DS"], "sections": ["10"] },
+  { "id": "63", "name": "Mr. Himanshu Ranjan", "subjects": ["DS | DS(L)"], "sections": ["52"] },
+  { "id": "64", "name": "Dr. Amulya Ratna Swain", "subjects": ["DS | DS(L)"], "sections": ["3", "32" ,"34"] },
+  { "id": "65", "name": "Dr. Mohit Ranjan Panda", "subjects": ["DS | DS(L)"], "sections": ["11"] },
+  
+  { "id": "67", "name": "Ms. Shubhangi Shreya", "subjects": ["DS | DS(L)"], "sections": ["37"] },
+  { "id": "68", "name": "Dr. Sarita Tripathy", "subjects": ["DS | DS(L)"], "sections": ["25"] },
+  
+  { "id": "70", "name": "Dr. NIkhilanand Arya", "subjects": ["DS | DS(L)"], "sections": ["22"] },
+  { "id": "71", "name": "Dr. Arup Abhinna Acharya", "subjects": ["DS | DS(L)"], "sections": ["9","53"] },
+  
+  
+  { "id": "74", "name": "Dr. Mainak Bandyopadhyay", "subjects": ["DS | DS(L)"], "sections": ["20"] },
+   { "id": "75", "name": "Dr. Monideepa Roy", "subjects": ["DS | DS(L)"], "sections": ["47" ,"21"] },
+  { "id": "76", "name": "Dr. Leena Das", "subjects": ["DS(L)"], "sections": ["45"] },
+
+  { "id": "77", "name": "Mr. Himanshu Ranjan", "subjects": ["DS | DS(L)"], "sections": ["52"] },
+  { "id": "78", "name": "Dr. Mainak Bandyopadhyay", "subjects": ["DS | DS(L)"], "sections": ["20"] },
+
+  { "id": "79", "name": "Dr. Satyananda Champati", "subjects": ["DS"], "sections": ["36"] },
+  
+
+
+
+  { "id": "87", "name": "Mr. A Ranjith", "subjects": ["DS | DS(L)"], "sections": ["28"] },
+  { "id": "88", "name": "Ms. Shubhangi Shreya", "subjects": ["DS(L)"], "sections": ["37"] },
+
+
+
+  { "id": "91", "name": "Mr. Sunil Kumar Sawant", "subjects": ["DS | DS(L)"], "sections": ["42"] },
+  { "id": "92", "name": "Dr. Ambika Prasad Mishra", "subjects": ["DS(L)"], "sections": ["15"] },
+  
+
+  { "id": "94", "name": "Dr. Partha Pratim Sarangi", "subjects": ["DS | DS(L)"], "sections": ["13"] },
+
+
+  { "id": "96", "name": "Dr. Rajdeep Chatterjee", "subjects": ["DS"], "sections": ["14"] },
+  { "id": "97", "name": "Dr. Sarita Tripathy", "subjects": ["DS | DS(L)"], "sections": ["25"] },
+
+ 
+  { "id": "99", "name": "Mr. Gananath Bhuyan", "subjects": ["DS | DS(L)"], "sections": ["33"] },
+
+  { "id": "100", "name": "Dr. Jagannath Singh", "subjects": ["DS"], "sections": ["23"] },
+  { "id": "101", "name": "Mr. Deependra Singh", "subjects": ["DS | DS(L)"], "sections": ["48"] },
+
+  { "id": "102", "name": "Dr. Sujoy Datta", "subjects": ["DS | DS(L)"], "sections": ["27"] },
+  { "id": "103", "name": "Dr. NIkhilanand Arya", "subjects": ["DS | DS(L)"], "sections": ["22"] },
+
+
+
+
+  
+  { "id": "106", "name": "Dr. Abhishek Ray", "subjects": ["AFL"], "sections": ["1", "13","52"] },
+  { "id": "107", "name": "Dr. Ajaya Kumar Parida", "subjects": ["AFL"], "sections": ["2", "26"] },
+  { "id": "108", "name": "Dr. Jasaswi Prasad Mohan", "subjects": ["AFL"], "sections": ["24", "27"] },
+  { "id": "109", "name": "Dr. Jayeeta Chakraborty", "subjects": ["AFL"], "sections": ["16", "40"] },
+  { "id": "110", "name": "Dr. Mainak Biswas", "subjects": ["AFL"], "sections": ["23", "36"] },
+  { "id": "111", "name": "Dr. Santosh Kumar Baliarsi", "subjects": ["AFL"], "sections": ["10", "51"] },
+  
+  { "id": "113", "name": "Dr. Soumya Ranjan Nayak", "subjects": ["AFL"], "sections": ["11", "35"] },
+  
+
+  { "id": "116", "name": "Dr. Tanik Saikh", "subjects": ["AFL"], "sections": ["15", "38"] },
+
+  { "id": "118", "name": "Mr. Abinas Panda", "subjects": ["AFL"], "sections": ["14", "32"] },
+  { "id": "119", "name": "Dr. Anil Kumar Swain", "subjects": ["AFL"], "sections": ["18", "29"] },
+ 
+  { "id": "121", "name": "Mr. Jhalak Hota", "subjects": ["AFL"], "sections": ["30", "41"] },
+  { "id": "122", "name": "Mr. Lalit Kumar Vashishtha", "subjects": ["AFL"], "sections": ["4","25"] },
+  { "id": "123", "name": "Mr. Nayan Kumar Subhash", "subjects": ["AFL"], "sections": ["8", "48"] },
+  { "id": "124", "name": "Mr. Prabhu Prasad Dev", "subjects": ["AFL"], "sections": ["21", "45"] },
+  
+  { "id": "126", "name": "Mr. R. N. Ramakant Parida", "subjects": ["AFL"], "sections": ["39", "49"] },
+ 
+  { "id": "128", "name": "Mrs. Lipika Dewangan", "subjects": ["AFL"], "sections": ["19", "43"] },
+  { "id": "129", "name": "Mrs. Naliniprava Behera", "subjects": ["AFL"], "sections": ["21", "45"] },
+  { "id": "130", "name": "Dr. Priyanka Roy", "subjects": ["AFL"], "sections": ["9", "53"] },
+ 
+
+
+
+
+  { "id": "166", "name": "Prof. R. K. Khanna", "subjects": ["DSD | DSD(L)"], "sections": ["11"] },
+  { "id": "167", "name": "Prof. Ruby Mishra", "subjects": ["DSD "], "sections": ["23","24"] },
+  { "id": "168", "name": "Prof. P. K. Samanta", "subjects": ["DSD "], "sections": ["36", "37","38"] },
+  { "id": "169", "name": "Prof. Mayank Mishra", "subjects": [" DSD(L)"], "sections": ["44","45"] },
+  { "id": "170", "name": "Prof. Bikash Kumar Behera", "subjects": ["DSD "], "sections": ["21","22"] },
+  { "id": "171", "name": "Prof. Shruti", "subjects": ["DSD | DSD(L)"], "sections": ["51","52"] },
+  { "id": "172", "name": "Prof. S. K. Badi", "subjects": ["DSD | DSD(L)"], "sections": ["25", "26" ,"32","33"] },
+
+  { "id": "173", "name": "Prof. R. K. Khanna", "subjects": ["DSD"], "sections": ["11"] },
+  { "id": "174", "name": "Prof. Sruti S. Singh", "subjects": ["DSD"], "sections": ["27", "28"] },
+  { "id": "175", "name": "Prof. Sukanta Sabut", "subjects": ["DSD"], "sections": ["47", "48","50"] },
+  { "id": "176", "name": "Prof. Kumar Biswal", "subjects": ["DSD(L)"], "sections": ["37", "38"] },
+  { "id": "177", "name": "Prof. Niten Kumar Panda", "subjects": ["DSD"], "sections": ["53","54"] },
+  
+  { "id": "179", "name": "Prof. A. Bakshi", "subjects": ["DSD"], "sections": ["29", "30", "31"] },
+  { "id": "180", "name": "Prof. P. Biswal", "subjects": ["DSD"], "sections": ["5"] },
+  { "id": "181", "name": "Prof. Mayank Mishra", "subjects": ["DSD"], "sections": ["39","40","41"] },
+  { "id": "182", "name": "Prof. K. B. Ray", "subjects": ["DSD(L)"], "sections": ["1", "2"] },
+  { "id": "183", "name": "Prof. Sruti S. Singh", "subjects": ["DSD(L)"], "sections": ["34"] },
+  { "id": "184", "name": "Mr. S. Kund", "subjects": ["DSD(L)"], "sections": ["21", "2"] },
+  { "id": "185", "name": "Prof. Bikash Kumar Behera", "subjects": ["DSD (L)"], "sections": ["25", "30", "39"] },
+  { "id": "186", "name": "Prof. Wriddhi Bhowmick", "subjects": ["DSD"], "sections": ["42", "43", "44","48","49"] },
+  { "id": "187", "name": "Prof. R. Prasad", "subjects": ["DSD(L)"], "sections": ["9", "10"] },
+  { "id": "188", "name": "Prof. Ganaraj P. S.", "subjects": ["DSD"], "sections": ["42"] },
+  { "id": "189", "name": "Prof. A. Basak", "subjects": ["DSD | DSD(L)"], "sections": ["12", "13"] },
+  { "id": "190", "name": "Prof. D. Mukherjee", "subjects": ["DSD"], "sections": ["14" ,"15"] },
+  { "id": "191", "name": "Prof. Ayaskanta Mishra", "subjects": ["DSD"], "sections": ["4", "6", "7"] },
+  
+  { "id": "193", "name": "Prof. S. K. Behera", "subjects": ["DSD |DSD(L)"], "sections": ["7", "8", "42"] },
+  { "id": "194", "name": "Prof. S. Padhy", "subjects": ["DSD(L)"], "sections": ["3"] },
+  { "id": "195", "name": "Prof. Vimal Ku Shrivastava", "subjects": ["DSD(L)"], "sections": ["41"] },
+  { "id": "196", "name": "Prof. T. M. Behera", "subjects": ["DSD | DSD (L)"], "sections": ["5","15","16","19"] },
+  { "id": "197", "name": "Prof. Swati Swayamsiddha", "subjects": ["DSD"], "sections": ["3", "4"] },
+  { "id": "198", "name": "Prof. B. V. V. S. Kumar", "subjects": ["DSD(L)"], "sections": ["6","20"] },
+  { "id": "199", "name": "Prof. A. Gorai", "subjects": ["DSD"], "sections": ["19","20","24"] },
+  { "id": "200", "name": "Prof. Niten Kumar Panda", "subjects": ["DSD"], "sections": ["53","54"] },
+  { "id": "201", "name": "Prof. Ruby Mishra", "subjects": ["DSD(L)"], "sections": ["27","28"] },
+  { "id": "202", "name": "Prof. P. Sunil", "subjects": ["DSD(L)"], "sections": ["13","14"] },
+  { "id": "203", "name": "Prof. Amit Kumar V.Jha", "subjects": ["DSD"], "sections": ["36"] },
+  { "id": "204", "name": "Prof. S. Roy", "subjects": ["DSD(L)"], "sections": ["17","18"] },
+
+
+
+  
+
+ 
+ 
+ 
+ 
+
+  { "id": "141", "name": "Dr. Deepanjali Mishra", "subjects": ["STW"], "sections": ["1"] },
+  { "id": "142", "name": "Dr. Sudeshna Datta Chaud", "subjects": ["STW"], "sections": ["4"] },
+  { "id": "143", "name": "Dr. Arpita Goswami", "subjects": ["STW"], "sections": ["5"] },
+ 
+  { "id": "145", "name": "Prof. Amit Kumar Das", "subjects": ["STW"], "sections": ["29", "46"] },
+ 
+  { "id": "147", "name": "Prof. Kalpana Sahoo", "subjects": ["STW"], "sections": ["31", "45"] },
+  
+  { "id": "149", "name": "Prof. Aparupa Pani", "subjects": ["STW"], "sections": ["30"] },
+  
+  { "id": "151", "name": "Prof. M I Nayyer", "subjects": ["STW"], "sections": ["32","43"] },
+  { "id": "152", "name": "Prof. Rachita Panda", "subjects": ["STW"], "sections": ["28", "37"] },
+  { "id": "153", "name": "Prof. Manas Chandan Mish", "subjects": ["STW"], "sections": ["34","44"] },
+  { "id": "154", "name": "Prof. Nazia T. Imran", "subjects": ["STW"], "sections": ["35"] },
+  { "id": "155", "name": "Prof. P. Nanda", "subjects": ["STW"], "sections": ["36"] },
+  { "id": "156", "name": "Prof. Malaya Mohanty", "subjects": ["STW"], "sections": ["41"] },
+  { "id": "157", "name": "Prof. S. R. Samal", "subjects": ["STW"], "sections": ["39"] },
+  { "id": "158", "name": "Dr. Ramanuj Kumar", "subjects": ["STW"], "sections": ["14"] },
+  { "id": "159", "name": "Prof. Madhumita Mohanty", "subjects": ["STW"], "sections": ["24", "48"] },
+  { "id": "160", "name": "Dr. Santosh Kumar Hotta", "subjects": ["STW"], "sections": ["20","52"] },
+  { "id": "161", "name": "Dr. Amlana Panda", "subjects": ["STW"], "sections": ["13"] },
+  { "id": "162", "name": "Dr. Swarup K. Nayak", "subjects": ["STW"], "sections": ["42"] },
+  { "id": "163", "name": "Dr. Sambit K. Mohapatra", "subjects": ["STW"], "sections": ["15", "53"] },
+  { "id": "164", "name": "Prof. Asit Behera", "subjects": ["STW"], "sections": ["17", "54"] },
+  { "id": "165", "name": "Prof. A. K. Behera", "subjects": ["STW"], "sections": ["23","49"] }
+
+  
+    ]
+  }
+  

@@ -1,0 +1,165 @@
+/* 🌌 Fullscreen Gradient Background */
+.coming-soon-container {
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* 🧊 Card Design */
+.coming-soon-card {
+  background: #1e293b;
+  border-radius: 24px;
+  padding: 3rem 4rem;
+  text-align: center;
+  width: 100%;
+  max-width: 700px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  border: 2px solid #334155;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* ⭐ Icon */
+.coming-soon-icon {
+  color: #34d399;
+  margin-bottom: 2rem;
+  font-size: 3rem;
+}
+
+/* 🏷️ Title */
+.coming-soon-title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  color: #f1f5f9;
+  margin-bottom: 0.5rem;
+}
+
+/* 📏 Divider */
+.coming-soon-divider {
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+  margin: 0 auto 2rem auto;
+  border-radius: 2px;
+}
+
+/* 📄 Description */
+.coming-soon-description {
+  font-size: 1.2rem;
+  color: #cbd5e1;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+/* 💬 Subtitle */
+.coming-soon-subtitle {
+  font-size: 1rem;
+  color: #94a3b8;
+  margin-bottom: 2rem;
+}
+
+/* 🔘 Buttons Row */
+.coming-soon-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+}
+
+/* ✅ WhatsApp Button */
+.whatsapp-btn {
+  background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+  color: #ffffff;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+}
+
+.whatsapp-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
+}
+
+/* ⬅️ Back Button */
+.back-btn {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border: 2px solid #34d399;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background: #34d399;
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+/* 📱 Responsive (Tablet & Below) */
+@media (max-width: 768px) {
+  .coming-soon-card {
+    padding: 2rem;
+  }
+
+  .coming-soon-title {
+    font-size: 2.3rem;
+  }
+
+  .coming-soon-description {
+    font-size: 1.05rem;
+  }
+
+  .coming-soon-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .whatsapp-btn,
+  .back-btn {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+/* 📱 Mobile-Optimized */
+@media (max-width: 480px) {
+  .coming-soon-card {
+    padding: 1.5rem;
+  }
+
+  .coming-soon-title {
+    font-size: 2rem;
+  }
+
+  .coming-soon-description {
+    font-size: 1rem;
+  }
+}
