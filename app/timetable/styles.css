@@ -25,22 +25,30 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-/* KiitHub Header Styles */
-.kiithub-header {
+/* New Main Header */
+.main-header {
   border-radius: 24px;
-  padding: 30px;
+  padding: 20px 30px;
   margin-bottom: 20px;
   backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
   position: relative;
   overflow: hidden;
 }
 
-.kiithub-header::before {
-  content: '';
+.main-header::before {
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
@@ -50,42 +58,37 @@
   transition: left 0.8s ease;
 }
 
-.kiithub-header:hover::before {
+.main-header:hover::before {
   left: 100%;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 .kiithub-logo-container {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 20px;
+  gap: 15px;
 }
 
-.kiithub-logo {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.logo-icon {
-  width: 64px;
-  height: 64px;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 10px 30px rgba(34, 197, 94, 0.3);
-  transition: all 0.3s ease;
-}
-
-.logo-icon:hover {
-  transform: scale(1.05) rotate(5deg);
-  box-shadow: 0 15px 40px rgba(34, 197, 94, 0.4);
+.kiithub-main-logo {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
 }
 
 .logo-text h1 {
   margin: 0;
-  font-size: 36px;
+  font-size: 32px;
   font-weight: 900;
   letter-spacing: -1px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -93,7 +96,7 @@
 
 .logo-text p {
   margin: 4px 0 0 0;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   opacity: 0.8;
 }
@@ -107,10 +110,10 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 20px;
+  padding: 10px 18px;
   border-radius: 30px;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   transition: all 0.3s ease;
@@ -121,16 +124,10 @@
   box-shadow: 0 8px 25px rgba(34, 197, 94, 0.25);
 }
 
-/* Profile Section */
-.profile-section {
-  position: fixed;
-  top: 20px;
-  right: 20px;
+/* Profile Section (New positioning) */
+.profile-section-new {
+  position: relative; /* Changed from fixed */
   z-index: 1001;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
 }
 
 .profile-container {
@@ -153,7 +150,7 @@
 }
 
 .profile-button::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
@@ -175,7 +172,7 @@
 .profile-image {
   width: 36px;
   height: 36px;
-  border-radius: 50%;
+  border-radius: 50%; /* Ensure perfect circle */
   object-fit: cover;
   border: 3px solid rgba(34, 197, 94, 0.4);
   transition: all 0.3s ease;
@@ -214,7 +211,7 @@
 }
 
 .login-button::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
@@ -269,7 +266,7 @@
 .dropdown-image {
   width: 56px;
   height: 56px;
-  border-radius: 50%;
+  border-radius: 50%; /* Ensure perfect circle */
   object-fit: cover;
   border: 4px solid rgba(34, 197, 94, 0.3);
   transition: all 0.3s ease;
@@ -337,7 +334,7 @@
 }
 
 .profile-action::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
@@ -377,43 +374,33 @@
   background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.1), transparent);
 }
 
-/* Navigation Bar */
-.nav-bar {
-  border-radius: 16px;
-  padding: 20px;
+/* Current Time Card */
+.current-time-card {
+  border-radius: 20px;
+  padding: 24px;
   margin-bottom: 20px;
   backdrop-filter: blur(20px);
+}
+
+.time-display {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 20px;
 }
 
-.nav-back-button {
+.current-time,
+.current-date {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 24px;
-  color: white;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
+  gap: 12px;
   font-weight: 700;
-  font-size: 14px;
-  transition: all 0.3s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-size: 18px;
 }
 
-.nav-back-button:hover {
-  transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 10px 30px rgba(34, 197, 94, 0.4);
-}
-
-.nav-title h2 {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 800;
-  text-align: center;
+.current-date {
+  font-size: 16px;
+  font-weight: 600;
 }
 
 /* Student Info Card */
@@ -441,7 +428,7 @@
 .student-avatar {
   width: 80px;
   height: 80px;
-  border-radius: 50%;
+  border-radius: 50%; /* Ensure perfect circle */
   object-fit: cover;
   transition: all 0.3s ease;
 }
@@ -537,56 +524,86 @@
 }
 
 @keyframes pulse {
-  0% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.2); opacity: 0.8; }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .overview-content {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  max-height: 400px; /* Limit height for scrollability */
+  overflow-y: auto; /* Enable scrolling */
 }
 
-.mini-class-card {
-  border-radius: 12px;
-  padding: 16px;
+/* New Class Card Design */
+.class-card-new {
+  border-radius: 16px;
+  padding: 20px;
   transition: all 0.3s ease;
+  margin-bottom: 12px;
 }
 
-.mini-class-card:hover {
+.class-card-new:hover {
   transform: translateX(5px);
   box-shadow: 0 8px 25px rgba(34, 197, 94, 0.15);
 }
 
-.mini-class-header {
+.class-main-info {
+  margin-bottom: 16px;
+}
+
+.subject-info h4 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.class-meta {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-}
-
-.mini-subject {
-  font-weight: 700;
-  font-size: 16px;
-}
-
-.class-badges {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.mini-class-details {
-  display: flex;
   gap: 16px;
   flex-wrap: wrap;
 }
 
-.mini-class-details span {
+.time-info,
+.day-info {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.countdown {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.class-details-new {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detail-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-size: 14px;
   font-weight: 600;
 }
@@ -669,22 +686,24 @@
   text-align: center;
 }
 
-.schedule-grid {
+/* New Schedule Grid */
+.schedule-grid-new {
   display: grid;
-  gap: 16px;
+  gap: 20px;
 }
 
-.class-card {
-  border-radius: 16px;
-  padding: 20px;
+/* New Detailed Class Card */
+.class-card-detailed {
+  border-radius: 20px;
+  padding: 24px;
   transition: all 0.3s ease;
   cursor: pointer;
   position: relative;
   overflow: hidden;
 }
 
-.class-card::before {
-  content: '';
+.class-card-detailed::before {
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
@@ -694,105 +713,106 @@
   transition: left 0.5s ease;
 }
 
-.class-card:hover::before {
+.class-card-detailed:hover::before {
   left: 100%;
 }
 
-.class-card:hover {
+.class-card-detailed:hover {
   transform: translateY(-3px);
   box-shadow: 0 15px 40px rgba(34, 197, 94, 0.2);
 }
 
-.class-card.current-class {
+.class-card-detailed.current-class {
   animation: glow 2s ease-in-out infinite alternate;
 }
 
 @keyframes glow {
-  from { box-shadow: 0 0 20px rgba(34, 197, 94, 0.3); }
-  to { box-shadow: 0 0 30px rgba(34, 197, 94, 0.5); }
+  from {
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+  }
+  to {
+    box-shadow: 0 0 30px rgba(34, 197, 94, 0.5);
+  }
 }
 
-.class-header {
+.class-header-new {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
-.class-header h4 {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 800;
-}
-
-.class-actions {
+.subject-title {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.time-badge {
+.subject-title h4 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.class-status {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: white;
   padding: 8px 16px;
   border-radius: 20px;
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  position: relative;
-  overflow: hidden;
+  background: linear-gradient(135deg, #ef4444 0%, #f59e0b 100%);
+  color: white;
 }
 
-.time-badge.current {
-  animation: pulse-badge 2s infinite;
-}
-
-@keyframes pulse-badge {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
-
-.live-indicator-small {
-  margin-left: 8px;
-  font-size: 11px;
-  opacity: 0.9;
-}
-
-.countdown-badge {
-  margin-left: 8px;
-  font-size: 12px;
-  padding: 2px 6px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-}
-
-.star-button {
-  padding: 8px;
+.status-indicator {
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
+  background: white;
+  animation: pulse 2s infinite;
+}
+
+.class-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.info-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
   transition: all 0.3s ease;
 }
 
-.star-button:hover {
-  transform: scale(1.1);
-  background: rgba(251, 191, 36, 0.2) !important;
+.info-card:hover {
+  transform: scale(1.02);
+  background: rgba(255, 255, 255, 0.1);
 }
 
-.class-details {
+.info-content {
   display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.detail-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.info-label {
+  font-size: 12px;
   font-weight: 600;
-  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-value {
+  font-size: 16px;
+  font-weight: 700;
 }
 
 .no-classes {
@@ -835,117 +855,107 @@
   .timetable-container {
     padding: 15px;
   }
-  
-  .kiithub-header {
-    padding: 20px;
-  }
-  
-  .kiithub-logo-container {
+
+  .main-header {
+    padding: 15px 20px;
     flex-direction: column;
-    gap: 16px;
-    text-align: center;
+    align-items: flex-start; /* Align items to start after removing back button */
+    gap: 15px;
   }
-  
-  .logo-icon {
-    width: 56px;
-    height: 56px;
+
+  .header-left {
+    flex-direction: row; /* Keep logo and text in a row */
+    align-items: center;
+    justify-content: center; /* Center the logo and text */
+    width: 100%;
   }
-  
+
+  .header-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .kiithub-logo-container {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .kiithub-main-logo {
+    width: 40px;
+    height: 40px;
+  }
+
   .logo-text h1 {
     font-size: 28px;
   }
-  
-  .nav-bar {
-    flex-direction: column;
-    gap: 15px;
+
+  .tagline-badge {
+    font-size: 12px;
+    padding: 8px 14px;
   }
-  
-  .nav-title {
-    text-align: center;
+
+  .profile-section-new {
+    position: static; /* Ensure it flows with content */
   }
-  
-  .nav-title h2 {
-    font-size: 20px;
-  }
-  
-  .student-info {
-    flex-direction: column;
-    text-align: center;
-  }
-  
-  .student-info-row {
-    justify-content: center;
-  }
-  
-  .student-avatar {
-    width: 60px;
-    height: 60px;
-  }
-  
-  .overview-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .button-group {
-    justify-content: center;
-  }
-  
-  .control-button {
-    padding: 10px 16px;
-    font-size: 13px;
-  }
-  
-  .class-header {
-    flex-direction: column;
-    gap: 12px;
-  }
-  
-  .class-details {
-    flex-direction: column;
-    gap: 12px;
-  }
-  
-  .profile-section {
-    top: 15px;
-    right: 15px;
-  }
-  
+
   .profile-button {
     padding: 8px 14px;
     gap: 8px;
   }
-  
+
   .profile-image {
     width: 32px;
     height: 32px;
   }
-  
+
   .profile-name {
     display: none;
   }
-  
+
   .login-button {
     padding: 12px 18px;
     font-size: 13px;
   }
-  
+
   .profile-dropdown {
     width: 280px;
     padding: 20px;
     top: 55px;
   }
-  
+
   .dropdown-image {
     width: 48px;
     height: 48px;
   }
-  
+
   .user-name {
     font-size: 16px;
   }
-  
+
   .user-email {
     font-size: 12px;
+  }
+
+  .time-display {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .overview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .button-group {
+    justify-content: center;
+  }
+
+  .control-button {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+
+  .class-info-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -953,79 +963,66 @@
   .timetable-container {
     padding: 10px;
   }
-  
-  .kiithub-header,
-  .nav-bar,
+
+  .main-header,
   .controls-card,
   .timetable-card,
   .student-info-card,
-  .overview-card {
+  .overview-card,
+  .current-time-card {
     padding: 16px;
   }
-  
+
   .logo-text h1 {
     font-size: 24px;
   }
-  
-  .nav-back-button {
-    padding: 10px 16px;
-    font-size: 13px;
-  }
-  
-  .nav-title h2 {
-    font-size: 18px;
-  }
-  
+
   .student-avatar {
     width: 50px;
     height: 50px;
   }
-  
+
   .student-details h3 {
     font-size: 20px;
   }
-  
+
   .overview-title h3 {
     font-size: 18px;
   }
-  
-  .class-card {
+
+  .class-card-detailed {
     padding: 16px;
   }
-  
-  .class-header h4 {
+
+  .subject-title h4 {
     font-size: 18px;
   }
-  
+
   .timetable-title {
     font-size: 20px;
   }
-  
-  .mini-class-details {
+
+  .class-meta {
     flex-direction: column;
     gap: 8px;
+    align-items: flex-start;
   }
-  
+
   .control-button {
     padding: 8px 12px;
     font-size: 12px;
   }
-  
-  .profile-section {
-    top: 10px;
-    right: 10px;
-  }
-  
+
   .profile-dropdown {
     width: 260px;
     right: -10px;
     padding: 16px;
   }
-  
+
   .profile-info {
     padding: 12px;
   }
-  
+
   .profile-action {
     padding: 12px 16px;
     font-size: 14px;

@@ -1,26 +1,25 @@
 "use client"
+
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth"
-import { 
-  ArrowLeft, 
-  Calendar, 
-  Clock, 
-  MapPin, 
-  User, 
-  BookOpen, 
-  GraduationCap, 
-  Sun, 
-  Moon, 
-  LogOut, 
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  User,
+  BookOpen,
+  GraduationCap,
+  Sun,
+  Moon,
+  LogOut,
   Timer,
   Play,
   Pause,
-  School,
-  Zap
+  Zap,
 } from "lucide-react"
-import { auth, provider } from "../../lib/firebase"
 import "./styles.css"
+import { auth, provider } from "../../lib/firebase"
 
 export default function TimetablePage() {
   const router = useRouter()
@@ -35,7 +34,7 @@ export default function TimetablePage() {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false)
   const [loginError, setLoginError] = useState("")
   const [currentTime, setCurrentTime] = useState(new Date())
-  const [activeView, setActiveView] = useState("current") // current, upcoming, all
+  const [activeView, setActiveView] = useState("current") // current, all
 
   // Enhanced Theme Configuration
   const theme = {
@@ -48,7 +47,7 @@ export default function TimetablePage() {
       error: "#ef4444",
       background: "linear-gradient(135deg, #f0fdf4 0%, #dcfce7 30%, #bbf7d0 70%, #a7f3d0 100%)",
       cardBg: "rgba(255, 255, 255, 0.95)",
-      textPrimary: "#1f2937",
+      textPrimary: "#1f2937", // Dark text for light mode
       textSecondary: "#374151",
       textMuted: "#6b7280",
       border: "rgba(34, 197, 94, 0.2)",
@@ -64,7 +63,7 @@ export default function TimetablePage() {
       error: "#ef4444",
       background: "linear-gradient(135deg, #0f172a 0%, #1e293b 30%, #334155 70%, #475569 100%)",
       cardBg: "rgba(30, 41, 59, 0.95)",
-      textPrimary: "#f8fafc",
+      textPrimary: "#f8fafc", // Light text for dark mode
       textSecondary: "#e2e8f0",
       textMuted: "#94a3b8",
       border: "rgba(34, 197, 94, 0.3)",
@@ -72,6 +71,7 @@ export default function TimetablePage() {
       glassBg: "rgba(30, 41, 59, 0.4)",
     },
   }
+
   const currentTheme = isDarkMode ? theme.dark : theme.light
 
   // Load theme preference
@@ -96,6 +96,25 @@ export default function TimetablePage() {
     return days[currentTime.getDay()]
   }
 
+  // Format current time
+  const getCurrentTimeString = () => {
+    return currentTime.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    })
+  }
+
+  // Get current date string
+  const getCurrentDateString = () => {
+    return currentTime.toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
+  }
+
   // Set default day to current day
   useEffect(() => {
     const currentDay = getCurrentDay()
@@ -110,7 +129,6 @@ export default function TimetablePage() {
       setAuthLoading(false)
       return
     }
-
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser && (currentUser.email.endsWith("@kiit.ac.in") || currentUser.email === "davidtomdon@gmail.com")) {
         const userData = {
@@ -133,22 +151,19 @@ export default function TimetablePage() {
       }
       setAuthLoading(false)
     })
-
     return () => unsubscribe()
   }, [router])
 
   const loadData = async (userData) => {
     try {
-      const sectionsResponse = await fetch('/data/sections.json')
+      const sectionsResponse = await fetch("/data/sections.json")
       const sections = await sectionsResponse.json()
       setSectionsData(sections)
-
-      const timetableResponse = await fetch('/data/timetables.json')
+      const timetableResponse = await fetch("/data/timetables.json")
       const timetables = await timetableResponse.json()
       setTimetableData(timetables)
-
       if (userData) {
-        const rollNumber = userData.email.split('@')[0]
+        const rollNumber = userData.email.split("@")[0]
         const section = findUserSection(sections, rollNumber)
         setUserSection(section)
       }
@@ -163,7 +178,7 @@ export default function TimetablePage() {
         return {
           id: sectionId,
           name: sectionInfo.name,
-          rollNumber: rollNumber
+          rollNumber: rollNumber,
         }
       }
     }
@@ -181,7 +196,6 @@ export default function TimetablePage() {
       setLoginError("Authentication service is not available. Please try again later.")
       return
     }
-
     try {
       setLoginError("")
       const result = await signInWithPopup(auth, provider)
@@ -226,28 +240,19 @@ export default function TimetablePage() {
     router.push("/")
   }
 
-  const handleTimetableClick = () => {
-    setShowProfileDropdown(false)
-    // Already on timetable page, no need to navigate
-  }
-
   const parseTime = (timeStr) => {
-    // Safety check for undefined or invalid time string
-    if (!timeStr || typeof timeStr !== 'string' || !timeStr.includes('-')) {
-      return 0 // Return 0 for invalid time
+    if (!timeStr || typeof timeStr !== "string" || !timeStr.includes("-")) {
+      return 0
     }
-    
     try {
-      const [time] = timeStr.split('-')
-      if (!time || !time.includes(':')) {
+      const [time] = timeStr.split("-")
+      if (!time || !time.includes(":")) {
         return 0
       }
-      
-      const [hours, minutes] = time.split(':').map(Number)
+      const [hours, minutes] = time.split(":").map(Number)
       if (isNaN(hours) || isNaN(minutes)) {
         return 0
       }
-      
       return hours * 60 + minutes
     } catch (error) {
       console.error("Error parsing time:", timeStr, error)
@@ -256,113 +261,94 @@ export default function TimetablePage() {
   }
 
   const isCurrentClass = (classItem) => {
-    // Safety check for classItem and time property
-    if (!classItem || !classItem.time || typeof classItem.time !== 'string') {
+    if (!classItem || !classItem.time || typeof classItem.time !== "string") {
       return false
     }
-    
     const currentDay = getCurrentDay()
     const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes()
-    
-    // Check if time contains '-' separator
-    if (!classItem.time.includes('-')) {
+    if (!classItem.time.includes("-")) {
       return false
     }
-    
-    const [startTime, endTime] = classItem.time.split('-')
+    const [startTime, endTime] = classItem.time.split("-")
     if (!startTime || !endTime) {
       return false
     }
-    
-    const startMinutes = parseTime(startTime + '-00:00')
-    const endMinutes = parseTime(endTime + '-00:00')
-    
-    return currentDay === selectedDay && 
-           currentMinutes >= startMinutes && 
-           currentMinutes <= endMinutes
+    const startMinutes = parseTime(startTime + "-00:00")
+    const endMinutes = parseTime(endTime + "-00:00")
+    return currentDay === selectedDay && currentMinutes >= startMinutes && currentMinutes <= endMinutes
   }
 
   const getUpcomingClasses = () => {
     if (!userSection || !timetableData[userSection.id]) return []
-    
+
     const today = getCurrentDay()
     const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes()
-    const allClasses = []
-    
-    const days = ["monday", "tuesday", "wednesday", "thursday", "friday"]
-    const todayIndex = days.indexOf(today)
-    
-    // Get classes for remaining days of the week
-    for (let i = 0; i < days.length; i++) {
-      const dayIndex = (todayIndex + i) % days.length
-      const day = days[dayIndex]
-      const dayClasses = [
-        ...(timetableData[userSection.id].coreSubjects?.[day] || []),
-        ...(timetableData[userSection.id].electiveSubjects?.[day] || [])
-      ]
-      
-      dayClasses.forEach(classItem => {
-        // Safety check for classItem
-        if (!classItem || !classItem.time || !classItem.time.includes('-')) {
-          return
+    const allClassesForToday = [
+      ...(timetableData[userSection.id].coreSubjects?.[today] || []),
+      ...(timetableData[userSection.id].electiveSubjects?.[today] || []),
+    ]
+
+    return allClassesForToday
+      .filter((classItem) => {
+        if (!classItem || !classItem.time || !classItem.time.includes("-")) {
+          return false
         }
-        
-        const [startTime] = classItem.time.split('-')
-        if (!startTime) return
-        
-        const startMinutes = parseTime(startTime + '-00:00')
-        
-        // For today, only show classes that haven't started yet
-        if (day === today && startMinutes <= currentMinutes) return
-        
-        allClasses.push({
-          ...classItem,
-          day,
-          startMinutes,
-          isToday: day === today,
-          dayLabel: day.charAt(0).toUpperCase() + day.slice(1)
-        })
+        const [startTime] = classItem.time.split("-")
+        if (!startTime) return false
+        const startMinutes = parseTime(startTime + "-00:00")
+        return startMinutes > currentMinutes // Only show classes that haven't started yet
       })
-    }
-    
-    return allClasses
-      .sort((a, b) => {
-        if (a.isToday && !b.isToday) return -1
-        if (!a.isToday && b.isToday) return 1
-        return a.startMinutes - b.startMinutes
-      })
-      .slice(0, 5)
+      .sort((a, b) => parseTime(a.time) - parseTime(b.time)) // Sort by time
+      .slice(0, 5) // Show up to 5 upcoming classes for today
   }
 
   const getCurrentClasses = () => {
     if (!userSection || !timetableData[userSection.id]) return []
-    
+
     const today = getCurrentDay()
-    const allClasses = [
-      ...(timetableData[userSection.id].coreSubjects?.[today] || []),
-      ...(timetableData[userSection.id].electiveSubjects?.[today] || [])
-    ]
-    
+    const coreClasses = timetableData[userSection.id].coreSubjects?.[today] || []
+    const electiveClasses = timetableData[userSection.id].electiveSubjects?.[today] || []
+    const allClasses = [...coreClasses, ...electiveClasses]
+
     return allClasses
-      .filter(classItem => classItem && classItem.time) // Filter out invalid items
-      .map(classItem => ({
+      .filter((classItem) => classItem && classItem.time)
+      .map((classItem) => ({
         ...classItem,
-        isCurrent: isCurrentClass(classItem)
+        isCurrent: isCurrentClass(classItem),
       }))
-      .filter(classItem => classItem.isCurrent)
+      .filter((classItem) => classItem.isCurrent)
   }
 
-  const getCurrentSchedule = () => {
+  // New function to get all classes for the current day
+  const getTodaysSchedule = () => {
     if (!userSection || !timetableData[userSection.id]) return []
-    
-    const classes = timetableData[userSection.id][selectedSubjectType]?.[selectedDay] || []
-    
-    return classes
-      .filter(classItem => classItem && classItem.time) // Filter out invalid items
-      .map(classItem => ({
+
+    const today = getCurrentDay()
+    const coreClasses = timetableData[userSection.id].coreSubjects?.[today] || []
+    const electiveClasses = timetableData[userSection.id].electiveSubjects?.[today] || []
+    const allClasses = [...coreClasses, ...electiveClasses]
+
+    return allClasses
+      .filter((classItem) => classItem && classItem.time)
+      .map((classItem) => ({
         ...classItem,
-        isCurrent: isCurrentClass(classItem)
+        isCurrent: isCurrentClass(classItem), // Still mark current class for highlighting
       }))
+      .sort((a, b) => parseTime(a.time) - parseTime(b.time)) // Sort by time
+  }
+
+  const getSelectedDaySchedule = () => {
+    if (!userSection || !timetableData[userSection.id]) return []
+
+    const classes = timetableData[userSection.id][selectedSubjectType]?.[selectedDay] || []
+
+    return classes
+      .filter((classItem) => classItem && classItem.time)
+      .map((classItem) => ({
+        ...classItem,
+        isCurrent: isCurrentClass(classItem),
+      }))
+      .sort((a, b) => parseTime(a.time) - parseTime(b.time)) // Sort by time
   }
 
   const days = [
@@ -370,31 +356,47 @@ export default function TimetablePage() {
     { key: "tuesday", label: "Tuesday", emoji: "📋" },
     { key: "wednesday", label: "Wednesday", emoji: "📊" },
     { key: "thursday", label: "Thursday", emoji: "📝" },
-    { key: "friday", label: "Friday", emoji: "🎯" }
+    { key: "friday", label: "Friday", emoji: "🎯" },
   ]
 
   const getTimeUntilNext = (classItem) => {
-    if (!classItem || !classItem.time || !classItem.time.includes('-')) {
+    if (!classItem || !classItem.time || !classItem.time.includes("-")) {
       return "N/A"
     }
-    
     const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes()
-    const [startTime] = classItem.time.split('-')
+    const [startTime] = classItem.time.split("-")
     if (!startTime) return "N/A"
-    
-    const startMinutes = parseTime(startTime + '-00:00')
+    const startMinutes = parseTime(startTime + "-00:00")
     const diff = startMinutes - currentMinutes
-    
+
+    if (diff <= 0) return "Started" // Class has already started or passed
     if (diff < 60) return `${diff} min`
     const hours = Math.floor(diff / 60)
     const minutes = diff % 60
     return `${hours}h ${minutes}m`
   }
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showProfileDropdown && !event.target.closest(".profile-container")) {
+        setShowProfileDropdown(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [showProfileDropdown])
+
+  const tableClick = () => {
+    setShowProfileDropdown(false) // Ensure dropdown closes when "My Timetable" is clicked
+  }
+
   if (authLoading) {
     return (
       <div className="loading-container" style={{ background: currentTheme.background }}>
-        <div 
+        <div
           className="loading-card"
           style={{
             background: currentTheme.cardBg,
@@ -404,15 +406,17 @@ export default function TimetablePage() {
             boxShadow: currentTheme.shadow,
           }}
         >
-          <div style={{ 
-            color: currentTheme.textPrimary, 
-            fontSize: "18px", 
-            fontWeight: "600",
-            marginBottom: "20px"
-          }}>
+          <div
+            style={{
+              color: currentTheme.textPrimary,
+              fontSize: "18px",
+              fontWeight: "600",
+              marginBottom: "20px",
+            }}
+          >
             Loading your timetable...
           </div>
-          <div 
+          <div
             className="loading-spinner"
             style={{
               borderWidth: "4px",
@@ -431,7 +435,7 @@ export default function TimetablePage() {
   if (!user) {
     return (
       <div className="loading-container" style={{ background: currentTheme.background }}>
-        <div 
+        <div
           className="loading-card"
           style={{
             background: currentTheme.cardBg,
@@ -441,12 +445,14 @@ export default function TimetablePage() {
             boxShadow: currentTheme.shadow,
           }}
         >
-          <div style={{ 
-            color: currentTheme.textPrimary, 
-            fontSize: "18px", 
-            fontWeight: "600",
-            marginBottom: "20px"
-          }}>
+          <div
+            style={{
+              color: currentTheme.textPrimary,
+              fontSize: "18px",
+              fontWeight: "600",
+              marginBottom: "20px",
+            }}
+          >
             Please sign in to view your timetable
           </div>
           <button
@@ -459,17 +465,19 @@ export default function TimetablePage() {
               borderRadius: "8px",
               cursor: "pointer",
               fontWeight: "600",
-              fontSize: "14px"
+              fontSize: "14px",
             }}
           >
             Sign In with Google
           </button>
           {loginError && (
-            <div style={{ 
-              color: currentTheme.error, 
-              fontSize: "14px", 
-              marginTop: "10px" 
-            }}>
+            <div
+              style={{
+                color: currentTheme.error,
+                fontSize: "14px",
+                marginTop: "10px",
+              }}
+            >
               {loginError}
             </div>
           )}
@@ -480,114 +488,9 @@ export default function TimetablePage() {
 
   return (
     <div className="timetable-container" style={{ background: currentTheme.background }}>
-      {/* Integrated Profile Section */}
-      <div className="profile-section">
-        {user ? (
-          <div className="profile-container">
-            <button
-              className="profile-button"
-              onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-              style={{
-                background: currentTheme.glassBg,
-                borderWidth: "2px",
-                borderStyle: "solid",
-                borderColor: currentTheme.border,
-                boxShadow: currentTheme.shadow,
-                color: currentTheme.textPrimary
-              }}
-            >
-              <img
-                src={user.photoURL || "/default-profile.png"}
-                alt="Profile"
-                className="profile-image"
-              />
-              <span className="profile-name">
-                {user.displayName?.split(' ')[0]}
-              </span>
-            </button>
-
-            {showProfileDropdown && (
-              <div 
-                className="profile-dropdown"
-                style={{
-                  background: currentTheme.cardBg,
-                  borderWidth: "2px",
-                  borderStyle: "solid",
-                  borderColor: currentTheme.border,
-                  boxShadow: currentTheme.shadow
-                }}
-              >
-                <div className="profile-info">
-                  <img
-                    src={user.photoURL || "/default-profile.png"}
-                    alt="Profile"
-                    className="dropdown-image"
-                  />
-                  <div className="user-details">
-                    <p className="user-name" style={{ color: currentTheme.textPrimary }}>
-                      {user.displayName}
-                    </p>
-                    <p className="user-email" style={{ color: currentTheme.textMuted }}>
-                      {user.email}
-                    </p>
-                    <p className="user-section" style={{ color: currentTheme.textMuted }}>
-                      Section: {userSection ? userSection.id : "N/A"}
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="profile-divider" style={{ background: currentTheme.border }}></div>
-                
-                <div className="profile-actions">
-                  <button 
-                    className="profile-action timetable"
-                    onClick={handleTimetableClick}
-                    style={{ color: currentTheme.textPrimary }}
-                  >
-                    <Calendar size={18} />
-                    My Timetable
-                  </button>
-                  
-                  {/* Theme Toggle inside Profile Dropdown */}
-                  <button 
-                    className="profile-action theme-toggle"
-                    onClick={toggleTheme}
-                    style={{ color: currentTheme.textPrimary }}
-                  >
-                    {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
-                    {isDarkMode ? 'Light Mode' : 'Dark Mode'}
-                  </button>
-                  
-                  <button 
-                    className="profile-action logout"
-                    onClick={handleSignOut}
-                    style={{ color: currentTheme.error }}
-                  >
-                    <LogOut size={18} />
-                    Sign Out
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        ) : (
-          <button
-            className="login-button"
-            onClick={handleGoogleSignIn}
-            style={{
-              background: `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.secondary} 100%)`,
-              boxShadow: currentTheme.shadow
-            }}
-          >
-            <User size={20} />
-            Sign In
-          </button>
-        )}
-      </div>
-
-      {/* KiitHub Logo Header */}
-      <div 
-        className="kiithub-header"
+      {/* New Combined Header */}
+      <div
+        className="main-header"
         style={{
           background: currentTheme.cardBg,
           borderWidth: "2px",
@@ -596,51 +499,116 @@ export default function TimetablePage() {
           boxShadow: currentTheme.shadow,
         }}
       >
-        <div className="kiithub-logo-container">
-          <div className="kiithub-logo">
-            <div 
-              className="logo-icon"
-              style={{
-                background: `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.secondary} 100%)`,
-              }}
-            >
-              <School size={32} color="white" />
-            </div>
+        <div className="header-left">
+          <div className="kiithub-logo-container">
+            <img src="/logo.png" alt="KiitHub Logo" className="kiithub-main-logo" />
             <div className="logo-text">
-              <h1 style={{ 
-                color: currentTheme.textPrimary,
-                background: `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.secondary} 100%)`,
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent"
-              }}>
-                KiitHub
-              </h1>
-              <p style={{ color: currentTheme.textMuted }}>
-                Your Smart Campus Companion
-              </p>
+              <h1 style={{ color: currentTheme.textPrimary }}>KiitHub</h1>
+              <p style={{ color: currentTheme.textMuted }}>Your Smart Campus Companion</p>
             </div>
           </div>
+        </div>
+
+        <div className="header-right">
           <div className="kiithub-tagline">
-            <div 
+            <div
               className="tagline-badge"
               style={{
                 background: `${currentTheme.primary}15`,
                 borderWidth: "2px",
                 borderStyle: "solid",
                 borderColor: `${currentTheme.primary}30`,
-                color: currentTheme.primary
+                color: currentTheme.primary,
               }}
             >
               <Zap size={16} />
               Smart Timetable
             </div>
           </div>
+          {/* Integrated Profile Section */}
+          <div className="profile-section-new">
+            <div className="profile-container">
+              <button
+                className="profile-button"
+                onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+                style={{
+                  background: currentTheme.glassBg,
+                  borderWidth: "2px",
+                  borderStyle: "solid",
+                  borderColor: currentTheme.border,
+                  boxShadow: currentTheme.shadow,
+                  color: currentTheme.textPrimary,
+                }}
+              >
+                <img src={user.photoURL || "/default-profile.png"} alt="Profile" className="profile-image" />
+                <span className="profile-name">{user.displayName?.split(" ")[0]}</span>
+              </button>
+              {showProfileDropdown && (
+                <div
+                  className="profile-dropdown"
+                  style={{
+                    background: currentTheme.cardBg,
+                    borderWidth: "2px",
+                    borderStyle: "solid",
+                    borderColor: currentTheme.border,
+                    boxShadow: currentTheme.shadow,
+                  }}
+                >
+                  <div className="profile-info">
+                    <img src={user.photoURL || "/default-profile.png"} alt="Profile" className="dropdown-image" />
+                    <div className="user-details">
+                      <p className="user-name" style={{ color: currentTheme.textPrimary }}>
+                        {user.displayName}
+                      </p>
+                      <p className="user-email" style={{ color: currentTheme.textMuted }}>
+                        {user.email}
+                      </p>
+                      <p className="user-section" style={{ color: currentTheme.textMuted }}>
+                        Section: {userSection ? userSection.id : "N/A"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="profile-divider" style={{ background: currentTheme.border }}></div>
+
+                  <div className="profile-actions">
+                    <button
+                      className="profile-action timetable"
+                      onClick={tableClick}
+                      style={{ color: currentTheme.textPrimary }}
+                    >
+                      <Calendar size={18} style={{ color: currentTheme.primary }} />
+                      My Timetable
+                    </button>
+
+                    <button
+                      className="profile-action theme-toggle"
+                      onClick={toggleTheme}
+                      style={{ color: currentTheme.textPrimary }}
+                    >
+                      {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+                      {isDarkMode ? "Light Mode" : "Dark Mode"}
+                    </button>
+
+                    <button
+                      className="profile-action logout"
+                      onClick={handleSignOut}
+                      style={{ color: currentTheme.error }}
+                    >
+                      <LogOut size={18} />
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Navigation Bar */}
-      <div 
-        className="nav-bar"
+      {/* Current Time and Day Display */}
+      <div
+        className="current-time-card"
         style={{
           background: currentTheme.cardBg,
           borderWidth: "2px",
@@ -649,27 +617,21 @@ export default function TimetablePage() {
           boxShadow: currentTheme.shadow,
         }}
       >
-        <button
-          className="nav-back-button"
-          onClick={handleBackToHome}
-          style={{
-            background: `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.secondary} 100%)`,
-          }}
-        >
-          <ArrowLeft size={18} />
-          Back to Home
-        </button>
-        
-        <div className="nav-title">
-          <h2 style={{ color: currentTheme.textPrimary }}>
-            📅 My Timetable
-          </h2>
+        <div className="time-display">
+          <div className="current-time">
+            <Clock size={24} style={{ color: currentTheme.primary }} />
+            <span style={{ color: currentTheme.textPrimary }}>{getCurrentTimeString()}</span>
+          </div>
+          <div className="current-date">
+            <Calendar size={20} style={{ color: currentTheme.secondary }} />
+            <span style={{ color: currentTheme.textSecondary }}>{getCurrentDateString()}</span>
+          </div>
         </div>
       </div>
 
       {/* Student Info Card */}
       {userSection && (
-        <div 
+        <div
           className="student-info-card"
           style={{
             background: currentTheme.cardBg,
@@ -679,13 +641,13 @@ export default function TimetablePage() {
             boxShadow: currentTheme.shadow,
           }}
         >
-          <div 
+          <div
             className="student-info"
             style={{
               background: `${currentTheme.primary}10`,
               borderWidth: "2px",
               borderStyle: "solid",
-              borderColor: `${currentTheme.primary}20`
+              borderColor: `${currentTheme.primary}20`,
             }}
           >
             <img
@@ -695,25 +657,19 @@ export default function TimetablePage() {
               style={{
                 borderWidth: "3px",
                 borderStyle: "solid",
-                borderColor: currentTheme.primary
+                borderColor: currentTheme.primary,
               }}
             />
             <div className="student-details">
-              <h3 style={{ color: currentTheme.textPrimary }}>
-                {user.displayName}
-              </h3>
+              <h3 style={{ color: currentTheme.textPrimary }}>{user.displayName}</h3>
               <div className="student-info-row">
                 <div className="info-item">
                   <User size={16} style={{ color: currentTheme.primary }} />
-                  <span style={{ color: currentTheme.textSecondary }}>
-                    Roll: {userSection.rollNumber}
-                  </span>
+                  <span style={{ color: currentTheme.textSecondary }}>Roll: {userSection.rollNumber}</span>
                 </div>
                 <div className="info-item">
                   <GraduationCap size={16} style={{ color: currentTheme.primary }} />
-                  <span style={{ color: currentTheme.textSecondary }}>
-                    {userSection.name}
-                  </span>
+                  <span style={{ color: currentTheme.textSecondary }}>{userSection.name}</span>
                 </div>
               </div>
             </div>
@@ -724,7 +680,7 @@ export default function TimetablePage() {
       {/* Quick Overview Cards */}
       <div className="overview-grid">
         {/* Current Classes */}
-        <div 
+        <div
           className="overview-card current-classes"
           style={{
             background: currentTheme.cardBg,
@@ -737,11 +693,9 @@ export default function TimetablePage() {
           <div className="overview-header">
             <div className="overview-title">
               <Play size={20} style={{ color: currentTheme.primary }} />
-              <h3 style={{ color: currentTheme.textPrimary }}>
-                Current Classes
-              </h3>
+              <h3 style={{ color: currentTheme.textPrimary }}>Current Classes</h3>
             </div>
-            <div 
+            <div
               className="live-indicator"
               style={{
                 background: `linear-gradient(135deg, ${currentTheme.error} 0%, ${currentTheme.warning} 100%)`,
@@ -751,13 +705,13 @@ export default function TimetablePage() {
               LIVE
             </div>
           </div>
-          
+
           <div className="overview-content">
             {getCurrentClasses().length > 0 ? (
               getCurrentClasses().map((classItem, index) => (
-                <div 
+                <div
                   key={index}
-                  className="mini-class-card current"
+                  className="class-card-new current"
                   style={{
                     background: `${currentTheme.primary}15`,
                     borderWidth: "2px",
@@ -765,18 +719,26 @@ export default function TimetablePage() {
                     borderColor: `${currentTheme.primary}30`,
                   }}
                 >
-                  <div className="mini-class-header">
-                    <span className="mini-subject" style={{ color: currentTheme.textPrimary }}>
-                      📚 {classItem.subject}
-                    </span>
+                  <div className="class-main-info">
+                    <div className="subject-info">
+                      <h4 style={{ color: currentTheme.textPrimary }}>{classItem.subject}</h4>
+                      <div className="class-meta">
+                        <span className="time-info" style={{ color: currentTheme.primary }}>
+                          <Clock size={14} />
+                          {classItem.time}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="mini-class-details">
-                    <span style={{ color: currentTheme.textSecondary }}>
-                      <Clock size={14} /> {classItem.time}
-                    </span>
-                    <span style={{ color: currentTheme.textSecondary }}>
-                      <MapPin size={14} /> {classItem.room}
-                    </span>
+                  <div className="class-details-new">
+                    <div className="detail-row">
+                      <MapPin size={16} style={{ color: currentTheme.secondary }} />
+                      <span style={{ color: currentTheme.textSecondary }}>Room: {classItem.room}</span>
+                    </div>
+                    <div className="detail-row">
+                      <User size={16} style={{ color: currentTheme.secondary }} />
+                      <span style={{ color: currentTheme.textSecondary }}>{classItem.faculty}</span>
+                    </div>
                   </div>
                 </div>
               ))
@@ -790,7 +752,7 @@ export default function TimetablePage() {
         </div>
 
         {/* Upcoming Classes */}
-        <div 
+        <div
           className="overview-card upcoming-classes"
           style={{
             background: currentTheme.cardBg,
@@ -803,18 +765,16 @@ export default function TimetablePage() {
           <div className="overview-header">
             <div className="overview-title">
               <Timer size={20} style={{ color: currentTheme.secondary }} />
-              <h3 style={{ color: currentTheme.textPrimary }}>
-                Upcoming Classes
-              </h3>
+              <h3 style={{ color: currentTheme.textPrimary }}>Upcoming Classes (Today)</h3>
             </div>
           </div>
-          
+
           <div className="overview-content">
             {getUpcomingClasses().length > 0 ? (
               getUpcomingClasses().map((classItem, index) => (
-                <div 
+                <div
                   key={index}
-                  className="mini-class-card upcoming"
+                  className="class-card-new upcoming"
                   style={{
                     background: `${currentTheme.secondary}10`,
                     borderWidth: "2px",
@@ -822,41 +782,42 @@ export default function TimetablePage() {
                     borderColor: `${currentTheme.secondary}20`,
                   }}
                 >
-                  <div className="mini-class-header">
-                    <span className="mini-subject" style={{ color: currentTheme.textPrimary }}>
-                      📚 {classItem.subject}
-                    </span>
-                    <div className="class-badges">
-                      {classItem.isToday && (
-                        <span 
-                          className="time-badge"
+                  <div className="class-main-info">
+                    <div className="subject-info">
+                      <h4 style={{ color: currentTheme.textPrimary }}>{classItem.subject}</h4>
+                      <div className="class-meta">
+                        <span className="time-info" style={{ color: currentTheme.secondary }}>
+                          <Clock size={14} />
+                          {classItem.time}
+                        </span>
+                        <span
+                          className="countdown"
                           style={{
                             background: `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.secondary} 100%)`,
                             color: "white",
-                            padding: "2px 6px",
-                            borderRadius: "4px",
-                            fontSize: "12px"
                           }}
                         >
                           {getTimeUntilNext(classItem)}
                         </span>
-                      )}
+                      </div>
                     </div>
                   </div>
-                  <div className="mini-class-details">
-                    <span style={{ color: currentTheme.textSecondary }}>
-                      <Calendar size={14} /> {classItem.dayLabel}
-                    </span>
-                    <span style={{ color: currentTheme.textSecondary }}>
-                      <Clock size={14} /> {classItem.time}
-                    </span>
+                  <div className="class-details-new">
+                    <div className="detail-row">
+                      <MapPin size={16} style={{ color: currentTheme.accent }} />
+                      <span style={{ color: currentTheme.textSecondary }}>Room: {classItem.room}</span>
+                    </div>
+                    <div className="detail-row">
+                      <User size={16} style={{ color: currentTheme.accent }} />
+                      <span style={{ color: currentTheme.textSecondary }}>{classItem.faculty}</span>
+                    </div>
                   </div>
                 </div>
               ))
             ) : (
               <div className="no-classes-mini" style={{ color: currentTheme.textMuted }}>
                 <Timer size={24} />
-                <p>No upcoming classes</p>
+                <p>No upcoming classes for today</p>
               </div>
             )}
           </div>
@@ -864,7 +825,7 @@ export default function TimetablePage() {
       </div>
 
       {/* Enhanced Controls */}
-      <div 
+      <div
         className="controls-card"
         style={{
           background: currentTheme.cardBg,
@@ -876,26 +837,24 @@ export default function TimetablePage() {
       >
         {/* View Toggle */}
         <div className="control-section">
-          <h3 style={{ color: currentTheme.textPrimary }}>
-            👁️ View Mode
-          </h3>
+          <h3 style={{ color: currentTheme.textPrimary }}>👁️ View Mode</h3>
           <div className="button-group">
             {[
               { key: "current", label: "Current Day", icon: "📅" },
-              { key: "upcoming", label: "Upcoming", icon: "⏰" },
-              { key: "all", label: "All Schedule", icon: "📊" }
+              { key: "all", label: "All Schedule", icon: "📊" },
             ].map((view) => (
               <button
                 key={view.key}
                 onClick={() => setActiveView(view.key)}
-                className={`control-button ${activeView === view.key ? 'active' : ''}`}
+                className={`control-button ${activeView === view.key ? "active" : ""}`}
                 style={{
                   borderWidth: "2px",
                   borderStyle: "solid",
                   borderColor: currentTheme.border,
-                  background: activeView === view.key 
-                    ? `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.secondary} 100%)`
-                    : currentTheme.glassBg,
+                  background:
+                    activeView === view.key
+                      ? `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.secondary} 100%)`
+                      : currentTheme.glassBg,
                   color: activeView === view.key ? "white" : currentTheme.textPrimary,
                 }}
               >
@@ -910,25 +869,24 @@ export default function TimetablePage() {
         {activeView === "all" && (
           <>
             <div className="control-section">
-              <h3 style={{ color: currentTheme.textPrimary }}>
-                📚 Subject Type
-              </h3>
+              <h3 style={{ color: currentTheme.textPrimary }}>📚 Subject Type</h3>
               <div className="button-group">
                 {[
                   { key: "coreSubjects", label: "Core Subjects", icon: "📖" },
-                  { key: "electiveSubjects", label: "Elective Subjects", icon: "⭐" }
+                  { key: "electiveSubjects", label: "Elective Subjects", icon: "⭐" },
                 ].map((type) => (
                   <button
                     key={type.key}
                     onClick={() => setSelectedSubjectType(type.key)}
-                    className={`control-button ${selectedSubjectType === type.key ? 'active' : ''}`}
+                    className={`control-button ${selectedSubjectType === type.key ? "active" : ""}`}
                     style={{
                       borderWidth: "2px",
                       borderStyle: "solid",
                       borderColor: currentTheme.border,
-                      background: selectedSubjectType === type.key 
-                        ? `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.secondary} 100%)`
-                        : currentTheme.glassBg,
+                      background:
+                        selectedSubjectType === type.key
+                          ? `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.secondary} 100%)`
+                          : currentTheme.glassBg,
                       color: selectedSubjectType === type.key ? "white" : currentTheme.textPrimary,
                     }}
                   >
@@ -938,24 +896,22 @@ export default function TimetablePage() {
                 ))}
               </div>
             </div>
-
             <div className="control-section">
-              <h3 style={{ color: currentTheme.textPrimary }}>
-                📆 Select Day
-              </h3>
+              <h3 style={{ color: currentTheme.textPrimary }}>📆 Select Day</h3>
               <div className="button-group">
                 {days.map((day) => (
                   <button
                     key={day.key}
                     onClick={() => setSelectedDay(day.key)}
-                    className={`control-button ${selectedDay === day.key ? 'active' : ''}`}
+                    className={`control-button ${selectedDay === day.key ? "active" : ""}`}
                     style={{
                       borderWidth: "2px",
                       borderStyle: "solid",
                       borderColor: currentTheme.border,
-                      background: selectedDay === day.key 
-                        ? `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.secondary} 100%)`
-                        : currentTheme.glassBg,
+                      background:
+                        selectedDay === day.key
+                          ? `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.secondary} 100%)`
+                          : currentTheme.glassBg,
                       color: selectedDay === day.key ? "white" : currentTheme.textPrimary,
                     }}
                   >
@@ -971,7 +927,7 @@ export default function TimetablePage() {
 
       {/* Dynamic Content Based on View */}
       {activeView === "current" && (
-        <div 
+        <div
           className="timetable-card"
           style={{
             background: currentTheme.cardBg,
@@ -984,50 +940,67 @@ export default function TimetablePage() {
           <h3 className="timetable-title" style={{ color: currentTheme.textPrimary }}>
             🕐 Today's Schedule - {getCurrentDay().charAt(0).toUpperCase() + getCurrentDay().slice(1)}
           </h3>
-
-          {getCurrentClasses().length > 0 ? (
-            <div className="schedule-grid">
-              {getCurrentClasses().map((classItem, index) => (
+          {getTodaysSchedule().length > 0 ? (
+            <div className="schedule-grid-new">
+              {getTodaysSchedule().map((classItem, index) => (
                 <div
                   key={index}
-                  className="class-card current-class"
+                  className={`class-card-detailed ${classItem.isCurrent ? "current-class" : ""}`}
                   style={{
-                    background: `${currentTheme.primary}15`,
+                    background: classItem.isCurrent ? `${currentTheme.primary}15` : `${currentTheme.primary}08`,
                     borderWidth: "2px",
                     borderStyle: "solid",
-                    borderColor: `${currentTheme.primary}30`,
+                    borderColor: classItem.isCurrent ? `${currentTheme.primary}30` : `${currentTheme.primary}20`,
                   }}
                 >
-                  <div className="class-header">
-                    <h4 style={{ color: currentTheme.textPrimary }}>
-                      📚 {classItem.subject}
-                    </h4>
-                    <div className="class-actions">
-                      <div 
-                        className="time-badge current"
-                        style={{
-                          background: `linear-gradient(135deg, ${currentTheme.error} 0%, ${currentTheme.warning} 100%)`,
-                        }}
-                      >
-                        <Clock size={14} />
-                        {classItem.time}
-                        <span className="live-indicator-small">LIVE</span>
+                  <div className="class-header-new">
+                    <div className="subject-title">
+                      <BookOpen size={20} style={{ color: currentTheme.primary }} />
+                      <h4 style={{ color: currentTheme.textPrimary }}>{classItem.subject}</h4>
+                    </div>
+                    {classItem.isCurrent && (
+                      <div className="class-status current">
+                        <div className="status-indicator"></div>
+                        <span>LIVE NOW</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="class-info-grid">
+                    <div className="info-card">
+                      <Clock size={18} style={{ color: currentTheme.primary }} />
+                      <div className="info-content">
+                        <span className="info-label" style={{ color: currentTheme.textMuted }}>
+                          Time
+                        </span>
+                        <span className="info-value" style={{ color: currentTheme.textPrimary }}>
+                          {classItem.time}
+                        </span>
                       </div>
                     </div>
-                  </div>
-                  
-                  <div className="class-details">
-                    <div className="detail-item">
-                      <MapPin size={16} style={{ color: currentTheme.primary }} />
-                      <span style={{ color: currentTheme.textSecondary }}>
-                        {classItem.room}
-                      </span>
+
+                    <div className="info-card">
+                      <MapPin size={18} style={{ color: currentTheme.secondary }} />
+                      <div className="info-content">
+                        <span className="info-label" style={{ color: currentTheme.textMuted }}>
+                          Room
+                        </span>
+                        <span className="info-value" style={{ color: currentTheme.textPrimary }}>
+                          {classItem.room}
+                        </span>
+                      </div>
                     </div>
-                    <div className="detail-item">
-                      <User size={16} style={{ color: currentTheme.primary }} />
-                      <span style={{ color: currentTheme.textSecondary }}>
-                        {classItem.faculty}
-                      </span>
+
+                    <div className="info-card">
+                      <User size={18} style={{ color: currentTheme.accent }} />
+                      <div className="info-content">
+                        <span className="info-label" style={{ color: currentTheme.textMuted }}>
+                          Faculty
+                        </span>
+                        <span className="info-value" style={{ color: currentTheme.textPrimary }}>
+                          {classItem.faculty}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1036,98 +1009,15 @@ export default function TimetablePage() {
           ) : (
             <div className="no-classes" style={{ color: currentTheme.textMuted }}>
               <BookOpen size={48} />
-              <p>No classes running right now</p>
-              <p>Time to relax! 🎉</p>
-            </div>
-          )}
-        </div>
-      )}
-
-      {activeView === "upcoming" && (
-        <div 
-          className="timetable-card"
-          style={{
-            background: currentTheme.cardBg,
-            borderWidth: "2px",
-            borderStyle: "solid",
-            borderColor: currentTheme.border,
-            boxShadow: currentTheme.shadow,
-          }}
-        >
-          <h3 className="timetable-title" style={{ color: currentTheme.textPrimary }}>
-            ⏰ Upcoming Classes
-          </h3>
-
-          {getUpcomingClasses().length > 0 ? (
-            <div className="schedule-grid">
-              {getUpcomingClasses().map((classItem, index) => (
-                <div
-                  key={index}
-                  className="class-card upcoming-class"
-                  style={{
-                    background: `${currentTheme.secondary}10`,
-                    borderWidth: "2px",
-                    borderStyle: "solid",
-                    borderColor: `${currentTheme.secondary}20`,
-                  }}
-                >
-                  <div className="class-header">
-                    <h4 style={{ color: currentTheme.textPrimary }}>
-                      📚 {classItem.subject}
-                    </h4>
-                    <div className="class-actions">
-                      <div 
-                        className="time-badge upcoming"
-                        style={{
-                          background: `linear-gradient(135deg, ${currentTheme.secondary} 0%, ${currentTheme.accent} 100%)`,
-                        }}
-                      >
-                        <Clock size={14} />
-                        {classItem.time}
-                        {classItem.isToday && (
-                          <span className="countdown-badge">
-                            in {getTimeUntilNext(classItem)}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="class-details">
-                    <div className="detail-item">
-                      <Calendar size={16} style={{ color: currentTheme.secondary }} />
-                      <span style={{ color: currentTheme.textSecondary }}>
-                        {classItem.dayLabel}
-                      </span>
-                    </div>
-                    <div className="detail-item">
-                      <MapPin size={16} style={{ color: currentTheme.secondary }} />
-                      <span style={{ color: currentTheme.textSecondary }}>
-                        {classItem.room}
-                      </span>
-                    </div>
-                    <div className="detail-item">
-                      <User size={16} style={{ color: currentTheme.secondary }} />
-                      <span style={{ color: currentTheme.textSecondary }}>
-                        {classItem.faculty}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="no-classes" style={{ color: currentTheme.textMuted }}>
-              <Timer size={48} />
-              <p>No upcoming classes</p>
-              <p>All caught up! 🎉</p>
+              <p>No classes scheduled for today</p>
+              <p>Enjoy your free time! 🎉</p>
             </div>
           )}
         </div>
       )}
 
       {activeView === "all" && (
-        <div 
+        <div
           className="timetable-card"
           style={{
             background: currentTheme.cardBg,
@@ -1138,60 +1028,70 @@ export default function TimetablePage() {
           }}
         >
           <h3 className="timetable-title" style={{ color: currentTheme.textPrimary }}>
-            🕐 {days.find(d => d.key === selectedDay)?.label} Schedule - {selectedSubjectType === "coreSubjects" ? "Core Subjects" : "Elective Subjects"}
+            🕐 {days.find((d) => d.key === selectedDay)?.label} Schedule -{" "}
+            {selectedSubjectType === "coreSubjects" ? "Core Subjects" : "Elective Subjects"}
           </h3>
-
-          {getCurrentSchedule().length > 0 ? (
-            <div className="schedule-grid">
-              {getCurrentSchedule().map((classItem, index) => (
+          {getSelectedDaySchedule().length > 0 ? (
+            <div className="schedule-grid-new">
+              {getSelectedDaySchedule().map((classItem, index) => (
                 <div
                   key={index}
-                  className={`class-card ${classItem.isCurrent ? 'current-class' : ''}`}
+                  className={`class-card-detailed ${classItem.isCurrent ? "current-class" : ""}`}
                   style={{
-                    background: classItem.isCurrent 
-                      ? `${currentTheme.primary}15` 
-                      : `${currentTheme.primary}08`,
+                    background: classItem.isCurrent ? `${currentTheme.primary}15` : `${currentTheme.primary}08`,
                     borderWidth: "2px",
                     borderStyle: "solid",
-                    borderColor: classItem.isCurrent 
-                      ? `${currentTheme.primary}30` 
-                      : `${currentTheme.primary}20`,
+                    borderColor: classItem.isCurrent ? `${currentTheme.primary}30` : `${currentTheme.primary}20`,
                   }}
                 >
-                  <div className="class-header">
-                    <h4 style={{ color: currentTheme.textPrimary }}>
-                      📚 {classItem.subject}
-                    </h4>
-                    <div className="class-actions">
-                      <div 
-                        className={`time-badge ${classItem.isCurrent ? 'current' : ''}`}
-                        style={{
-                          background: classItem.isCurrent 
-                            ? `linear-gradient(135deg, ${currentTheme.error} 0%, ${currentTheme.warning} 100%)`
-                            : `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.secondary} 100%)`,
-                        }}
-                      >
-                        <Clock size={14} />
-                        {classItem.time}
-                        {classItem.isCurrent && (
-                          <span className="live-indicator-small">LIVE</span>
-                        )}
+                  <div className="class-header-new">
+                    <div className="subject-title">
+                      <BookOpen size={20} style={{ color: currentTheme.primary }} />
+                      <h4 style={{ color: currentTheme.textPrimary }}>{classItem.subject}</h4>
+                    </div>
+                    {classItem.isCurrent && (
+                      <div className="class-status current">
+                        <div className="status-indicator"></div>
+                        <span>LIVE NOW</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="class-info-grid">
+                    <div className="info-card">
+                      <Clock size={18} style={{ color: currentTheme.primary }} />
+                      <div className="info-content">
+                        <span className="info-label" style={{ color: currentTheme.textMuted }}>
+                          Time
+                        </span>
+                        <span className="info-value" style={{ color: currentTheme.textPrimary }}>
+                          {classItem.time}
+                        </span>
                       </div>
                     </div>
-                  </div>
-                  
-                  <div className="class-details">
-                    <div className="detail-item">
-                      <MapPin size={16} style={{ color: currentTheme.primary }} />
-                      <span style={{ color: currentTheme.textSecondary }}>
-                        {classItem.room}
-                      </span>
+
+                    <div className="info-card">
+                      <MapPin size={18} style={{ color: currentTheme.secondary }} />
+                      <div className="info-content">
+                        <span className="info-label" style={{ color: currentTheme.textMuted }}>
+                          Room
+                        </span>
+                        <span className="info-value" style={{ color: currentTheme.textPrimary }}>
+                          {classItem.room}
+                        </span>
+                      </div>
                     </div>
-                    <div className="detail-item">
-                      <User size={16} style={{ color: currentTheme.primary }} />
-                      <span style={{ color: currentTheme.textSecondary }}>
-                        {classItem.faculty}
-                      </span>
+
+                    <div className="info-card">
+                      <User size={18} style={{ color: currentTheme.accent }} />
+                      <div className="info-content">
+                        <span className="info-label" style={{ color: currentTheme.textMuted }}>
+                          Faculty
+                        </span>
+                        <span className="info-value" style={{ color: currentTheme.textPrimary }}>
+                          {classItem.faculty}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
