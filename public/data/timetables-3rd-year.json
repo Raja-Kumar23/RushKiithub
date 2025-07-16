@@ -115,7 +115,7 @@
   "thursday": [
     { "subject": "EE", "time": "08:00-09:00", "room": "C25-A-010", "faculty": "" },
     { "subject": "DAA", "time": "09:00-10:00", "room": "C25-A-010", "faculty": "" },
-    { "subject": "SE", "time": "12:00-1:00", "room": "C25-A-010", "faculty": "" }
+    { "subject": "SE", "time": "10:00-11:00", "room": "C25-A-010", "faculty": "" }
   ],
   "friday": [
     { "subject": "CN", "time": "08:00-09:00", "room": "C25-A-009", "faculty": "" },
@@ -1653,197 +1653,425 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+"HPC1": {
+  "electiveSubjects": 
+  {
+    "monday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+"HPC2": {
+  "electiveSubjects": 
+  {
+    "monday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+"HPC3": {
+  "electiveSubjects": 
+  {
+    "monday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+"HPC4": {
+  "electiveSubjects": 
+  {
+    "monday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+"HPC5": {
+  "electiveSubjects": 
+  {
+    "monday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+"HPC6": {
+  "electiveSubjects": 
+  {
+    "monday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+"HPC7": {
+  "electiveSubjects": 
+  {
+    "monday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+"HPC8": {
+  "electiveSubjects": 
+  {
+    "monday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+"HPC9": {
+  "electiveSubjects": 
+  {
+    "monday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+"HPC10": {
+  "electiveSubjects": 
+  {
+    "monday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+"HPC11": {
+  "electiveSubjects": 
+  {
+    "monday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+"HPC12": {
+  "electiveSubjects": 
+  {
+    "monday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+"HPC13": {
+  "electiveSubjects": 
+  {
+    "monday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+"HPC14": {
+  "electiveSubjects": 
+  {
+    "monday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+"HPC15": {
+  "electiveSubjects": 
+  {
+    "monday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+"HPC16": {
+  "electiveSubjects": 
+  {
+    "monday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+"HPC17": {
+  "electiveSubjects": 
+  {
+    "monday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+"HPC18": {
+  "electiveSubjects": 
+  {
+    "monday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+"HPC19": {
+  "electiveSubjects": 
+  {
+    "monday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+"HPC20": {
+  "electiveSubjects": 
+  {
+    "monday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "HPC", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
 
 
 
@@ -1858,6 +2086,898 @@
 
   "DMDW1": {
     "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW2": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW3": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW4": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW5": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW6": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW7": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW8": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW9": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW10": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW11": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW12": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW13": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW14": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW15": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW16": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW17": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW18": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW19": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW20": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW21": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW22": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW23": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW24": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW25": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW26": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW27": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW28": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW29": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW30": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW31": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW32": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW33": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW34": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+  "DMDW35": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "DMDW", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+      ]
+    }
+  },
+
+
+
+
+
+
+
+"DOS1": {
+  "electiveSubjects": {
+    "monday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+"DOS2": {
+  "electiveSubjects": {
+    "monday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+"DOS3": {
+  "electiveSubjects": {
+    "monday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+"DOS4": {
+  "electiveSubjects": {
+    "monday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+"DOS5": {
+  "electiveSubjects": {
+    "monday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+"DOS6": {
+  "electiveSubjects": {
+    "monday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+"DOS7": {
+  "electiveSubjects": {
+    "monday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+"DOS8": {
+  "electiveSubjects": {
+    "monday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+"DOS9": {
+  "electiveSubjects": {
+    "monday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+"DOS10": {
+  "electiveSubjects": {
+    "monday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-101", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-208", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "DOS", "time": "00:00-00:00", "room": "C25-B-301", "faculty": "" }
+    ]
+  }
+},
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  "DMDW111": {
+    "electiveSubjects": 
+    {
       "monday": [
         {
           "subject": "Data Mining & Data Warehousing",
