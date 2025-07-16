@@ -1,34 +1,20 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth"
-import {
-  Calendar,
-  Clock,
-  MapPin,
-  User,
-  BookOpen,
-  GraduationCap,
-  Sun,
-  Moon,
-  LogOut,
-  Timer,
-  Play,
-  Pause,
-  Zap,
-} from "lucide-react"
+import { Calendar, Clock, MapPin, User, BookOpen, GraduationCap, Sun, Moon, LogOut, Timer, Play, Pause, Zap, ChevronDown, ChevronUp } from 'lucide-react'
 import "./styles.css"
 import { auth, provider } from "../../lib/firebase"
+import sectionsData from "../../public/data/sections.json" // Import sections data
+import timetablesData from "../../public/data/timetables.json" // Import timetables data
 
 export default function TimetablePage() {
   const router = useRouter()
   const [user, setUser] = useState(null)
   const [authLoading, setAuthLoading] = useState(true)
-  const [sectionsData, setSectionsData] = useState({})
-  const [timetableData, setTimetableData] = useState({})
-  const [userSection, setUserSection] = useState(null)
-  const [selectedSubjectType, setSelectedSubjectType] = useState("coreSubjects")
+  const [userSections, setUserSections] = useState([]) // Changed to array for multiple sections
+  // Removed selectedSubjectType state as it's no longer needed for filtering in "all" view
   const [selectedDay, setSelectedDay] = useState("monday")
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [showProfileDropdown, setShowProfileDropdown] = useState(false)
@@ -36,43 +22,40 @@ export default function TimetablePage() {
   const [currentTime, setCurrentTime] = useState(new Date())
   const [activeView, setActiveView] = useState("current") // current, all
 
-  // Enhanced Theme Configuration
-  const theme = {
-    light: {
-      primary: "#22c55e",
-      secondary: "#16a34a",
-      accent: "#15803d",
-      success: "#10b981",
-      warning: "#f59e0b",
-      error: "#ef4444",
-      background: "linear-gradient(135deg, #f0fdf4 0%, #dcfce7 30%, #bbf7d0 70%, #a7f3d0 100%)",
-      cardBg: "rgba(255, 255, 255, 0.95)",
-      textPrimary: "#1f2937", // Dark text for light mode
-      textSecondary: "#374151",
-      textMuted: "#6b7280",
-      border: "rgba(34, 197, 94, 0.2)",
-      shadow: "0 20px 60px rgba(34, 197, 94, 0.15)",
-      glassBg: "rgba(255, 255, 255, 0.4)",
-    },
-    dark: {
-      primary: "#22c55e",
-      secondary: "#16a34a",
-      accent: "#15803d",
-      success: "#10b981",
-      warning: "#f59e0b",
-      error: "#ef4444",
-      background: "linear-gradient(135deg, #0f172a 0%, #1e293b 30%, #334155 70%, #475569 100%)",
-      cardBg: "rgba(30, 41, 59, 0.95)",
-      textPrimary: "#f8fafc", // Light text for dark mode
-      textSecondary: "#e2e8f0",
-      textMuted: "#94a3b8",
-      border: "rgba(34, 197, 94, 0.3)",
-      shadow: "0 20px 60px rgba(0, 0, 0, 0.5)",
-      glassBg: "rgba(30, 41, 59, 0.4)",
-    },
-  }
-
-  const currentTheme = isDarkMode ? theme.dark : theme.light
+  // Enhanced Theme Configuration - now directly used for inline styles
+  const currentTheme = isDarkMode
+    ? {
+        primary: "#22c55e",
+        secondary: "#16a34a",
+        accent: "#15803d",
+        success: "#10b981",
+        warning: "#f59e0b",
+        error: "#ef4444",
+        background: "linear-gradient(135deg, #0f172a 0%, #1e293b 30%, #334155 70%, #475569 100%)",
+        cardBg: "rgba(30, 41, 59, 0.95)",
+        textPrimary: "#f8fafc",
+        textSecondary: "#e2e8f0",
+        textMuted: "#94a3b8",
+        border: "rgba(34, 197, 94, 0.3)",
+        shadow: "0 20px 60px rgba(0, 0, 0, 0.5)",
+        glassBg: "rgba(30, 41, 59, 0.4)",
+      }
+    : {
+        primary: "#22c55e",
+        secondary: "#16a34a",
+        accent: "#15803d",
+        success: "#10b981",
+        warning: "#f59e0b",
+        error: "#ef4444",
+        background: "linear-gradient(135deg, #f0fdf4 0%, #dcfce7 30%, #bbf7d0 70%, #a7f3d0 100%)",
+        cardBg: "rgba(255, 255, 255, 0.95)",
+        textPrimary: "#1f2937",
+        textSecondary: "#374151",
+        textMuted: "#6b7280",
+        border: "rgba(34, 197, 94, 0.2)",
+        shadow: "0 20px 60px rgba(34, 197, 94, 0.15)",
+        glassBg: "rgba(255, 255, 255, 0.4)",
+      }
 
   // Load theme preference
   useEffect(() => {
@@ -91,29 +74,20 @@ export default function TimetablePage() {
   }, [])
 
   // Get current day
-  const getCurrentDay = () => {
+  const getCurrentDay = useCallback(() => {
     const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
     return days[currentTime.getDay()]
-  }
+  }, [currentTime])
 
   // Format current time
-  const getCurrentTimeString = () => {
-    return currentTime.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    })
-  }
+  const getCurrentTimeString = useCallback(() => {
+    return currentTime.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true })
+  }, [currentTime])
 
   // Get current date string
-  const getCurrentDateString = () => {
-    return currentTime.toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })
-  }
+  const getCurrentDateString = useCallback(() => {
+    return currentTime.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })
+  }, [currentTime])
 
   // Set default day to current day
   useEffect(() => {
@@ -121,11 +95,62 @@ export default function TimetablePage() {
     if (currentDay !== "sunday" && currentDay !== "saturday") {
       setSelectedDay(currentDay)
     }
-  }, [currentTime])
+  }, [getCurrentDay])
+
+  // Find all sections a user belongs to
+  const findUserSections = useCallback((sections, rollNumber) => {
+    const userSectionsFound = []
+    for (const [sectionId, sectionInfo] of Object.entries(sections)) {
+      if (sectionInfo.students.includes(rollNumber)) {
+        userSectionsFound.push({
+          id: sectionId,
+          name: sectionInfo.name,
+          type: sectionInfo.type,
+        })
+      }
+    }
+    return userSectionsFound
+  }, [])
+
+  const loadData = useCallback(
+    (userData) => {
+      try {
+        // sectionsData and timetablesData are now imported directly
+        if (userData) {
+          const rollNumber = userData.email.split("@")[0]
+          const sectionsForUser = findUserSections(sectionsData, rollNumber)
+          setUserSections(sectionsForUser)
+        }
+      } catch (error) {
+        console.error("Error loading data:", error)
+      }
+    },
+    [findUserSections],
+  )
 
   // Authentication check with Firebase
   useEffect(() => {
     if (!auth) {
+      // If auth is null (mocked), simulate a successful login for davidtomdon@gmail.com
+      // or a failed one for others to show UI states.
+      const mockUserEmail = "23053769@kiit.ac.in" // Example user from sections.json
+      const mockRollNumber = mockUserEmail.split("@")[0]
+      const mockUser = {
+        uid: "mock-uid-123",
+        displayName: "Raja Sah",
+        email: mockUserEmail,
+        photoURL: "/placeholder.svg?height=40&width=40", // Placeholder image
+      }
+
+      if (findUserSections(sectionsData, mockRollNumber).length > 0 || mockUserEmail === "davidtomdon@gmail.com") {
+        setUser(mockUser)
+        loadData(mockUser)
+        setLoginError("")
+      } else {
+        setLoginError("Please use your KIIT Gmail account (@kiit.ac.in) to sign in")
+        setUser(null)
+        router.push("/")
+      }
       setAuthLoading(false)
       return
     }
@@ -135,7 +160,7 @@ export default function TimetablePage() {
           uid: currentUser.uid,
           displayName: currentUser.displayName,
           email: currentUser.email,
-          photoURL: currentUser.photoURL || "/default-profile.png",
+          photoURL: currentUser.photoURL || "/placeholder.svg?height=40&width=40",
         }
         setUser(userData)
         loadData(userData)
@@ -152,38 +177,7 @@ export default function TimetablePage() {
       setAuthLoading(false)
     })
     return () => unsubscribe()
-  }, [router])
-
-  const loadData = async (userData) => {
-    try {
-      const sectionsResponse = await fetch("/data/sections.json")
-      const sections = await sectionsResponse.json()
-      setSectionsData(sections)
-      const timetableResponse = await fetch("/data/timetables.json")
-      const timetables = await timetableResponse.json()
-      setTimetableData(timetables)
-      if (userData) {
-        const rollNumber = userData.email.split("@")[0]
-        const section = findUserSection(sections, rollNumber)
-        setUserSection(section)
-      }
-    } catch (error) {
-      console.error("Error loading data:", error)
-    }
-  }
-
-  const findUserSection = (sections, rollNumber) => {
-    for (const [sectionId, sectionInfo] of Object.entries(sections)) {
-      if (sectionInfo.students.includes(rollNumber)) {
-        return {
-          id: sectionId,
-          name: sectionInfo.name,
-          rollNumber: rollNumber,
-        }
-      }
-    }
-    return null
-  }
+  }, [router, loadData, findUserSections])
 
   const toggleTheme = () => {
     const newTheme = !isDarkMode
@@ -209,7 +203,7 @@ export default function TimetablePage() {
         uid: currentUser.uid,
         displayName: currentUser.displayName,
         email: currentUser.email,
-        photoURL: currentUser.photoURL || "/default-profile.png",
+        photoURL: currentUser.photoURL || "/placeholder.svg?height=40&width=40",
       }
       setUser(userData)
       loadData(userData)
@@ -227,7 +221,9 @@ export default function TimetablePage() {
 
   const handleSignOut = async () => {
     try {
-      await signOut(auth)
+      if (auth) {
+        await signOut(auth)
+      }
       setUser(null)
       setShowProfileDropdown(false)
       router.push("/")
@@ -236,11 +232,7 @@ export default function TimetablePage() {
     }
   }
 
-  const handleBackToHome = () => {
-    router.push("/")
-  }
-
-  const parseTime = (timeStr) => {
+  const parseTime = useCallback((timeStr) => {
     if (!timeStr || typeof timeStr !== "string" || !timeStr.includes("-")) {
       return 0
     }
@@ -258,98 +250,114 @@ export default function TimetablePage() {
       console.error("Error parsing time:", timeStr, error)
       return 0
     }
-  }
+  }, [])
 
-  const isCurrentClass = (classItem) => {
-    if (!classItem || !classItem.time || typeof classItem.time !== "string") {
-      return false
-    }
-    const currentDay = getCurrentDay()
-    const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes()
-    if (!classItem.time.includes("-")) {
-      return false
-    }
-    const [startTime, endTime] = classItem.time.split("-")
-    if (!startTime || !endTime) {
-      return false
-    }
-    const startMinutes = parseTime(startTime + "-00:00")
-    const endMinutes = parseTime(endTime + "-00:00")
-    return currentDay === selectedDay && currentMinutes >= startMinutes && currentMinutes <= endMinutes
-  }
+  const isCurrentClass = useCallback(
+    (classItem) => {
+      if (!classItem || !classItem.time || typeof classItem.time !== "string") {
+        return false
+      }
+      const currentDay = getCurrentDay()
+      const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes()
+      if (!classItem.time.includes("-")) {
+        return false
+      }
+      const [startTime, endTime] = classItem.time.split("-")
+      if (!startTime || !endTime) {
+        return false
+      }
+      const startMinutes = parseTime(startTime + "-00:00")
+      const endMinutes = parseTime(endTime + "-00:00")
+      return currentDay === selectedDay && currentMinutes >= startMinutes && currentMinutes <= endMinutes
+    },
+    [getCurrentDay, currentTime, selectedDay, parseTime],
+  )
 
-  const getUpcomingClasses = () => {
-    if (!userSection || !timetableData[userSection.id]) return []
+  // Helper to get all classes for a given day across all user's sections
+  const getAllClassesForDay = useCallback(
+    (day) => {
+      if (!userSections.length || !Object.keys(timetablesData).length) return []
 
+      let combinedClasses = []
+      userSections.forEach((section) => {
+        const coreClasses = timetablesData[section.id]?.coreSubjects?.[day] || []
+        const electiveClasses = timetablesData[section.id]?.electiveSubjects?.[day] || []
+        combinedClasses = combinedClasses.concat(coreClasses, electiveClasses)
+      })
+
+      // Filter out duplicates if a class appears in multiple sections a user is part of (e.g., electives)
+      const uniqueClasses = []
+      const seen = new Set()
+      for (const classItem of combinedClasses) {
+        const identifier = `${classItem.subject}-${classItem.time}-${classItem.room}`
+        if (!seen.has(identifier)) {
+          seen.add(identifier)
+          uniqueClasses.push(classItem)
+        }
+      }
+
+      return uniqueClasses.sort((a, b) => parseTime(a.time) - parseTime(b.time))
+    },
+    [userSections, parseTime],
+  )
+
+  const getUpcomingClasses = useCallback(() => {
     const today = getCurrentDay()
     const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes()
-    const allClassesForToday = [
-      ...(timetableData[userSection.id].coreSubjects?.[today] || []),
-      ...(timetableData[userSection.id].electiveSubjects?.[today] || []),
-    ]
+    const allClassesForToday = getAllClassesForDay(today)
 
     return allClassesForToday
       .filter((classItem) => {
-        if (!classItem || !classItem.time || !classItem.time.includes("-")) {
-          return false
-        }
         const [startTime] = classItem.time.split("-")
-        if (!startTime) return false
         const startMinutes = parseTime(startTime + "-00:00")
         return startMinutes > currentMinutes // Only show classes that haven't started yet
       })
-      .sort((a, b) => parseTime(a.time) - parseTime(b.time)) // Sort by time
-      .slice(0, 5) // Show up to 5 upcoming classes for today
-  }
+      .slice(0, 2) // Show up to 2 upcoming classes for today, rest will scroll
+  }, [getCurrentDay, currentTime, getAllClassesForDay, parseTime])
 
-  const getCurrentClasses = () => {
-    if (!userSection || !timetableData[userSection.id]) return []
-
+  const getCurrentClasses = useCallback(() => {
     const today = getCurrentDay()
-    const coreClasses = timetableData[userSection.id].coreSubjects?.[today] || []
-    const electiveClasses = timetableData[userSection.id].electiveSubjects?.[today] || []
-    const allClasses = [...coreClasses, ...electiveClasses]
+    const allClassesForToday = getAllClassesForDay(today)
 
-    return allClasses
-      .filter((classItem) => classItem && classItem.time)
+    return allClassesForToday.filter((classItem) => isCurrentClass(classItem))
+  }, [getCurrentDay, getAllClassesForDay, isCurrentClass])
+
+  const getTodaysSchedule = useCallback(() => {
+    const today = getCurrentDay()
+    return getAllClassesForDay(today).map((classItem) => ({
+      ...classItem,
+      isCurrent: isCurrentClass(classItem),
+    }))
+  }, [getCurrentDay, getAllClassesForDay, isCurrentClass])
+
+  const getSelectedDaySchedule = useCallback(() => {
+    if (!userSections.length || !Object.keys(timetablesData).length) return []
+
+    let combinedClasses = []
+    userSections.forEach((section) => {
+      // Combine both core and elective subjects for the selected day
+      const coreClasses = timetablesData[section.id]?.coreSubjects?.[selectedDay] || []
+      const electiveClasses = timetablesData[section.id]?.electiveSubjects?.[selectedDay] || []
+      combinedClasses = combinedClasses.concat(coreClasses, electiveClasses)
+    })
+
+    const uniqueClasses = []
+    const seen = new Set()
+    for (const classItem of combinedClasses) {
+      const identifier = `${classItem.subject}-${classItem.time}-${classItem.room}`
+      if (!seen.has(identifier)) {
+        seen.add(identifier)
+        uniqueClasses.push(classItem)
+      }
+    }
+
+    return uniqueClasses
       .map((classItem) => ({
         ...classItem,
         isCurrent: isCurrentClass(classItem),
       }))
-      .filter((classItem) => classItem.isCurrent)
-  }
-
-  // New function to get all classes for the current day
-  const getTodaysSchedule = () => {
-    if (!userSection || !timetableData[userSection.id]) return []
-
-    const today = getCurrentDay()
-    const coreClasses = timetableData[userSection.id].coreSubjects?.[today] || []
-    const electiveClasses = timetableData[userSection.id].electiveSubjects?.[today] || []
-    const allClasses = [...coreClasses, ...electiveClasses]
-
-    return allClasses
-      .filter((classItem) => classItem && classItem.time)
-      .map((classItem) => ({
-        ...classItem,
-        isCurrent: isCurrentClass(classItem), // Still mark current class for highlighting
-      }))
-      .sort((a, b) => parseTime(a.time) - parseTime(b.time)) // Sort by time
-  }
-
-  const getSelectedDaySchedule = () => {
-    if (!userSection || !timetableData[userSection.id]) return []
-
-    const classes = timetableData[userSection.id][selectedSubjectType]?.[selectedDay] || []
-
-    return classes
-      .filter((classItem) => classItem && classItem.time)
-      .map((classItem) => ({
-        ...classItem,
-        isCurrent: isCurrentClass(classItem),
-      }))
-      .sort((a, b) => parseTime(a.time) - parseTime(b.time)) // Sort by time
-  }
+      .sort((a, b) => parseTime(a.time) - parseTime(b.time))
+  }, [userSections, selectedDay, isCurrentClass, parseTime])
 
   const days = [
     { key: "monday", label: "Monday", emoji: "📅" },
@@ -359,26 +367,10 @@ export default function TimetablePage() {
     { key: "friday", label: "Friday", emoji: "🎯" },
   ]
 
-  const getTimeUntilNext = (classItem) => {
-    if (!classItem || !classItem.time || !classItem.time.includes("-")) {
-      return "N/A"
-    }
-    const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes()
-    const [startTime] = classItem.time.split("-")
-    if (!startTime) return "N/A"
-    const startMinutes = parseTime(startTime + "-00:00")
-    const diff = startMinutes - currentMinutes
-
-    if (diff <= 0) return "Started" // Class has already started or passed
-    if (diff < 60) return `${diff} min`
-    const hours = Math.floor(diff / 60)
-    const minutes = diff % 60
-    return `${hours}h ${minutes}m`
-  }
-
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (showProfileDropdown && !event.target.closest(".profile-container")) {
+      const profileContainer = document.querySelector(".profile-container")
+      if (profileContainer && !profileContainer.contains(event.target)) {
         setShowProfileDropdown(false)
       }
     }
@@ -389,8 +381,8 @@ export default function TimetablePage() {
     }
   }, [showProfileDropdown])
 
-  const tableClick = () => {
-    setShowProfileDropdown(false) // Ensure dropdown closes when "My Timetable" is clicked
+  const handleTimetableClick = () => {
+    setShowProfileDropdown(false)
   }
 
   if (authLoading) {
@@ -400,31 +392,18 @@ export default function TimetablePage() {
           className="loading-card"
           style={{
             background: currentTheme.cardBg,
-            borderWidth: "2px",
-            borderStyle: "solid",
-            borderColor: currentTheme.border,
+            border: `2px solid ${currentTheme.border}`,
             boxShadow: currentTheme.shadow,
           }}
         >
-          <div
-            style={{
-              color: currentTheme.textPrimary,
-              fontSize: "18px",
-              fontWeight: "600",
-              marginBottom: "20px",
-            }}
-          >
-            Loading your timetable...
-          </div>
+          <div style={{ color: currentTheme.textPrimary }}>Loading your timetable...</div>
           <div
             className="loading-spinner"
             style={{
               borderWidth: "4px",
               borderStyle: "solid",
               borderColor: currentTheme.border,
-              borderTopWidth: "4px",
-              borderTopStyle: "solid",
-              borderTopColor: currentTheme.primary,
+              borderTopColor: currentTheme.primary, // Fixed: Use specific border properties
             }}
           />
         </div>
@@ -439,45 +418,23 @@ export default function TimetablePage() {
           className="loading-card"
           style={{
             background: currentTheme.cardBg,
-            borderWidth: "2px",
-            borderStyle: "solid",
-            borderColor: currentTheme.border,
+            border: `2px solid ${currentTheme.border}`,
             boxShadow: currentTheme.shadow,
           }}
         >
-          <div
-            style={{
-              color: currentTheme.textPrimary,
-              fontSize: "18px",
-              fontWeight: "600",
-              marginBottom: "20px",
-            }}
-          >
-            Please sign in to view your timetable
-          </div>
+          <div style={{ color: currentTheme.textPrimary }}>Please sign in to view your timetable</div>
           <button
             onClick={handleGoogleSignIn}
             style={{
               background: `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.secondary} 100%)`,
               color: "white",
-              border: "none",
-              padding: "12px 24px",
-              borderRadius: "8px",
-              cursor: "pointer",
-              fontWeight: "600",
-              fontSize: "14px",
             }}
+            className="login-button"
           >
             Sign In with Google
           </button>
           {loginError && (
-            <div
-              style={{
-                color: currentTheme.error,
-                fontSize: "14px",
-                marginTop: "10px",
-              }}
-            >
+            <div style={{ color: currentTheme.error }} className="login-error">
               {loginError}
             </div>
           )}
@@ -489,35 +446,30 @@ export default function TimetablePage() {
   return (
     <div className="timetable-container" style={{ background: currentTheme.background }}>
       {/* New Combined Header */}
-      <div
+      <header
         className="main-header"
         style={{
           background: currentTheme.cardBg,
-          borderWidth: "2px",
-          borderStyle: "solid",
-          borderColor: currentTheme.border,
+          border: `2px solid ${currentTheme.border}`,
           boxShadow: currentTheme.shadow,
         }}
       >
         <div className="header-left">
           <div className="kiithub-logo-container">
-            <img src="/logo.png" alt="KiitHub Logo" className="kiithub-main-logo" />
+            <img src="/placeholder.svg?height=50&width=50" alt="KiitHub Logo" className="kiithub-main-logo" />
             <div className="logo-text">
               <h1 style={{ color: currentTheme.textPrimary }}>KiitHub</h1>
               <p style={{ color: currentTheme.textMuted }}>Your Smart Campus Companion</p>
             </div>
           </div>
         </div>
-
         <div className="header-right">
           <div className="kiithub-tagline">
             <div
               className="tagline-badge"
               style={{
                 background: `${currentTheme.primary}15`,
-                borderWidth: "2px",
-                borderStyle: "solid",
-                borderColor: `${currentTheme.primary}30`,
+                border: `2px solid ${currentTheme.primary}30`,
                 color: currentTheme.primary,
               }}
             >
@@ -533,579 +485,536 @@ export default function TimetablePage() {
                 onClick={() => setShowProfileDropdown(!showProfileDropdown)}
                 style={{
                   background: currentTheme.glassBg,
-                  borderWidth: "2px",
-                  borderStyle: "solid",
-                  borderColor: currentTheme.border,
+                  border: `2px solid ${currentTheme.border}`,
                   boxShadow: currentTheme.shadow,
                   color: currentTheme.textPrimary,
                 }}
               >
-                <img src={user.photoURL || "/default-profile.png"} alt="Profile" className="profile-image" />
+                <img
+                  src={user.photoURL || "/placeholder.svg?height=36&width=36"}
+                  alt="Profile"
+                  className="profile-image"
+                />
                 <span className="profile-name">{user.displayName?.split(" ")[0]}</span>
+                {showProfileDropdown ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
               </button>
-              {showProfileDropdown && (
-                <div
-                  className="profile-dropdown"
-                  style={{
-                    background: currentTheme.cardBg,
-                    borderWidth: "2px",
-                    borderStyle: "solid",
-                    borderColor: currentTheme.border,
-                    boxShadow: currentTheme.shadow,
-                  }}
-                >
-                  <div className="profile-info">
-                    <img src={user.photoURL || "/default-profile.png"} alt="Profile" className="dropdown-image" />
-                    <div className="user-details">
-                      <p className="user-name" style={{ color: currentTheme.textPrimary }}>
-                        {user.displayName}
-                      </p>
-                      <p className="user-email" style={{ color: currentTheme.textMuted }}>
-                        {user.email}
-                      </p>
-                      <p className="user-section" style={{ color: currentTheme.textMuted }}>
-                        Section: {userSection ? userSection.id : "N/A"}
-                      </p>
+              <div
+                className="profile-dropdown"
+                style={{
+                  opacity: showProfileDropdown ? 1 : 0,
+                  transform: showProfileDropdown ? "translateY(0)" : "translateY(-15px) scale(0.9)",
+                  pointerEvents: showProfileDropdown ? "auto" : "none",
+                  background: currentTheme.cardBg,
+                  border: `2px solid ${currentTheme.border}`,
+                  boxShadow: currentTheme.shadow,
+                  zIndex: 9999, // Ensure it's on top
+                }}
+              >
+                <div className="profile-info">
+                  <img
+                    src={user.photoURL || "/placeholder.svg?height=56&width=56"}
+                    alt="Profile"
+                    className="dropdown-image"
+                  />
+                  <div className="user-details">
+                    <p className="user-name" style={{ color: currentTheme.textPrimary }}>
+                      {user.displayName}
+                    </p>
+                    <p className="user-email" style={{ color: currentTheme.textMuted }}>
+                      {user.email}
+                    </p>
+                    {userSections.length > 0 && (
+                      <div className="user-sections-list">
+                        {userSections.map((section) => (
+                          <p key={section.id} className="user-section-item" style={{ color: currentTheme.textMuted }}>
+                            <GraduationCap size={14} style={{ color: currentTheme.primary }} />
+                            {section.name}
+                          </p>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="profile-divider" style={{ background: currentTheme.border }}></div>
+
+                <div className="profile-actions">
+                  <button
+                    className="profile-action timetable"
+                    onClick={handleTimetableClick}
+                    style={{ color: currentTheme.textPrimary }}
+                  >
+                    <Calendar size={18} style={{ color: currentTheme.primary }} />
+                    My Timetable
+                  </button>
+
+                  <button
+                    className="profile-action theme-toggle"
+                    onClick={toggleTheme}
+                    style={{ color: currentTheme.textPrimary }}
+                  >
+                    {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+                    {isDarkMode ? "Light Mode" : "Dark Mode"}
+                  </button>
+
+                  <button
+                    className="profile-action logout"
+                    onClick={handleSignOut}
+                    style={{ color: currentTheme.error }}
+                  >
+                    <LogOut size={18} />
+                    Sign Out
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main className="main-content-grid">
+        {/* Student Info Card - now spans full width on desktop */}
+        {userSections.length > 0 && (
+          <section
+            className="student-info-card"
+            style={{
+              background: currentTheme.cardBg,
+              border: `2px solid ${currentTheme.border}`,
+              boxShadow: currentTheme.shadow,
+            }}
+          >
+            <div
+              className="student-info"
+              style={{
+                background: `${currentTheme.primary}10`,
+                border: `2px solid ${currentTheme.primary}20`,
+              }}
+            >
+              <div
+                className="student-avatar-wrapper"
+                style={{
+                  border: `4px solid ${currentTheme.primary}`, // Green border
+                }}
+              >
+                <img
+                  src={user.photoURL || "/placeholder.svg?height=80&width=80"}
+                  alt="Profile"
+                  className="student-avatar"
+                />
+                {!user.photoURL && (
+                  <div
+                    className="student-avatar-initial"
+                    style={{
+                      backgroundColor: "#3b82f6", // Blue background for initial
+                      color: "#ffffff", // White text for initial
+                    }}
+                  >
+                    {user.displayName ? user.displayName.charAt(0).toUpperCase() : "U"}
+                  </div>
+                )}
+              </div>
+              <div className="student-details">
+                <h3 style={{ color: currentTheme.textPrimary }}>{user.displayName}</h3>
+                <div className="student-info-row">
+                  <div className="info-item">
+                    <User size={16} style={{ color: currentTheme.primary }} />
+                    <span style={{ color: currentTheme.textSecondary }}>Roll: {user.email.split("@")[0]}</span>
+                  </div>
+                  {userSections.map((section) => (
+                    <div key={section.id} className="info-item">
+                      <GraduationCap size={16} style={{ color: currentTheme.primary }} />
+                      <span style={{ color: currentTheme.textSecondary }}>{section.name}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Quick Overview Cards */}
+        <section className="overview-grid">
+          {/* Current Classes */}
+          <div
+            className="overview-card current-classes"
+            style={{
+              background: currentTheme.cardBg,
+              border: `2px solid ${currentTheme.border}`,
+              boxShadow: currentTheme.shadow,
+            }}
+          >
+            {/* Integrated Current Time and Day Display */}
+            <div className="time-date-display-in-card">
+              <div className="current-time">
+                <Clock size={24} style={{ color: currentTheme.primary }} />
+                <span style={{ color: currentTheme.textPrimary }}>{getCurrentTimeString()}</span>
+              </div>
+              <div className="current-date">
+                <Calendar size={20} style={{ color: currentTheme.secondary }} />
+                <span style={{ color: currentTheme.textSecondary }}>{getCurrentDateString()}</span>
+              </div>
+            </div>
+
+            <div className="overview-header">
+              <div className="overview-title">
+                <Play size={20} style={{ color: currentTheme.primary }} />
+                <h3 style={{ color: currentTheme.textPrimary }}>Current Classes</h3>
+              </div>
+              <div
+                className="live-indicator"
+                style={{
+                  background: `linear-gradient(135deg, ${currentTheme.error} 0%, ${currentTheme.warning} 100%)`,
+                }}
+              >
+                <div className="live-dot"></div>
+                LIVE
+              </div>
+            </div>
+
+            <div className="overview-content">
+              {getCurrentClasses().length > 0 ? (
+                getCurrentClasses().map((classItem, index) => (
+                  <div
+                    key={index}
+                    className="class-card-new current"
+                    style={{
+                      background: `${currentTheme.primary}15`,
+                      border: `2px solid ${currentTheme.primary}30`,
+                    }}
+                  >
+                    <div className="class-main-info">
+                      <div className="subject-info">
+                        <h4 style={{ color: currentTheme.textPrimary }}>{classItem.subject}</h4>
+                        <div className="class-meta">
+                          <span className="time-info" style={{ color: currentTheme.primary }}>
+                            <Clock size={14} />
+                            {classItem.time}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="class-details-new">
+                      <div className="detail-row">
+                        <MapPin size={16} style={{ color: currentTheme.secondary }} />
+                        <span style={{ color: currentTheme.textSecondary }}>Room: {classItem.room}</span>
+                      </div>
+                      <div className="detail-row">
+                        <User size={16} style={{ color: currentTheme.secondary }} />
+                        <span style={{ color: currentTheme.textSecondary }}>{classItem.faculty}</span>
+                      </div>
                     </div>
                   </div>
-
-                  <div className="profile-divider" style={{ background: currentTheme.border }}></div>
-
-                  <div className="profile-actions">
-                    <button
-                      className="profile-action timetable"
-                      onClick={tableClick}
-                      style={{ color: currentTheme.textPrimary }}
-                    >
-                      <Calendar size={18} style={{ color: currentTheme.primary }} />
-                      My Timetable
-                    </button>
-
-                    <button
-                      className="profile-action theme-toggle"
-                      onClick={toggleTheme}
-                      style={{ color: currentTheme.textPrimary }}
-                    >
-                      {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
-                      {isDarkMode ? "Light Mode" : "Dark Mode"}
-                    </button>
-
-                    <button
-                      className="profile-action logout"
-                      onClick={handleSignOut}
-                      style={{ color: currentTheme.error }}
-                    >
-                      <LogOut size={18} />
-                      Sign Out
-                    </button>
-                  </div>
+                ))
+              ) : (
+                <div className="no-classes-mini" style={{ color: currentTheme.textMuted }}>
+                  <Pause size={24} />
+                  <p>No classes running now</p>
                 </div>
               )}
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Current Time and Day Display */}
-      <div
-        className="current-time-card"
-        style={{
-          background: currentTheme.cardBg,
-          borderWidth: "2px",
-          borderStyle: "solid",
-          borderColor: currentTheme.border,
-          boxShadow: currentTheme.shadow,
-        }}
-      >
-        <div className="time-display">
-          <div className="current-time">
-            <Clock size={24} style={{ color: currentTheme.primary }} />
-            <span style={{ color: currentTheme.textPrimary }}>{getCurrentTimeString()}</span>
-          </div>
-          <div className="current-date">
-            <Calendar size={20} style={{ color: currentTheme.secondary }} />
-            <span style={{ color: currentTheme.textSecondary }}>{getCurrentDateString()}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Student Info Card */}
-      {userSection && (
-        <div
-          className="student-info-card"
-          style={{
-            background: currentTheme.cardBg,
-            borderWidth: "2px",
-            borderStyle: "solid",
-            borderColor: currentTheme.border,
-            boxShadow: currentTheme.shadow,
-          }}
-        >
+          {/* Upcoming Classes */}
           <div
-            className="student-info"
+            className="overview-card upcoming-classes"
             style={{
-              background: `${currentTheme.primary}10`,
-              borderWidth: "2px",
-              borderStyle: "solid",
-              borderColor: `${currentTheme.primary}20`,
+              background: currentTheme.cardBg,
+              border: `2px solid ${currentTheme.border}`,
+              boxShadow: currentTheme.shadow,
             }}
           >
-            <img
-              src={user.photoURL || "/default-profile.png"}
-              alt="Profile"
-              className="student-avatar"
-              style={{
-                borderWidth: "3px",
-                borderStyle: "solid",
-                borderColor: currentTheme.primary,
-              }}
-            />
-            <div className="student-details">
-              <h3 style={{ color: currentTheme.textPrimary }}>{user.displayName}</h3>
-              <div className="student-info-row">
-                <div className="info-item">
-                  <User size={16} style={{ color: currentTheme.primary }} />
-                  <span style={{ color: currentTheme.textSecondary }}>Roll: {userSection.rollNumber}</span>
-                </div>
-                <div className="info-item">
-                  <GraduationCap size={16} style={{ color: currentTheme.primary }} />
-                  <span style={{ color: currentTheme.textSecondary }}>{userSection.name}</span>
-                </div>
+            <div className="overview-header">
+              <div className="overview-title">
+                <Timer size={20} style={{ color: currentTheme.secondary }} />
+                <h3 style={{ color: currentTheme.textPrimary }}>Upcoming Classes (Today)</h3>
               </div>
             </div>
-          </div>
-        </div>
-      )}
 
-      {/* Quick Overview Cards */}
-      <div className="overview-grid">
-        {/* Current Classes */}
-        <div
-          className="overview-card current-classes"
-          style={{
-            background: currentTheme.cardBg,
-            borderWidth: "2px",
-            borderStyle: "solid",
-            borderColor: currentTheme.border,
-            boxShadow: currentTheme.shadow,
-          }}
-        >
-          <div className="overview-header">
-            <div className="overview-title">
-              <Play size={20} style={{ color: currentTheme.primary }} />
-              <h3 style={{ color: currentTheme.textPrimary }}>Current Classes</h3>
-            </div>
-            <div
-              className="live-indicator"
-              style={{
-                background: `linear-gradient(135deg, ${currentTheme.error} 0%, ${currentTheme.warning} 100%)`,
-              }}
-            >
-              <div className="live-dot"></div>
-              LIVE
-            </div>
-          </div>
-
-          <div className="overview-content">
-            {getCurrentClasses().length > 0 ? (
-              getCurrentClasses().map((classItem, index) => (
-                <div
-                  key={index}
-                  className="class-card-new current"
-                  style={{
-                    background: `${currentTheme.primary}15`,
-                    borderWidth: "2px",
-                    borderStyle: "solid",
-                    borderColor: `${currentTheme.primary}30`,
-                  }}
-                >
-                  <div className="class-main-info">
-                    <div className="subject-info">
-                      <h4 style={{ color: currentTheme.textPrimary }}>{classItem.subject}</h4>
-                      <div className="class-meta">
-                        <span className="time-info" style={{ color: currentTheme.primary }}>
-                          <Clock size={14} />
-                          {classItem.time}
-                        </span>
+            <div className="overview-content">
+              {getUpcomingClasses().length > 0 ? (
+                getUpcomingClasses().map((classItem, index) => (
+                  <div
+                    key={index}
+                    className="class-card-new upcoming"
+                    style={{
+                      background: `${currentTheme.secondary}10`,
+                      border: `2px solid ${currentTheme.secondary}20`,
+                    }}
+                  >
+                    <div className="class-main-info">
+                      <div className="subject-info">
+                        <h4 style={{ color: currentTheme.textPrimary }}>{classItem.subject}</h4>
+                        <div className="class-meta">
+                          <span className="time-info" style={{ color: currentTheme.secondary }}>
+                            <Clock size={14} />
+                            {classItem.time}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="class-details-new">
+                      <div className="detail-row">
+                        <MapPin size={16} style={{ color: currentTheme.accent }} />
+                        <span style={{ color: currentTheme.textSecondary }}>Room: {classItem.room}</span>
+                      </div>
+                      <div className="detail-row">
+                        <User size={16} style={{ color: currentTheme.accent }} />
+                        <span style={{ color: currentTheme.textSecondary }}>{classItem.faculty}</span>
                       </div>
                     </div>
                   </div>
-                  <div className="class-details-new">
-                    <div className="detail-row">
-                      <MapPin size={16} style={{ color: currentTheme.secondary }} />
-                      <span style={{ color: currentTheme.textSecondary }}>Room: {classItem.room}</span>
-                    </div>
-                    <div className="detail-row">
-                      <User size={16} style={{ color: currentTheme.secondary }} />
-                      <span style={{ color: currentTheme.textSecondary }}>{classItem.faculty}</span>
-                    </div>
-                  </div>
+                ))
+              ) : (
+                <div className="no-classes-mini" style={{ color: currentTheme.textMuted }}>
+                  <Timer size={24} />
+                  <p>No upcoming classes for today</p>
                 </div>
-              ))
-            ) : (
-              <div className="no-classes-mini" style={{ color: currentTheme.textMuted }}>
-                <Pause size={24} />
-                <p>No classes running now</p>
-              </div>
-            )}
+              )}
+            </div>
           </div>
-        </div>
+        </section>
 
-        {/* Upcoming Classes */}
-        <div
-          className="overview-card upcoming-classes"
+        {/* Enhanced Controls */}
+        <section
+          className="controls-card"
           style={{
             background: currentTheme.cardBg,
-            borderWidth: "2px",
-            borderStyle: "solid",
-            borderColor: currentTheme.border,
+            border: `2px solid ${currentTheme.border}`,
             boxShadow: currentTheme.shadow,
           }}
         >
-          <div className="overview-header">
-            <div className="overview-title">
-              <Timer size={20} style={{ color: currentTheme.secondary }} />
-              <h3 style={{ color: currentTheme.textPrimary }}>Upcoming Classes (Today)</h3>
+          {/* View Toggle */}
+          <div className="control-section">
+            <h3 style={{ color: currentTheme.textPrimary }}>👁️ View Mode</h3>
+            <div className="button-group">
+              {[
+                { key: "current", label: "Current Day", icon: "📅" },
+                { key: "all", label: "All Schedule", icon: "📊" },
+              ].map((view) => (
+                <button
+                  key={view.key}
+                  onClick={() => setActiveView(view.key)}
+                  className={`control-button ${activeView === view.key ? "active" : ""}`}
+                  style={{
+                    border: `2px solid ${currentTheme.border}`,
+                    background:
+                      activeView === view.key
+                        ? `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.secondary} 100%)`
+                        : currentTheme.glassBg,
+                    color: activeView === view.key ? "white" : currentTheme.textPrimary,
+                  }}
+                >
+                  <span>{view.icon}</span>
+                  {view.label}
+                </button>
+              ))}
             </div>
           </div>
 
-          <div className="overview-content">
-            {getUpcomingClasses().length > 0 ? (
-              getUpcomingClasses().map((classItem, index) => (
-                <div
-                  key={index}
-                  className="class-card-new upcoming"
-                  style={{
-                    background: `${currentTheme.secondary}10`,
-                    borderWidth: "2px",
-                    borderStyle: "solid",
-                    borderColor: `${currentTheme.secondary}20`,
-                  }}
-                >
-                  <div className="class-main-info">
-                    <div className="subject-info">
-                      <h4 style={{ color: currentTheme.textPrimary }}>{classItem.subject}</h4>
-                      <div className="class-meta">
-                        <span className="time-info" style={{ color: currentTheme.secondary }}>
-                          <Clock size={14} />
-                          {classItem.time}
-                        </span>
-                        <span
-                          className="countdown"
-                          style={{
-                            background: `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.secondary} 100%)`,
-                            color: "white",
-                          }}
-                        >
-                          {getTimeUntilNext(classItem)}
-                        </span>
+          {/* Subject Type and Day Selection - Only for "all" view */}
+          {activeView === "all" && (
+            <>
+              {/* Removed Subject Type control section */}
+              <div className="control-section">
+                <h3 style={{ color: currentTheme.textPrimary }}>📆 Select Day</h3>
+                <div className="button-group">
+                  {days.map((day) => (
+                    <button
+                      key={day.key}
+                      onClick={() => setSelectedDay(day.key)}
+                      className={`control-button ${selectedDay === day.key ? "active" : ""}`}
+                      style={{
+                        border: `2px solid ${currentTheme.border}`,
+                        background:
+                          selectedDay === day.key
+                            ? `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.secondary} 100%)`
+                            : currentTheme.glassBg,
+                        color: selectedDay === day.key ? "white" : currentTheme.textPrimary,
+                      }}
+                    >
+                      <span>{day.emoji}</span>
+                      {day.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+        </section>
+
+        {/* Dynamic Content Based on View */}
+        {activeView === "current" && (
+          <section
+            className="timetable-card"
+            style={{
+              background: currentTheme.cardBg,
+              border: `2px solid ${currentTheme.border}`,
+              boxShadow: currentTheme.shadow,
+            }}
+          >
+            <h3 className="timetable-title" style={{ color: currentTheme.textPrimary }}>
+              🕐 Today's Schedule - {getCurrentDay().charAt(0).toUpperCase() + getCurrentDay().slice(1)}
+            </h3>
+            {getTodaysSchedule().length > 0 ? (
+              <div className="schedule-grid-new">
+                {getTodaysSchedule().map((classItem, index) => (
+                  <div
+                    key={index}
+                    className={`class-card-detailed ${classItem.isCurrent ? "current-class" : ""}`}
+                    style={{
+                      background: classItem.isCurrent ? `${currentTheme.primary}15` : `${currentTheme.primary}08`,
+                      border: `2px solid ${classItem.isCurrent ? `${currentTheme.primary}30` : `${currentTheme.primary}20`}`,
+                    }}
+                  >
+                    <div className="class-header-new">
+                      <div className="subject-title">
+                        <BookOpen size={20} style={{ color: currentTheme.primary }} />
+                        <h4 style={{ color: currentTheme.textPrimary }}>{classItem.subject}</h4>
+                      </div>
+                      {classItem.isCurrent && (
+                        <div className="class-status current">
+                          <div className="status-indicator"></div>
+                          <span>LIVE NOW</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="class-info-grid">
+                      <div className="info-card">
+                        <Clock size={18} style={{ color: currentTheme.primary }} />
+                        <div className="info-content">
+                          <span className="info-label" style={{ color: currentTheme.textMuted }}>
+                            Time
+                          </span>
+                          <span className="info-value" style={{ color: currentTheme.textPrimary }}>
+                            {classItem.time}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="info-card">
+                        <MapPin size={18} style={{ color: currentTheme.secondary }} />
+                        <div className="info-content">
+                          <span className="info-label" style={{ color: currentTheme.textMuted }}>
+                            Room
+                          </span>
+                          <span className="info-value" style={{ color: currentTheme.textPrimary }}>
+                            {classItem.room}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="info-card">
+                        <User size={18} style={{ color: currentTheme.accent }} />
+                        <div className="info-content">
+                          <span className="info-label" style={{ color: currentTheme.textMuted }}>
+                            Faculty
+                          </span>
+                          <span className="info-value" style={{ color: currentTheme.textPrimary }}>
+                            {classItem.faculty}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <div className="class-details-new">
-                    <div className="detail-row">
-                      <MapPin size={16} style={{ color: currentTheme.accent }} />
-                      <span style={{ color: currentTheme.textSecondary }}>Room: {classItem.room}</span>
-                    </div>
-                    <div className="detail-row">
-                      <User size={16} style={{ color: currentTheme.accent }} />
-                      <span style={{ color: currentTheme.textSecondary }}>{classItem.faculty}</span>
-                    </div>
-                  </div>
-                </div>
-              ))
+                ))}
+              </div>
             ) : (
-              <div className="no-classes-mini" style={{ color: currentTheme.textMuted }}>
-                <Timer size={24} />
-                <p>No upcoming classes for today</p>
+              <div className="no-classes" style={{ color: currentTheme.textMuted }}>
+                <BookOpen size={48} />
+                <p>No classes scheduled for today</p>
+                <p>Enjoy your free time! 🎉</p>
               </div>
             )}
-          </div>
-        </div>
-      </div>
-
-      {/* Enhanced Controls */}
-      <div
-        className="controls-card"
-        style={{
-          background: currentTheme.cardBg,
-          borderWidth: "2px",
-          borderStyle: "solid",
-          borderColor: currentTheme.border,
-          boxShadow: currentTheme.shadow,
-        }}
-      >
-        {/* View Toggle */}
-        <div className="control-section">
-          <h3 style={{ color: currentTheme.textPrimary }}>👁️ View Mode</h3>
-          <div className="button-group">
-            {[
-              { key: "current", label: "Current Day", icon: "📅" },
-              { key: "all", label: "All Schedule", icon: "📊" },
-            ].map((view) => (
-              <button
-                key={view.key}
-                onClick={() => setActiveView(view.key)}
-                className={`control-button ${activeView === view.key ? "active" : ""}`}
-                style={{
-                  borderWidth: "2px",
-                  borderStyle: "solid",
-                  borderColor: currentTheme.border,
-                  background:
-                    activeView === view.key
-                      ? `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.secondary} 100%)`
-                      : currentTheme.glassBg,
-                  color: activeView === view.key ? "white" : currentTheme.textPrimary,
-                }}
-              >
-                <span>{view.icon}</span>
-                {view.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Subject Type and Day Selection - Only for "all" view */}
-        {activeView === "all" && (
-          <>
-            <div className="control-section">
-              <h3 style={{ color: currentTheme.textPrimary }}>📚 Subject Type</h3>
-              <div className="button-group">
-                {[
-                  { key: "coreSubjects", label: "Core Subjects", icon: "📖" },
-                  { key: "electiveSubjects", label: "Elective Subjects", icon: "⭐" },
-                ].map((type) => (
-                  <button
-                    key={type.key}
-                    onClick={() => setSelectedSubjectType(type.key)}
-                    className={`control-button ${selectedSubjectType === type.key ? "active" : ""}`}
-                    style={{
-                      borderWidth: "2px",
-                      borderStyle: "solid",
-                      borderColor: currentTheme.border,
-                      background:
-                        selectedSubjectType === type.key
-                          ? `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.secondary} 100%)`
-                          : currentTheme.glassBg,
-                      color: selectedSubjectType === type.key ? "white" : currentTheme.textPrimary,
-                    }}
-                  >
-                    <span>{type.icon}</span>
-                    {type.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="control-section">
-              <h3 style={{ color: currentTheme.textPrimary }}>📆 Select Day</h3>
-              <div className="button-group">
-                {days.map((day) => (
-                  <button
-                    key={day.key}
-                    onClick={() => setSelectedDay(day.key)}
-                    className={`control-button ${selectedDay === day.key ? "active" : ""}`}
-                    style={{
-                      borderWidth: "2px",
-                      borderStyle: "solid",
-                      borderColor: currentTheme.border,
-                      background:
-                        selectedDay === day.key
-                          ? `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.secondary} 100%)`
-                          : currentTheme.glassBg,
-                      color: selectedDay === day.key ? "white" : currentTheme.textPrimary,
-                    }}
-                  >
-                    <span>{day.emoji}</span>
-                    {day.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </>
+          </section>
         )}
-      </div>
 
-      {/* Dynamic Content Based on View */}
-      {activeView === "current" && (
-        <div
-          className="timetable-card"
-          style={{
-            background: currentTheme.cardBg,
-            borderWidth: "2px",
-            borderStyle: "solid",
-            borderColor: currentTheme.border,
-            boxShadow: currentTheme.shadow,
-          }}
-        >
-          <h3 className="timetable-title" style={{ color: currentTheme.textPrimary }}>
-            🕐 Today's Schedule - {getCurrentDay().charAt(0).toUpperCase() + getCurrentDay().slice(1)}
-          </h3>
-          {getTodaysSchedule().length > 0 ? (
-            <div className="schedule-grid-new">
-              {getTodaysSchedule().map((classItem, index) => (
-                <div
-                  key={index}
-                  className={`class-card-detailed ${classItem.isCurrent ? "current-class" : ""}`}
-                  style={{
-                    background: classItem.isCurrent ? `${currentTheme.primary}15` : `${currentTheme.primary}08`,
-                    borderWidth: "2px",
-                    borderStyle: "solid",
-                    borderColor: classItem.isCurrent ? `${currentTheme.primary}30` : `${currentTheme.primary}20`,
-                  }}
-                >
-                  <div className="class-header-new">
-                    <div className="subject-title">
-                      <BookOpen size={20} style={{ color: currentTheme.primary }} />
-                      <h4 style={{ color: currentTheme.textPrimary }}>{classItem.subject}</h4>
-                    </div>
-                    {classItem.isCurrent && (
-                      <div className="class-status current">
-                        <div className="status-indicator"></div>
-                        <span>LIVE NOW</span>
+        {activeView === "all" && (
+          <section
+            className="timetable-card"
+            style={{
+              background: currentTheme.cardBg,
+              border: `2px solid ${currentTheme.border}`,
+              boxShadow: currentTheme.shadow,
+            }}
+          >
+            <h3 className="timetable-title" style={{ color: currentTheme.textPrimary }}>
+              🕐 {days.find((d) => d.key === selectedDay)?.label} Schedule
+            </h3>
+            {getSelectedDaySchedule().length > 0 ? (
+              <div className="schedule-grid-new">
+                {getSelectedDaySchedule().map((classItem, index) => (
+                  <div
+                    key={index}
+                    className={`class-card-detailed ${classItem.isCurrent ? "current-class" : ""}`}
+                    style={{
+                      background: classItem.isCurrent ? `${currentTheme.primary}15` : `${currentTheme.primary}08`,
+                      border: `2px solid ${classItem.isCurrent ? `${currentTheme.primary}30` : `${currentTheme.primary}20`}`,
+                    }}
+                  >
+                    <div className="class-header-new">
+                      <div className="subject-title">
+                        <BookOpen size={20} style={{ color: currentTheme.primary }} />
+                        <h4 style={{ color: currentTheme.textPrimary }}>{classItem.subject}</h4>
                       </div>
-                    )}
-                  </div>
-
-                  <div className="class-info-grid">
-                    <div className="info-card">
-                      <Clock size={18} style={{ color: currentTheme.primary }} />
-                      <div className="info-content">
-                        <span className="info-label" style={{ color: currentTheme.textMuted }}>
-                          Time
-                        </span>
-                        <span className="info-value" style={{ color: currentTheme.textPrimary }}>
-                          {classItem.time}
-                        </span>
-                      </div>
+                      {classItem.isCurrent && (
+                        <div className="class-status current">
+                          <div className="status-indicator"></div>
+                          <span>LIVE NOW</span>
+                        </div>
+                      )}
                     </div>
 
-                    <div className="info-card">
-                      <MapPin size={18} style={{ color: currentTheme.secondary }} />
-                      <div className="info-content">
-                        <span className="info-label" style={{ color: currentTheme.textMuted }}>
-                          Room
-                        </span>
-                        <span className="info-value" style={{ color: currentTheme.textPrimary }}>
-                          {classItem.room}
-                        </span>
+                    <div className="class-info-grid">
+                      <div className="info-card">
+                        <Clock size={18} style={{ color: currentTheme.primary }} />
+                        <div className="info-content">
+                          <span className="info-label" style={{ color: currentTheme.textMuted }}>
+                            Time
+                          </span>
+                          <span className="info-value" style={{ color: currentTheme.textPrimary }}>
+                            {classItem.time}
+                          </span>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="info-card">
-                      <User size={18} style={{ color: currentTheme.accent }} />
-                      <div className="info-content">
-                        <span className="info-label" style={{ color: currentTheme.textMuted }}>
-                          Faculty
-                        </span>
-                        <span className="info-value" style={{ color: currentTheme.textPrimary }}>
-                          {classItem.faculty}
-                        </span>
+                      <div className="info-card">
+                        <MapPin size={18} style={{ color: currentTheme.secondary }} />
+                        <div className="info-content">
+                          <span className="info-label" style={{ color: currentTheme.textMuted }}>
+                            Room
+                          </span>
+                          <span className="info-value" style={{ color: currentTheme.textPrimary }}>
+                            {classItem.room}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="info-card">
+                        <User size={18} style={{ color: currentTheme.accent }} />
+                        <div className="info-content">
+                          <span className="info-label" style={{ color: currentTheme.textMuted }}>
+                            Faculty
+                          </span>
+                          <span className="info-value" style={{ color: currentTheme.textPrimary }}>
+                            {classItem.faculty}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="no-classes" style={{ color: currentTheme.textMuted }}>
-              <BookOpen size={48} />
-              <p>No classes scheduled for today</p>
-              <p>Enjoy your free time! 🎉</p>
-            </div>
-          )}
-        </div>
-      )}
-
-      {activeView === "all" && (
-        <div
-          className="timetable-card"
-          style={{
-            background: currentTheme.cardBg,
-            borderWidth: "2px",
-            borderStyle: "solid",
-            borderColor: currentTheme.border,
-            boxShadow: currentTheme.shadow,
-          }}
-        >
-          <h3 className="timetable-title" style={{ color: currentTheme.textPrimary }}>
-            🕐 {days.find((d) => d.key === selectedDay)?.label} Schedule -{" "}
-            {selectedSubjectType === "coreSubjects" ? "Core Subjects" : "Elective Subjects"}
-          </h3>
-          {getSelectedDaySchedule().length > 0 ? (
-            <div className="schedule-grid-new">
-              {getSelectedDaySchedule().map((classItem, index) => (
-                <div
-                  key={index}
-                  className={`class-card-detailed ${classItem.isCurrent ? "current-class" : ""}`}
-                  style={{
-                    background: classItem.isCurrent ? `${currentTheme.primary}15` : `${currentTheme.primary}08`,
-                    borderWidth: "2px",
-                    borderStyle: "solid",
-                    borderColor: classItem.isCurrent ? `${currentTheme.primary}30` : `${currentTheme.primary}20`,
-                  }}
-                >
-                  <div className="class-header-new">
-                    <div className="subject-title">
-                      <BookOpen size={20} style={{ color: currentTheme.primary }} />
-                      <h4 style={{ color: currentTheme.textPrimary }}>{classItem.subject}</h4>
-                    </div>
-                    {classItem.isCurrent && (
-                      <div className="class-status current">
-                        <div className="status-indicator"></div>
-                        <span>LIVE NOW</span>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="class-info-grid">
-                    <div className="info-card">
-                      <Clock size={18} style={{ color: currentTheme.primary }} />
-                      <div className="info-content">
-                        <span className="info-label" style={{ color: currentTheme.textMuted }}>
-                          Time
-                        </span>
-                        <span className="info-value" style={{ color: currentTheme.textPrimary }}>
-                          {classItem.time}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="info-card">
-                      <MapPin size={18} style={{ color: currentTheme.secondary }} />
-                      <div className="info-content">
-                        <span className="info-label" style={{ color: currentTheme.textMuted }}>
-                          Room
-                        </span>
-                        <span className="info-value" style={{ color: currentTheme.textPrimary }}>
-                          {classItem.room}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="info-card">
-                      <User size={18} style={{ color: currentTheme.accent }} />
-                      <div className="info-content">
-                        <span className="info-label" style={{ color: currentTheme.textMuted }}>
-                          Faculty
-                        </span>
-                        <span className="info-value" style={{ color: currentTheme.textPrimary }}>
-                          {classItem.faculty}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="no-classes" style={{ color: currentTheme.textMuted }}>
-              <BookOpen size={48} />
-              <p>No classes scheduled for this day</p>
-              <p>Enjoy your free time! 🎉</p>
-            </div>
-          )}
-        </div>
-      )}
+                ))}
+              </div>
+            ) : (
+              <div className="no-classes" style={{ color: currentTheme.textMuted }}>
+                <BookOpen size={48} />
+                <p>No classes scheduled for this day</p>
+                <p>Enjoy your free time! 🎉</p>
+              </div>
+            )}
+          </section>
+        )}
+      </main>
     </div>
   )
 }

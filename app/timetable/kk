@@ -1,0 +1,22 @@
+"use client"
+
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import { onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth"
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  User,
+  BookOpen,
+  GraduationCap,
+  Sun,
+  Moon,
+  LogOut,
+  Timer,
+  Play,
+  Pause,
+  Zap,
+} from "lucide-react"
+import "./styles.css"
+import { auth, provider } from "../../lib/firebase"
