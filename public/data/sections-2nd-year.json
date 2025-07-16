@@ -1,51 +1,332 @@
 {
-  "CSE_2YA": {
-    "name": "CSE - 52",
+  "CSE1": {
+    "name": "CSE - 1",
     "type": "core",
     "students": [
-      "24052541",
-      "24057002",
-      "24057003",
-      "24057004",
-      "24057005",
-      "24057006",
-      "24057007",
-      "24057008",
-      "24057009",
-      "24057010"
+"24052541"
     ]
   },
-  "ECE_2YA": {
-    "name": "ECE - 2nd Year A",
+  "CSE2": {
+    "name": "CSE - 2",
     "type": "core",
     "students": [
-      "24057101",
-      "24057102",
-      "24057103",
-      "24057104",
-      "24057105",
-      "24057106",
-      "24057107",
-      "24057108",
-      "24057109",
-      "24057110"
+
     ]
   },
-  "MECH_2YA": {
-    "name": "MECH - 2nd Year A",
+  "CSE3": {
+    "name": "CSE - 3",
     "type": "core",
     "students": [
-      "24057201",
-      "24057202",
-      "24057203",
-      "24057204",
-      "24057205",
-      "24057206",
-      "24057207",
-      "24057208",
-      "24057209",
-      "24057210"
+
     ]
+  },
+  "CSE4": {
+    "name": "CSE - 4",
+    "type": "core",
+    "students": [
+
+    ]
+  },
+
+   "CSE5": {
+    "name": "CSE - 5",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE6": {
+    "name": "CSE - 6",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE7": {
+    "name": "CSE - 7",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE8": {
+    "name": "CSE - 8",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE9": {
+    "name": "CSE - 9",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE10": {
+    "name": "CSE - 10",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE11": {
+    "name": "CSE - 11",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE12": {
+    "name": "CSE - 12",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE13": {
+    "name": "CSE - 13",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE14": {
+    "name": "CSE - 14",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE15": {
+    "name": "CSE - 15",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE16": {
+    "name": "CSE - 16",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE17": {
+    "name": "CSE - 17",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE18": {
+    "name": "CSE - 18",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE19": {
+    "name": "CSE - 19",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE20": {
+    "name": "CSE - 20",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE21": {
+    "name": "CSE - 21",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE22": {
+    "name": "CSE - 22",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE23": {
+    "name": "CSE - 23",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE24": {
+    "name": "CSE - 24",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE25": {
+    "name": "CSE - 25",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE26": {
+    "name": "CSE - 26",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE27": {
+    "name": "CSE - 27",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE28": {
+    "name": "CSE - 28",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE29": {
+    "name": "CSE - 29",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE30": {
+    "name": "CSE - 30",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE31": {
+    "name": "CSE - 31",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE32": {
+    "name": "CSE - 32",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE33": {
+    "name": "CSE - 33",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE34": {
+    "name": "CSE - 34",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE35": {
+    "name": "CSE - 35",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE36": {
+    "name": "CSE - 36",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE37": {
+    "name": "CSE - 37",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE38": {
+    "name": "CSE - 38",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE39": {
+    "name": "CSE - 39",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE40": {
+    "name": "CSE - 41",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE42": {
+    "name": "CSE - 42",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE43": {
+    "name": "CSE - 43",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE44": {
+    "name": "CSE - 44",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE45": {
+    "name": "CSE - 45",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE46": {
+    "name": "CSE - 46",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE47": {
+    "name": "CSE - 47",
+    "type": "core",
+    "students": [
+
+   ]
+  },
+  "CSE48": {
+    "name": "CSE - 48",
+    "type": "core",
+    "students": [
+   ]
   }
-  
+
 }

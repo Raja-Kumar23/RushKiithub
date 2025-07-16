@@ -1,24 +1,26 @@
-import React from 'react'
-import { User, LogOut, UserCircle, Sun, Moon, Calendar } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import './ProfileSection.css'
+"use client"
+import { User, LogOut, Sun, Moon, Calendar } from "lucide-react"
+import Link from "next/link" // Import Link from next/link
+import { useRouter } from "next/navigation"
+import "./ProfileSection.css"
 
-const ProfileSection = ({ 
-  user, 
-  showProfileDropdown, 
-  setShowProfileDropdown, 
-  handleSignOut, 
-  handleGoogleSignIn, 
+const ProfileSection = ({
+  user,
+  showProfileDropdown,
+  setShowProfileDropdown,
+  handleSignOut,
+  handleGoogleSignIn,
   theme,
   isDarkMode,
-  toggleTheme
+  toggleTheme,
 }) => {
   const router = useRouter()
-  
-  const handleTimetableClick = () => {
-    setShowProfileDropdown(false)
-    router.push('/timetable')
-  }
+
+  // No longer need handleTimetableClick if using Link directly
+  // const handleTimetableClick = () => {
+  //   setShowProfileDropdown(false)
+  //   router.push('/timetable')
+  // }
 
   return (
     <div className="profile-section">
@@ -32,31 +34,28 @@ const ProfileSection = ({
               background: theme.glassBg,
               borderColor: theme.border,
               boxShadow: theme.shadow,
-              color: theme.textPrimary
+              color: theme.textPrimary,
             }}
           >
             <img
-              src={user.photoURL || "/default-profile.png"}
+              src={user.photoURL || "/default-profile.png"} 
               alt="Profile"
               className="profile-image"
             />
-            <span className="profile-name">
-              {user.displayName?.split(' ')[0]}
-            </span>
+            <span className="profile-name">{user.displayName?.split(" ")[0]}</span>
           </button>
-
           {showProfileDropdown && (
-            <div 
+            <div
               className="profile-dropdown"
               style={{
                 background: theme.cardBg,
                 borderColor: theme.border,
-                boxShadow: theme.shadow
+                boxShadow: theme.shadow,
               }}
             >
               <div className="profile-info">
                 <img
-                  src={user.photoURL || "/default-profile.png"}
+                  src={user.photoURL || "/placeholder.svg?height=60&width=60"} // Using placeholder.svg
                   alt="Profile"
                   className="dropdown-image"
                 />
@@ -69,34 +68,32 @@ const ProfileSection = ({
                   </p>
                 </div>
               </div>
-              
+
               <div className="profile-divider" style={{ background: theme.border }}></div>
-              
+
               <div className="profile-actions">
-                <button 
+                {/* Use Link component for navigation */}
+                <Link
+                  href="/timetable"
                   className="profile-action timetable"
-                  onClick={handleTimetableClick}
+                  onClick={() => setShowProfileDropdown(false)} // Close dropdown on click
                   style={{ color: theme.textPrimary }}
                 >
                   <Calendar size={18} />
                   My Timetable
-                </button>
-                
+                </Link>
+
                 {/* Theme Toggle - Now inside the dropdown */}
-                <button 
+                <button
                   className="profile-action theme-toggle"
                   onClick={toggleTheme}
                   style={{ color: theme.textPrimary }}
                 >
                   {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
-                  {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+                  {isDarkMode ? "Light Mode" : "Dark Mode"}
                 </button>
-                
-                <button 
-                  className="profile-action logout"
-                  onClick={handleSignOut}
-                  style={{ color: theme.error }}
-                >
+
+                <button className="profile-action logout" onClick={handleSignOut} style={{ color: theme.error }}>
                   <LogOut size={18} />
                   Sign Out
                 </button>
@@ -110,7 +107,7 @@ const ProfileSection = ({
           onClick={handleGoogleSignIn}
           style={{
             background: `linear-gradient(135deg, ${theme.primary} 0%, ${theme.secondary} 100%)`,
-            boxShadow: theme.shadow
+            boxShadow: theme.shadow,
           }}
         >
           <User size={20} />
