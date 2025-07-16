@@ -7,7 +7,7 @@ import {
   Target, Award, Users, TrendingUp,
   FileText, Video, Globe, Github, Code2
 } from 'lucide-react'
-import './datasceince.css'
+import './datascience.css'
 import '../roadmap.css'
 
 const DataScienceRoadmap = () => {

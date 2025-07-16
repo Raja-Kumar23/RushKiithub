@@ -509,9 +509,10 @@ export default function TimetablePage() {
       >
         <div className="header-left">
           <div className="kiithub-logo-container">
-            <img src="/placeholder.svg?height=50&width=50" alt="KiitHub Logo" className="kiithub-main-logo" />
+          <img src="/logo.png" alt="KiitHub Logo" className="kiithub-main-logo" />
+
             <div className="logo-text">
-              <h1 style={{ color: currentTheme.textPrimary }}>KiitHub</h1>
+              <h1 style={{ color: currentTheme.textPrimary }}>KIITHub</h1>
               <p style={{ color: currentTheme.textMuted }}>Your Smart Campus Companion</p>
             </div>
           </div>
