@@ -115,7 +115,7 @@
   "thursday": [
     { "subject": "EE", "time": "08:00-09:00", "room": "C25-A-010", "faculty": "" },
     { "subject": "DAA", "time": "09:00-10:00", "room": "C25-A-010", "faculty": "" },
-    { "subject": "SE", "time": "10:00-11:00", "room": "C25-A-010", "faculty": "" }
+    { "subject": "SE", "time": "12:00-1:00", "room": "C25-A-010", "faculty": "" }
   ],
   "friday": [
     { "subject": "CN", "time": "08:00-09:00", "room": "C25-A-009", "faculty": "" },
