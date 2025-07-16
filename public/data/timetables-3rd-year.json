@@ -1,0 +1,226 @@
+{
+  "CSE1": {
+    "coreSubjects": {
+      "monday": [
+        { "subject": "Data Structures", "time": "02:00-10:00", "room": "C-301", "faculty": "Dr. A. Sharma" },
+        { "subject": "Operating Systems", "time": "10:00-11:00", "room": "C-302", "faculty": "Prof. B. Singh" },
+        { "subject": "Computer Networks", "time": "11:00-12:00", "room": "C-303", "faculty": "Dr. S. Kumar" }
+      ],
+      "tuesday": [
+        { "subject": "Algorithms", "time": "09:00-10:00", "room": "C-301", "faculty": "Dr. A. Sharma" },
+        { "subject": "Database Management", "time": "10:00-11:00", "room": "C-304", "faculty": "Prof. R. Gupta" }
+      ],
+      "wednesday": [
+        { "subject": "Software Engineering", "time": "14:00-15:00", "room": "C-305", "faculty": "Dr. P. Mishra" },
+        { "subject": "Web Technologies", "time": "15:00-16:00", "room": "C-306", "faculty": "Prof. V. Reddy" }
+      ],
+      "thursday": [
+        { "subject": "Artificial Intelligence", "time": "09:00-10:00", "room": "C-307", "faculty": "Dr. K. Singh" },
+        { "subject": "Machine Learning", "time": "10:00-11:00", "room": "C-308", "faculty": "Prof. L. Devi" }
+      ],
+      "friday": [
+        { "subject": "Cloud Computing", "time": "09:00-10:00", "room": "C-309", "faculty": "Dr. M. Khan" },
+        { "subject": "Cyber Security", "time": "10:00-11:00", "room": "C-310", "faculty": "Prof. N. Sharma" }
+      ]
+    }
+  },
+  "CSE2": {
+    "coreSubjects": {
+      "monday": [
+        { "subject": "Discrete Mathematics", "time": "09:00-10:00", "room": "C-401", "faculty": "Dr. O. Prasad" },
+        { "subject": "Theory of Computation", "time": "10:00-11:00", "room": "C-402", "faculty": "Prof. Q. Ahmed" }
+      ],
+      "tuesday": [
+        { "subject": "Compiler Design", "time": "09:00-10:00", "room": "C-403", "faculty": "Dr. R. Singh" },
+        { "subject": "Computer Graphics", "time": "10:00-11:00", "room": "C-404", "faculty": "Prof. T. Verma" }
+      ],
+      "wednesday": [
+        { "subject": "Distributed Systems", "time": "09:00-10:00", "room": "C-405", "faculty": "Dr. U. Kumar" },
+        { "subject": "Big Data Analytics", "time": "10:00-11:00", "room": "C-406", "faculty": "Prof. W. Devi" }
+      ],
+      "thursday": [
+        { "subject": "Mobile Computing", "time": "09:00-10:00", "room": "C-407", "faculty": "Dr. X. Sharma" },
+        { "subject": "IoT", "time": "10:00-11:00", "room": "C-408", "faculty": "Prof. Y. Singh" }
+      ],
+      "friday": [
+        { "subject": "Blockchain Technology", "time": "09:00-10:00", "room": "C-409", "faculty": "Dr. Z. Khan" },
+        { "subject": "Quantum Computing", "time": "10:00-11:00", "room": "C-410", "faculty": "Prof. A. Gupta" }
+      ]
+    }
+  },
+  "CSE3": {
+    "coreSubjects": {
+      "monday": [
+        { "subject": "Programming in C++", "time": "09:00-10:00", "room": "C-501", "faculty": "Dr. B. Das" },
+        { "subject": "Object-Oriented Programming", "time": "10:00-11:00", "room": "C-502", "faculty": "Prof. C. Roy" }
+      ],
+      "tuesday": [
+        { "subject": "Data Structures Lab", "time": "11:00-12:00", "room": "Lab-1", "faculty": "Dr. D. Sen" }
+      ],
+      "wednesday": [
+        { "subject": "Operating Systems Lab", "time": "11:00-12:00", "room": "Lab-2", "faculty": "Prof. E. Mitra" }
+      ],
+      "thursday": [{ "subject": "Database Lab", "time": "11:00-12:00", "room": "Lab-3", "faculty": "Dr. F. Ghosh" }],
+      "friday": [{ "subject": "Web Tech Lab", "time": "11:00-12:00", "room": "Lab-4", "faculty": "Prof. G. Saha" }]
+    }
+  },
+  "CSE4": {
+    "coreSubjects": {
+      "monday": [
+        { "subject": "Python Programming", "time": "09:00-10:00", "room": "C-601", "faculty": "Dr. H. Paul" },
+        { "subject": "Data Science Fundamentals", "time": "10:00-11:00", "room": "C-602", "faculty": "Prof. I. Dey" }
+      ],
+      "tuesday": [
+        { "subject": "Machine Learning Lab", "time": "11:00-12:00", "room": "Lab-5", "faculty": "Dr. J. Kundu" }
+      ],
+      "wednesday": [{ "subject": "AI Lab", "time": "11:00-12:00", "room": "Lab-6", "faculty": "Prof. K. Majumdar" }],
+      "thursday": [
+        { "subject": "Cloud Computing Lab", "time": "11:00-12:00", "room": "Lab-7", "faculty": "Dr. L. Roy" }
+      ],
+      "friday": [{ "subject": "Cyber Security Lab", "time": "11:00-12:00", "room": "Lab-8", "faculty": "Prof. M. Das" }]
+    }
+  },
+  "ECE1": {
+    "coreSubjects": {
+      "monday": [
+        { "subject": "Analog Electronics", "time": "09:00-10:00", "room": "E-101", "faculty": "Dr. N. Singh" },
+        { "subject": "Digital Electronics", "time": "10:00-11:00", "room": "E-102", "faculty": "Prof. O. Kumar" }
+      ],
+      "tuesday": [{ "subject": "Signals & Systems", "time": "09:00-10:00", "room": "E-103", "faculty": "Dr. P. Devi" }],
+      "wednesday": [
+        { "subject": "Control Systems", "time": "09:00-10:00", "room": "E-104", "faculty": "Prof. Q. Sharma" }
+      ],
+      "thursday": [
+        { "subject": "Communication Systems", "time": "09:00-10:00", "room": "E-105", "faculty": "Dr. R. Gupta" }
+      ],
+      "friday": [{ "subject": "Microcontrollers", "time": "09:00-10:00", "room": "E-106", "faculty": "Prof. S. Singh" }]
+    }
+  },
+  "MECH1": {
+    "coreSubjects": {
+      "monday": [
+        { "subject": "Engineering Mechanics", "time": "09:00-10:00", "room": "M-101", "faculty": "Dr. T. Kumar" },
+        { "subject": "Thermodynamics", "time": "10:00-11:00", "room": "M-102", "faculty": "Prof. U. Devi" }
+      ],
+      "tuesday": [{ "subject": "Fluid Mechanics", "time": "09:00-10:00", "room": "M-103", "faculty": "Dr. V. Sharma" }],
+      "wednesday": [
+        { "subject": "Machine Design", "time": "09:00-10:00", "room": "M-104", "faculty": "Prof. W. Gupta" }
+      ],
+      "thursday": [
+        { "subject": "Manufacturing Processes", "time": "09:00-10:00", "room": "M-105", "faculty": "Dr. X. Singh" }
+      ],
+      "friday": [{ "subject": "Heat Transfer", "time": "09:00-10:00", "room": "M-106", "faculty": "Prof. Y. Kumar" }]
+    }
+  },
+  "HPC1": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "High Performance Computing", "time": "11:00-12:00", "room": "L-101", "faculty": "Dr. C. Kumar" }
+      ],
+      "tuesday": [
+        { "subject": "Parallel Programming", "time": "11:00-12:00", "room": "L-102", "faculty": "Dr. C. Kumar" }
+      ],
+      "wednesday": [{ "subject": "GPU Computing", "time": "11:00-12:00", "room": "L-103", "faculty": "Dr. C. Kumar" }],
+      "thursday": [
+        { "subject": "Distributed Computing", "time": "11:00-12:00", "room": "L-104", "faculty": "Dr. C. Kumar" }
+      ],
+      "friday": [{ "subject": "Cloud HPC", "time": "11:00-12:00", "room": "L-105", "faculty": "Dr. C. Kumar" }]
+    }
+  },
+  "AI1": {
+    "electiveSubjects": {
+      "monday": [{ "subject": "Advanced AI", "time": "12:00-13:00", "room": "AI-101", "faculty": "Dr. E. Khan" }],
+      "tuesday": [{ "subject": "Deep Learning", "time": "12:00-13:00", "room": "AI-102", "faculty": "Dr. E. Khan" }],
+      "wednesday": [
+        { "subject": "Natural Language Processing", "time": "12:00-13:00", "room": "AI-103", "faculty": "Dr. E. Khan" }
+      ],
+      "thursday": [{ "subject": "Computer Vision", "time": "12:00-13:00", "room": "AI-104", "faculty": "Dr. E. Khan" }],
+      "friday": [
+        { "subject": "Reinforcement Learning", "time": "12:00-13:00", "room": "AI-105", "faculty": "Dr. E. Khan" }
+      ]
+    }
+  },
+  "CYBER1": {
+    "electiveSubjects": {
+      "monday": [{ "subject": "Network Security", "time": "13:00-14:00", "room": "CY-101", "faculty": "Dr. F. Ali" }],
+      "tuesday": [{ "subject": "Cryptography", "time": "13:00-14:00", "room": "CY-102", "faculty": "Dr. F. Ali" }],
+      "wednesday": [{ "subject": "Ethical Hacking", "time": "13:00-14:00", "room": "CY-103", "faculty": "Dr. F. Ali" }],
+      "thursday": [
+        { "subject": "Digital Forensics", "time": "13:00-14:00", "room": "CY-104", "faculty": "Dr. F. Ali" }
+      ],
+      "friday": [{ "subject": "Malware Analysis", "time": "13:00-14:00", "room": "CY-105", "faculty": "Dr. F. Ali" }]
+    }
+  },
+  "BLOCKCHAIN1": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "Blockchain Fundamentals", "time": "14:00-15:00", "room": "BC-101", "faculty": "Dr. G. Singh" }
+      ],
+      "tuesday": [{ "subject": "Smart Contracts", "time": "14:00-15:00", "room": "BC-102", "faculty": "Dr. G. Singh" }],
+      "wednesday": [
+        { "subject": "Decentralized Applications", "time": "14:00-15:00", "room": "BC-103", "faculty": "Dr. G. Singh" }
+      ],
+      "thursday": [{ "subject": "Cryptocurrency", "time": "14:00-15:00", "room": "BC-104", "faculty": "Dr. G. Singh" }],
+      "friday": [
+        { "subject": "Blockchain Security", "time": "14:00-15:00", "room": "BC-105", "faculty": "Dr. G. Singh" }
+      ]
+    }
+  },
+  "VLSI1": {
+    "electiveSubjects": {
+      "monday": [{ "subject": "VLSI Design", "time": "15:00-16:00", "room": "VL-101", "faculty": "Dr. H. Rao" }],
+      "tuesday": [{ "subject": "Digital IC Design", "time": "15:00-16:00", "room": "VL-102", "faculty": "Dr. H. Rao" }],
+      "wednesday": [
+        { "subject": "Analog IC Design", "time": "15:00-16:00", "room": "VL-103", "faculty": "Dr. H. Rao" }
+      ],
+      "thursday": [{ "subject": "FPGA Design", "time": "15:00-16:00", "room": "VL-104", "faculty": "Dr. H. Rao" }],
+      "friday": [{ "subject": "Embedded Systems", "time": "15:00-16:00", "room": "VL-105", "faculty": "Dr. H. Rao" }]
+    }
+  },
+  "THERMAL1": {
+    "electiveSubjects": {
+      "monday": [
+        { "subject": "Advanced Thermodynamics", "time": "16:00-17:00", "room": "TH-101", "faculty": "Dr. I. Kumar" }
+      ],
+      "tuesday": [
+        { "subject": "Refrigeration & AC", "time": "16:00-17:00", "room": "TH-102", "faculty": "Dr. I. Kumar" }
+      ],
+      "wednesday": [
+        { "subject": "Power Plant Engineering", "time": "16:00-17:00", "room": "TH-103", "faculty": "Dr. I. Kumar" }
+      ],
+      "thursday": [
+        { "subject": "Renewable Energy", "time": "16:00-17:00", "room": "TH-104", "faculty": "Dr. I. Kumar" }
+      ],
+      "friday": [
+        {
+          "subject": "Computational Fluid Dynamics",
+          "time": "16:00-17:00",
+          "room": "TH-105",
+          "faculty": "Dr. I. Kumar"
+        }
+      ]
+    }
+  },
+  "DMDW1": {
+    "electiveSubjects": {
+      "monday": [
+        {
+          "subject": "Data Mining & Data Warehousing",
+          "time": "12:00-13:00",
+          "room": "R-205",
+          "faculty": "Prof. D. Gupta"
+        }
+      ],
+      "tuesday": [
+        { "subject": "Big Data Technologies", "time": "12:00-13:00", "room": "R-206", "faculty": "Prof. D. Gupta" }
+      ],
+      "wednesday": [
+        { "subject": "Business Intelligence", "time": "12:00-13:00", "room": "R-207", "faculty": "Prof. D. Gupta" }
+      ],
+      "thursday": [
+        { "subject": "Data Visualization", "time": "12:00-13:00", "room": "R-208", "faculty": "Prof. D. Gupta" }
+      ],
+      "friday": [{ "subject": "NoSQL Databases", "time": "12:00-13:00", "room": "R-209", "faculty": "Prof. D. Gupta" }]
+    }
+  }
+}

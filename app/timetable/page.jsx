@@ -3,24 +3,47 @@
 import { useEffect, useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth"
-import { Calendar, Clock, MapPin, User, BookOpen, GraduationCap, Sun, Moon, LogOut, Timer, Play, Pause, Zap, ChevronDown, ChevronUp } from 'lucide-react'
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  User,
+  BookOpen,
+  GraduationCap,
+  Sun,
+  Moon,
+  LogOut,
+  Timer,
+  Play,
+  Pause,
+  Zap,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react"
 import "./styles.css"
 import { auth, provider } from "../../lib/firebase"
-import sectionsData from "../../public/data/sections.json" // Import sections data
-import timetablesData from "../../public/data/timetables.json" // Import timetables data
+
+// Import year-specific data files
+import sectionsData3rdYear from "../../public/data/sections-3rd-year.json"
+import timetablesData3rdYear from "../../public/data/timetables-3rd-year.json"
+import sectionsData2ndYear from "../../public/data/sections-2nd-year.json"
+import timetablesData2ndYear from "../../public/data/timetables-2nd-year.json"
 
 export default function TimetablePage() {
   const router = useRouter()
   const [user, setUser] = useState(null)
   const [authLoading, setAuthLoading] = useState(true)
-  const [userSections, setUserSections] = useState([]) // Changed to array for multiple sections
-  // Removed selectedSubjectType state as it's no longer needed for filtering in "all" view
+  const [userSections, setUserSections] = useState([])
   const [selectedDay, setSelectedDay] = useState("monday")
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [showProfileDropdown, setShowProfileDropdown] = useState(false)
   const [loginError, setLoginError] = useState("")
   const [currentTime, setCurrentTime] = useState(new Date())
   const [activeView, setActiveView] = useState("current") // current, all
+
+  // State to hold the currently active sections and timetables data
+  const [activeSectionsData, setActiveSectionsData] = useState(sectionsData3rdYear)
+  const [activeTimetablesData, setActiveTimetablesData] = useState(timetablesData3rdYear)
 
   // Enhanced Theme Configuration - now directly used for inline styles
   const currentTheme = isDarkMode
@@ -97,7 +120,7 @@ export default function TimetablePage() {
     }
   }, [getCurrentDay])
 
-  // Find all sections a user belongs to
+  // Find all sections a user belongs to based on the active sections data
   const findUserSections = useCallback((sections, rollNumber) => {
     const userSectionsFound = []
     for (const [sectionId, sectionInfo] of Object.entries(sections)) {
@@ -115,10 +138,28 @@ export default function TimetablePage() {
   const loadData = useCallback(
     (userData) => {
       try {
-        // sectionsData and timetablesData are now imported directly
         if (userData) {
           const rollNumber = userData.email.split("@")[0]
-          const sectionsForUser = findUserSections(sectionsData, rollNumber)
+          const yearPrefix = rollNumber.substring(0, 2) // e.g., "23" or "24"
+
+          let sectionsToUse = sectionsData3rdYear
+          let timetablesToUse = timetablesData3rdYear
+
+          if (yearPrefix === "24") {
+            // Assuming '24' prefix for 2nd year
+            sectionsToUse = sectionsData2ndYear
+            timetablesToUse = timetablesData2ndYear
+          } else if (yearPrefix === "23") {
+            // Assuming '23' prefix for 3rd year
+            sectionsToUse = sectionsData3rdYear
+            timetablesToUse = timetablesData3rdYear
+          }
+          // You can add more conditions for other years (e.g., "22" for 4th year)
+
+          setActiveSectionsData(sectionsToUse)
+          setActiveTimetablesData(timetablesToUse)
+
+          const sectionsForUser = findUserSections(sectionsToUse, rollNumber)
           setUserSections(sectionsForUser)
         }
       } catch (error) {
@@ -133,7 +174,8 @@ export default function TimetablePage() {
     if (!auth) {
       // If auth is null (mocked), simulate a successful login for davidtomdon@gmail.com
       // or a failed one for others to show UI states.
-      const mockUserEmail = "23053769@kiit.ac.in" // Example user from sections.json
+      const mockUserEmail = "23053769@kiit.ac.in" // Example user from sections-3rd-year.json
+      // const mockUserEmail = "24057001@kiit.ac.in" // Example user for 2nd year
       const mockRollNumber = mockUserEmail.split("@")[0]
       const mockUser = {
         uid: "mock-uid-123",
@@ -142,7 +184,19 @@ export default function TimetablePage() {
         photoURL: "/placeholder.svg?height=40&width=40", // Placeholder image
       }
 
-      if (findUserSections(sectionsData, mockRollNumber).length > 0 || mockUserEmail === "davidtomdon@gmail.com") {
+      // Determine which sections data to use for the mock user
+      const yearPrefix = mockRollNumber.substring(0, 2)
+      let sectionsToUseForMock = sectionsData3rdYear
+      if (yearPrefix === "24") {
+        sectionsToUseForMock = sectionsData2ndYear
+      } else if (yearPrefix === "23") {
+        sectionsToUseForMock = sectionsData3rdYear
+      }
+
+      if (
+        findUserSections(sectionsToUseForMock, mockRollNumber).length > 0 ||
+        mockUserEmail === "davidtomdon@gmail.com"
+      ) {
         setUser(mockUser)
         loadData(mockUser)
         setLoginError("")
@@ -276,12 +330,12 @@ export default function TimetablePage() {
   // Helper to get all classes for a given day across all user's sections
   const getAllClassesForDay = useCallback(
     (day) => {
-      if (!userSections.length || !Object.keys(timetablesData).length) return []
+      if (!userSections.length || !Object.keys(activeTimetablesData).length) return []
 
       let combinedClasses = []
       userSections.forEach((section) => {
-        const coreClasses = timetablesData[section.id]?.coreSubjects?.[day] || []
-        const electiveClasses = timetablesData[section.id]?.electiveSubjects?.[day] || []
+        const coreClasses = activeTimetablesData[section.id]?.coreSubjects?.[day] || []
+        const electiveClasses = activeTimetablesData[section.id]?.electiveSubjects?.[day] || []
         combinedClasses = combinedClasses.concat(coreClasses, electiveClasses)
       })
 
@@ -298,7 +352,7 @@ export default function TimetablePage() {
 
       return uniqueClasses.sort((a, b) => parseTime(a.time) - parseTime(b.time))
     },
-    [userSections, parseTime],
+    [userSections, parseTime, activeTimetablesData],
   )
 
   const getUpcomingClasses = useCallback(() => {
@@ -306,13 +360,12 @@ export default function TimetablePage() {
     const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes()
     const allClassesForToday = getAllClassesForDay(today)
 
-    return allClassesForToday
-      .filter((classItem) => {
-        const [startTime] = classItem.time.split("-")
-        const startMinutes = parseTime(startTime + "-00:00")
-        return startMinutes > currentMinutes // Only show classes that haven't started yet
-      })
-      .slice(0, 2) // Show up to 2 upcoming classes for today, rest will scroll
+    return allClassesForToday.filter((classItem) => {
+      const [startTime] = classItem.time.split("-")
+      const startMinutes = parseTime(startTime + "-00:00")
+      return startMinutes > currentMinutes // Only show classes that haven't started yet
+    })
+    // Removed .slice(0, 2) to allow all upcoming classes to be rendered for scrolling
   }, [getCurrentDay, currentTime, getAllClassesForDay, parseTime])
 
   const getCurrentClasses = useCallback(() => {
@@ -331,13 +384,13 @@ export default function TimetablePage() {
   }, [getCurrentDay, getAllClassesForDay, isCurrentClass])
 
   const getSelectedDaySchedule = useCallback(() => {
-    if (!userSections.length || !Object.keys(timetablesData).length) return []
+    if (!userSections.length || !Object.keys(activeTimetablesData).length) return []
 
     let combinedClasses = []
     userSections.forEach((section) => {
       // Combine both core and elective subjects for the selected day
-      const coreClasses = timetablesData[section.id]?.coreSubjects?.[selectedDay] || []
-      const electiveClasses = timetablesData[section.id]?.electiveSubjects?.[selectedDay] || []
+      const coreClasses = activeTimetablesData[section.id]?.coreSubjects?.[selectedDay] || []
+      const electiveClasses = activeTimetablesData[section.id]?.electiveSubjects?.[selectedDay] || []
       combinedClasses = combinedClasses.concat(coreClasses, electiveClasses)
     })
 
@@ -357,7 +410,7 @@ export default function TimetablePage() {
         isCurrent: isCurrentClass(classItem),
       }))
       .sort((a, b) => parseTime(a.time) - parseTime(b.time))
-  }, [userSections, selectedDay, isCurrentClass, parseTime])
+  }, [userSections, selectedDay, isCurrentClass, parseTime, activeTimetablesData])
 
   const days = [
     { key: "monday", label: "Monday", emoji: "📅" },
