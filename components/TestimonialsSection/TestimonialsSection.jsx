@@ -16,11 +16,11 @@ const TestimonialsSection = ({ theme }) => {
       highlight: "game-changer",
     },
     {
-      name: "SHREYA SISINTHY",
-      year: "23051056",
-      avatar: "👩‍💻",
-      rating: 3,
-      text: "I am glad about this service but I want to mention one problem. Personally I feel that some reviews are shuffled. For example, I have written a comment for Sarita Mishra but I see the same comment on Sohail Khans Page which doesnt make sense as I see a comment for a female on a males review. Kindly rectify this issue. Its okay if there are less number of reviews but we are looking for quality. Everyone who uses this will be greatful. Thank You!",
+      name: "Niraj Kumar Sah",
+      year: "23053716",
+      avatar: "👨‍💻",
+      rating: 5,
+      text: "This platform is awesome for the students to secure a good marks. The note provided here is very helpful and easy to understand.",
       highlight: "incredibly accurate",
     },
     {

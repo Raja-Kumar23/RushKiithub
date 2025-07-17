@@ -1,5 +1,4 @@
 "use client"
-
 import { useEffect, useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth"
@@ -40,7 +39,6 @@ export default function TimetablePage() {
   const [loginError, setLoginError] = useState("")
   const [currentTime, setCurrentTime] = useState(new Date())
   const [activeView, setActiveView] = useState("current") // current, all
-
   // State to hold the currently active sections and timetables data
   const [activeSectionsData, setActiveSectionsData] = useState(sectionsData3rdYear)
   const [activeTimetablesData, setActiveTimetablesData] = useState(timetablesData3rdYear)
@@ -141,10 +139,8 @@ export default function TimetablePage() {
         if (userData) {
           const rollNumber = userData.email.split("@")[0]
           const yearPrefix = rollNumber.substring(0, 2) // e.g., "23" or "24"
-
           let sectionsToUse = sectionsData3rdYear
           let timetablesToUse = timetablesData3rdYear
-
           if (yearPrefix === "24") {
             // Assuming '24' prefix for 2nd year
             sectionsToUse = sectionsData2ndYear
@@ -155,10 +151,8 @@ export default function TimetablePage() {
             timetablesToUse = timetablesData3rdYear
           }
           // You can add more conditions for other years (e.g., "22" for 4th year)
-
           setActiveSectionsData(sectionsToUse)
           setActiveTimetablesData(timetablesToUse)
-
           const sectionsForUser = findUserSections(sectionsToUse, rollNumber)
           setUserSections(sectionsForUser)
         }
@@ -183,7 +177,6 @@ export default function TimetablePage() {
         email: mockUserEmail,
         photoURL: "/placeholder.svg?height=40&width=40", // Placeholder image
       }
-
       // Determine which sections data to use for the mock user
       const yearPrefix = mockRollNumber.substring(0, 2)
       let sectionsToUseForMock = sectionsData3rdYear
@@ -192,7 +185,6 @@ export default function TimetablePage() {
       } else if (yearPrefix === "23") {
         sectionsToUseForMock = sectionsData3rdYear
       }
-
       if (
         findUserSections(sectionsToUseForMock, mockRollNumber).length > 0 ||
         mockUserEmail === "davidtomdon@gmail.com"
@@ -202,6 +194,7 @@ export default function TimetablePage() {
         setLoginError("")
       } else {
         setLoginError("Please use your KIIT Gmail account (@kiit.ac.in) to sign in")
+        signOut(auth)
         setUser(null)
         router.push("/")
       }
@@ -286,25 +279,76 @@ export default function TimetablePage() {
     }
   }
 
+  // --- NEW/IMPROVED TIME UTILITIES ---
+
+  // Parses a time string (e.g., "08:00" or "1:00" for 1 PM) into minutes from midnight for sorting
   const parseTime = useCallback((timeStr) => {
-    if (!timeStr || typeof timeStr !== "string" || !timeStr.includes("-")) {
+    if (!timeStr || typeof timeStr !== "string") {
       return 0
     }
     try {
+      // Extract only the start time part if it's a range (e.g., "08:00-09:00" -> "08:00")
       const [time] = timeStr.split("-")
       if (!time || !time.includes(":")) {
         return 0
       }
-      const [hours, minutes] = time.split(":").map(Number)
-      if (isNaN(hours) || isNaN(minutes)) {
-        return 0
+      let [hours, minutes] = time.split(":").map(Number)
+
+      // Heuristic to correctly interpret 12-hour times without AM/PM for sorting
+      // This assumes a typical class schedule where:
+      // 12:xx is noon (12 PM)
+      // 1:xx to 6:xx are PM (add 12 to convert to 24-hour for sorting)
+      // 7:xx to 11:xx are AM (no change)
+      // 00:xx (midnight) is 12 AM (no change, or 0 for sorting)
+
+      if (hours === 12) {
+        // 12:xx (noon) remains 12 for sorting
+      } else if (hours === 0) {
+        // 00:xx (midnight) remains 0 for sorting
+      } else if (hours < 7) {
+        // For hours 1-6, assume PM (e.g., 1:00 means 1 PM)
+        hours += 12
       }
+      // For hours 7-11, assume AM (no change)
+
       return hours * 60 + minutes
     } catch (error) {
-      console.error("Error parsing time:", timeStr, error)
+      console.error("Error parsing time for sorting:", timeStr, error)
       return 0
     }
   }, [])
+
+  // Formats a 24-hour time string (e.g., "08:00") to 12-hour format without AM/PM (e.g., "8:00")
+  const formatSingleTime = useCallback((time24hr) => {
+    if (!time24hr || typeof time24hr !== "string" || !time24hr.includes(":")) {
+      return time24hr // Return as is if invalid
+    }
+    let [hours, minutes] = time24hr.split(":").map(Number)
+
+    // Convert to 12-hour format without AM/PM
+    if (hours === 0) {
+      hours = 12 // 00:xx (midnight) becomes 12
+    } else if (hours > 12) {
+      hours -= 12 // 13:xx becomes 1:xx, 14:xx becomes 2:xx, etc.
+    }
+
+    const formattedMinutes = minutes.toString().padStart(2, "0")
+    return `${hours}:${formattedMinutes}`
+  }, [])
+
+  // Formats a time range string (e.g., "08:00-09:00") to 12-hour format (e.g., "8:00 - 9:00")
+  const formatTimeRangeTo12Hour = useCallback(
+    (timeRange24hr) => {
+      if (!timeRange24hr || typeof timeRange24hr !== "string" || !timeRange24hr.includes("-")) {
+        return timeRange24hr // Return as is if invalid
+      }
+      const [startTime24hr, endTime24hr] = timeRange24hr.split("-")
+      const formattedStartTime = formatSingleTime(startTime24hr)
+      const formattedEndTime = formatSingleTime(endTime24hr)
+      return `${formattedStartTime} - ${formattedEndTime}`
+    },
+    [formatSingleTime],
+  )
 
   const isCurrentClass = useCallback(
     (classItem) => {
@@ -313,16 +357,19 @@ export default function TimetablePage() {
       }
       const currentDay = getCurrentDay()
       const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes()
+
       if (!classItem.time.includes("-")) {
         return false
       }
-      const [startTime, endTime] = classItem.time.split("-")
-      if (!startTime || !endTime) {
+      const [startTimeStr, endTimeStr] = classItem.time.split("-")
+      if (!startTimeStr || !endTimeStr) {
         return false
       }
-      const startMinutes = parseTime(startTime + "-00:00")
-      const endMinutes = parseTime(endTime + "-00:00")
-      return currentDay === selectedDay && currentMinutes >= startMinutes && currentMinutes <= endMinutes
+
+      const startMinutes = parseTime(startTimeStr) // Use parseTime on the start part
+      const endMinutes = parseTime(endTimeStr) // Use parseTime on the end part
+
+      return currentDay === selectedDay && currentMinutes >= startMinutes && currentMinutes < endMinutes
     },
     [getCurrentDay, currentTime, selectedDay, parseTime],
   )
@@ -331,14 +378,12 @@ export default function TimetablePage() {
   const getAllClassesForDay = useCallback(
     (day) => {
       if (!userSections.length || !Object.keys(activeTimetablesData).length) return []
-
       let combinedClasses = []
       userSections.forEach((section) => {
         const coreClasses = activeTimetablesData[section.id]?.coreSubjects?.[day] || []
         const electiveClasses = activeTimetablesData[section.id]?.electiveSubjects?.[day] || []
         combinedClasses = combinedClasses.concat(coreClasses, electiveClasses)
       })
-
       // Filter out duplicates if a class appears in multiple sections a user is part of (e.g., electives)
       const uniqueClasses = []
       const seen = new Set()
@@ -349,7 +394,7 @@ export default function TimetablePage() {
           uniqueClasses.push(classItem)
         }
       }
-
+      // Sort classes chronologically using the improved parseTime
       return uniqueClasses.sort((a, b) => parseTime(a.time) - parseTime(b.time))
     },
     [userSections, parseTime, activeTimetablesData],
@@ -359,19 +404,18 @@ export default function TimetablePage() {
     const today = getCurrentDay()
     const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes()
     const allClassesForToday = getAllClassesForDay(today)
-
-    return allClassesForToday.filter((classItem) => {
-      const [startTime] = classItem.time.split("-")
-      const startMinutes = parseTime(startTime + "-00:00")
-      return startMinutes > currentMinutes // Only show classes that haven't started yet
-    })
-    // Removed .slice(0, 2) to allow all upcoming classes to be rendered for scrolling
+    return allClassesForToday
+      .filter((classItem) => {
+        const [startTime] = classItem.time.split("-")
+        const startMinutes = parseTime(startTime)
+        return startMinutes > currentMinutes // Only show classes that haven't started yet
+      })
+      .slice(0, 1)
   }, [getCurrentDay, currentTime, getAllClassesForDay, parseTime])
 
   const getCurrentClasses = useCallback(() => {
     const today = getCurrentDay()
     const allClassesForToday = getAllClassesForDay(today)
-
     return allClassesForToday.filter((classItem) => isCurrentClass(classItem))
   }, [getCurrentDay, getAllClassesForDay, isCurrentClass])
 
@@ -385,7 +429,6 @@ export default function TimetablePage() {
 
   const getSelectedDaySchedule = useCallback(() => {
     if (!userSections.length || !Object.keys(activeTimetablesData).length) return []
-
     let combinedClasses = []
     userSections.forEach((section) => {
       // Combine both core and elective subjects for the selected day
@@ -393,7 +436,6 @@ export default function TimetablePage() {
       const electiveClasses = activeTimetablesData[section.id]?.electiveSubjects?.[selectedDay] || []
       combinedClasses = combinedClasses.concat(coreClasses, electiveClasses)
     })
-
     const uniqueClasses = []
     const seen = new Set()
     for (const classItem of combinedClasses) {
@@ -403,7 +445,6 @@ export default function TimetablePage() {
         uniqueClasses.push(classItem)
       }
     }
-
     return uniqueClasses
       .map((classItem) => ({
         ...classItem,
@@ -427,16 +468,11 @@ export default function TimetablePage() {
         setShowProfileDropdown(false)
       }
     }
-
     document.addEventListener("mousedown", handleClickOutside)
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
     }
   }, [showProfileDropdown])
-
-  const handleTimetableClick = () => {
-    setShowProfileDropdown(false)
-  }
 
   if (authLoading) {
     return (
@@ -498,6 +534,24 @@ export default function TimetablePage() {
 
   return (
     <div className="timetable-container" style={{ background: currentTheme.background }}>
+      {/* Message for 5th Sem Elective Timetable - Moved to top */}
+      <div
+        style={{
+          textAlign: "center",
+          padding: "15px",
+          color: currentTheme.textPrimary,
+          fontSize: "16px",
+          fontWeight: "600",
+          marginBottom: "20px", // Space below the message
+          backgroundColor: isDarkMode ? "rgba(30, 41, 59, 0.7)" : "rgba(255, 255, 255, 0.7)", // Subtle background
+          borderRadius: "10px",
+          backdropFilter: "blur(10px)",
+          border: `1px solid ${currentTheme.border}`,
+        }}
+      >
+        <p style={{ margin: 0 }}>5th Sem Elective Timetable has not been updated yet. It will be updated soon.</p>
+      </div>
+
       {/* New Combined Header */}
       <header
         className="main-header"
@@ -509,8 +563,7 @@ export default function TimetablePage() {
       >
         <div className="header-left">
           <div className="kiithub-logo-container">
-          <img src="/logo.png" alt="KiitHub Logo" className="kiithub-main-logo" />
-
+            <img src="/logo.png" alt="KiitHub Logo" className="kiithub-main-logo" />
             <div className="logo-text">
               <h1 style={{ color: currentTheme.textPrimary }}>KIITHub</h1>
               <p style={{ color: currentTheme.textMuted }}>Your Smart Campus Companion</p>
@@ -589,19 +642,16 @@ export default function TimetablePage() {
                     )}
                   </div>
                 </div>
-
                 <div className="profile-divider" style={{ background: currentTheme.border }}></div>
-
                 <div className="profile-actions">
                   <button
                     className="profile-action timetable"
-                    onClick={handleTimetableClick}
+                    onClick={() => setShowProfileDropdown(false)} // Close dropdown on click
                     style={{ color: currentTheme.textPrimary }}
                   >
                     <Calendar size={18} style={{ color: currentTheme.primary }} />
                     My Timetable
                   </button>
-
                   <button
                     className="profile-action theme-toggle"
                     onClick={toggleTheme}
@@ -610,7 +660,6 @@ export default function TimetablePage() {
                     {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
                     {isDarkMode ? "Light Mode" : "Dark Mode"}
                   </button>
-
                   <button
                     className="profile-action logout"
                     onClick={handleSignOut}
@@ -625,7 +674,6 @@ export default function TimetablePage() {
           </div>
         </div>
       </header>
-
       <main className="main-content-grid">
         {/* Student Info Card - now spans full width on desktop */}
         {userSections.length > 0 && (
@@ -685,7 +733,6 @@ export default function TimetablePage() {
             </div>
           </section>
         )}
-
         {/* Quick Overview Cards */}
         <section className="overview-grid">
           {/* Current Classes */}
@@ -708,7 +755,6 @@ export default function TimetablePage() {
                 <span style={{ color: currentTheme.textSecondary }}>{getCurrentDateString()}</span>
               </div>
             </div>
-
             <div className="overview-header">
               <div className="overview-title">
                 <Play size={20} style={{ color: currentTheme.primary }} />
@@ -724,7 +770,6 @@ export default function TimetablePage() {
                 LIVE
               </div>
             </div>
-
             <div className="overview-content">
               {getCurrentClasses().length > 0 ? (
                 getCurrentClasses().map((classItem, index) => (
@@ -742,7 +787,7 @@ export default function TimetablePage() {
                         <div className="class-meta">
                           <span className="time-info" style={{ color: currentTheme.primary }}>
                             <Clock size={14} />
-                            {classItem.time}
+                            {formatTimeRangeTo12Hour(classItem.time)} {/* Formatted time */}
                           </span>
                         </div>
                       </div>
@@ -767,8 +812,7 @@ export default function TimetablePage() {
               )}
             </div>
           </div>
-
-          {/* Upcoming Classes */}
+          {/* Next Class */}
           <div
             className="overview-card upcoming-classes"
             style={{
@@ -780,10 +824,9 @@ export default function TimetablePage() {
             <div className="overview-header">
               <div className="overview-title">
                 <Timer size={20} style={{ color: currentTheme.secondary }} />
-                <h3 style={{ color: currentTheme.textPrimary }}>Upcoming Classes (Today)</h3>
+                <h3 style={{ color: currentTheme.textPrimary }}>Next Class</h3>
               </div>
             </div>
-
             <div className="overview-content">
               {getUpcomingClasses().length > 0 ? (
                 getUpcomingClasses().map((classItem, index) => (
@@ -801,7 +844,7 @@ export default function TimetablePage() {
                         <div className="class-meta">
                           <span className="time-info" style={{ color: currentTheme.secondary }}>
                             <Clock size={14} />
-                            {classItem.time}
+                            {formatTimeRangeTo12Hour(classItem.time)} {/* Formatted time */}
                           </span>
                         </div>
                       </div>
@@ -821,7 +864,7 @@ export default function TimetablePage() {
               ) : (
                 <div className="no-classes-mini" style={{ color: currentTheme.textMuted }}>
                   <Timer size={24} />
-                  <p>No upcoming classes for today</p>
+                  <p>No next class</p>
                 </div>
               )}
             </div>
@@ -864,7 +907,6 @@ export default function TimetablePage() {
               ))}
             </div>
           </div>
-
           {/* Subject Type and Day Selection - Only for "all" view */}
           {activeView === "all" && (
             <>
@@ -895,7 +937,6 @@ export default function TimetablePage() {
             </>
           )}
         </section>
-
         {/* Dynamic Content Based on View */}
         {activeView === "current" && (
           <section
@@ -932,7 +973,6 @@ export default function TimetablePage() {
                         </div>
                       )}
                     </div>
-
                     <div className="class-info-grid">
                       <div className="info-card">
                         <Clock size={18} style={{ color: currentTheme.primary }} />
@@ -941,11 +981,10 @@ export default function TimetablePage() {
                             Time
                           </span>
                           <span className="info-value" style={{ color: currentTheme.textPrimary }}>
-                            {classItem.time}
+                            {formatTimeRangeTo12Hour(classItem.time)} {/* Formatted time */}
                           </span>
                         </div>
                       </div>
-
                       <div className="info-card">
                         <MapPin size={18} style={{ color: currentTheme.secondary }} />
                         <div className="info-content">
@@ -957,7 +996,6 @@ export default function TimetablePage() {
                           </span>
                         </div>
                       </div>
-
                       <div className="info-card">
                         <User size={18} style={{ color: currentTheme.accent }} />
                         <div className="info-content">
@@ -982,7 +1020,6 @@ export default function TimetablePage() {
             )}
           </section>
         )}
-
         {activeView === "all" && (
           <section
             className="timetable-card"
@@ -1018,7 +1055,6 @@ export default function TimetablePage() {
                         </div>
                       )}
                     </div>
-
                     <div className="class-info-grid">
                       <div className="info-card">
                         <Clock size={18} style={{ color: currentTheme.primary }} />
@@ -1027,11 +1063,10 @@ export default function TimetablePage() {
                             Time
                           </span>
                           <span className="info-value" style={{ color: currentTheme.textPrimary }}>
-                            {classItem.time}
+                            {formatTimeRangeTo12Hour(classItem.time)} {/* Formatted time */}
                           </span>
                         </div>
                       </div>
-
                       <div className="info-card">
                         <MapPin size={18} style={{ color: currentTheme.secondary }} />
                         <div className="info-content">
@@ -1043,7 +1078,6 @@ export default function TimetablePage() {
                           </span>
                         </div>
                       </div>
-
                       <div className="info-card">
                         <User size={18} style={{ color: currentTheme.accent }} />
                         <div className="info-content">
