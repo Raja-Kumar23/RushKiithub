@@ -1,69 +1,351 @@
 {
-  "CSE_2YA": {
+  "CSE-1": {
     "coreSubjects": {
-      "monday": [
-        { "subject": "Object-Oriented Programming", "time": "09:00-10:00", "room": "C-201", "faculty": "Dr. S. Gupta" },
-        { "subject": "Data Structures", "time": "10:00-11:00", "room": "C-202", "faculty": "Prof. A. Das" }
-      ],
-      "tuesday": [
-        { "subject": "Discrete Mathematics", "time": "11:00-12:00", "room": "C-203", "faculty": "Dr. R. Singh" }
-      ],
-      "wednesday": [
-        { "subject": "Computer Organization", "time": "14:00-15:00", "room": "C-204", "faculty": "Prof. B. Kumar" }
-      ],
-      "thursday": [
-        { "subject": "Operating Systems Basics", "time": "10:00-11:00", "room": "C-205", "faculty": "Dr. V. Sharma" }
-      ],
-      "friday": [
-        { "subject": "Database Fundamentals", "time": "11:00-12:00", "room": "C-206", "faculty": "Prof. M. Reddy" }
-      ]
-    }
-  },
-  "ECE_2YA": {
-    "coreSubjects": {
-      "monday": [
-        { "subject": "Circuit Theory", "time": "09:00-10:00", "room": "E-201", "faculty": "Dr. P. Rao" },
-        { "subject": "Analog Circuits Lab", "time": "10:00-12:00", "room": "E-Lab-1", "faculty": "Prof. K. Devi" }
-      ],
-      "tuesday": [
-        { "subject": "Digital Logic Design", "time": "11:00-12:00", "room": "E-202", "faculty": "Dr. J. Singh" }
-      ],
-      "wednesday": [
-        { "subject": "Signals & Systems II", "time": "09:00-10:00", "room": "E-203", "faculty": "Prof. L. Kumar" }
-      ],
-      "thursday": [
-        { "subject": "Electromagnetic Fields", "time": "10:00-11:00", "room": "E-204", "faculty": "Dr. N. Gupta" }
-      ],
-      "friday": [{ "subject": "Microprocessors", "time": "11:00-12:00", "room": "E-205", "faculty": "Prof. O. Sharma" }]
-    }
-  },
-  "MECH_2YA": {
-    "coreSubjects": {
-      "monday": [
-        { "subject": "Strength of Materials", "time": "09:00-10:00", "room": "M-201", "faculty": "Dr. G. Prasad" },
-        { "subject": "Fluid Mechanics Lab", "time": "10:00-12:00", "room": "M-Lab-1", "faculty": "Prof. H. Singh" }
-      ],
-      "tuesday": [
-        { "subject": "Thermodynamics II", "time": "11:00-12:00", "room": "M-202", "faculty": "Dr. I. Kumar" }
-      ],
-      "wednesday": [
-        { "subject": "Manufacturing Processes II", "time": "09:00-10:00", "room": "M-203", "faculty": "Prof. J. Devi" }
-      ],
-      "thursday": [
-        { "subject": "Machine Drawing", "time": "10:00-11:00", "room": "M-204", "faculty": "Dr. K. Sharma" }
-      ],
-      "friday": [
-        { "subject": "Kinematics of Machinery", "time": "11:00-12:00", "room": "M-205", "faculty": "Prof. L. Gupta" }
-      ]
-    }
-  },
-  "DSA_2Y": {
-    "electiveSubjects": {
-      "monday": [
-        { "subject": "Advanced Data Structures", "time": "14:00-15:00", "room": "C-207", "faculty": "Dr. A. Das" }
-      ],
-      "wednesday": [{ "subject": "Algorithm Design", "time": "14:00-15:00", "room": "C-207", "faculty": "Dr. A. Das" }],
-      "friday": [{ "subject": "Graph Algorithms", "time": "14:00-15:00", "room": "C-207", "faculty": "Dr. A. Das" }]
-    }
+    "monday": [
+      { "subject": "DS", "time": "11:00-12:00", "room": "C25-B-107", "faculty": "" },
+      { "subject": "AFL", "time": "12:00-01:00", "room": "C25-B-107", "faculty": "" },
+      { "subject": "DSD (L)", "time": "03:15-05:15", "room": "C25-B-018", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "AFL", "time": "09:00-10:00", "room": "C25-A-001", "faculty": "" },
+      { "subject": "STW", "time": "10:00-11:00", "room": "C25-A-001", "faculty": "" },
+      { "subject": "DS", "time": "11:00-12:00", "room": "C25-A-001", "faculty": "" },
+      { "subject": "PS", "time": "12:00-01:00", "room": "C25-A-001", "faculty": "" },
+      { "subject": "DSD", "time": "01:00-02:00", "room": "C25-A-001", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "DS (L)", "time": "09:00-11:00", "room": "C25-A-302", "faculty": "" },
+      { "subject": "PS", "time": "11:00-12:00", "room": "C25-B-107", "faculty": "" },
+      { "subject": "AFL", "time": "12:00-01:00", "room": "C25-B-107", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "DS", "time": "11:00-12:00", "room": "C25-B-106", "faculty": "" },
+      { "subject": "DSD", "time": "12:00-01:00", "room": "C25-B-106", "faculty": "" },
+      { "subject": "PS", "time": "01:00-02:00", "room": "C25-B-106", "faculty": "" },
+      { "subject": "STW", "time": "03:15-04:15", "room": "C25-A-006", "faculty": "" },
+      { "subject": "IND4", "time": "04:15-05:15", "room": "C25-A-006", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "AFL", "time": "11:00-12:00", "room": "C25-B-107", "faculty": "" },
+      { "subject": "IND4", "time": "12:00-01:00", "room": "C25-B-107", "faculty": "" },
+      { "subject": "DSD", "time": "01:00-02:00", "room": "C25-B-107", "faculty": "" },
+      { "subject": "DS", "time": "03:15-04:15", "room": "C25-A-008", "faculty": "" },
+      { "subject": "PS", "time": "04:15-05:15", "room": "C25-A-008", "faculty": "" }
+    ]
   }
+},
+
+
+
+  
+  "CSE-2": {
+    "coreSubjects": {
+    "monday": [
+      { "subject": "DSD (L)", "time": "09:00-11:00", "room": "C25-B-018", "faculty": "" },
+      { "subject": "AFL", "time": "11:00-12:00", "room": "C25-B-108", "faculty": "" },
+      { "subject": "PS", "time": "12:00-01:00", "room": "C25-B-108", "faculty": "" },
+      { "subject": "STW", "time": "01:00-02:00", "room": "C25-B-108", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "DSD", "time": "12:00-01:00", "room": "C25-A-006", "faculty": "" },
+      { "subject": "DS", "time": "01:00-02:00", "room": "C25-A-006", "faculty": "" },
+      { "subject": "DS (L)", "time": "03:15-05:15", "room": "C25-B-214", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "DS", "time": "09:00-10:00", "room": "C25-B-310", "faculty": "" },
+      { "subject": "DSD", "time": "10:00-11:00", "room": "C25-B-310", "faculty": "" },
+      { "subject": "PS", "time": "11:00-12:00", "room": "C25-B-108", "faculty": "" },
+      { "subject": "AFL", "time": "12:00-01:00", "room": "C25-B-108", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "STW", "time": "09:00-10:00", "room": "C25-B-310", "faculty": "" },
+      { "subject": "PS", "time": "10:00-11:00", "room": "C25-B-310", "faculty": "" },
+      { "subject": "AFL", "time": "11:00-12:00", "room": "C25-B-107", "faculty": "" },
+      { "subject": "IND4", "time": "12:00-01:00", "room": "C25-B-107", "faculty": "" },
+      { "subject": "DS", "time": "01:00-02:00", "room": "C25-B-107", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "DS", "time": "11:00-12:00", "room": "C25-B-108", "faculty": "" },
+      { "subject": "AFL", "time": "12:00-01:00", "room": "C25-B-108", "faculty": "" },
+      { "subject": "PS", "time": "01:00-02:00", "room": "C25-B-108", "faculty": "" },
+      { "subject": "IND4", "time": "03:15-04:15", "room": "C25-A-009", "faculty": "" },
+      { "subject": "DSD", "time": "04:15-05:15", "room": "C25-A-009", "faculty": "" }
+    ]
+  }
+},
+
+
+
+
+  "CSE-3": {
+    "coreSubjects": {
+    "monday": [
+      { "subject": "PS", "time": "09:00-10:00", "room": "C25-A-018", "faculty": "" },
+      { "subject": "AFL", "time": "10:00-11:00", "room": "C25-A-018", "faculty": "" },
+      { "subject": "DS", "time": "11:00-12:00", "room": "C25-B-109", "faculty": "" },
+      { "subject": "IND4", "time": "12:00-01:00", "room": "C25-B-109", "faculty": "" },
+      { "subject": "STW", "time": "01:00-02:00", "room": "C25-B-109", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "STW", "time": "12:00-01:00", "room": "C25-A-007", "faculty": "" },
+      { "subject": "DSD", "time": "01:00-02:00", "room": "C25-A-007", "faculty": "" },
+      { "subject": "DSD (L)", "time": "03:15-05:15", "room": "C25-B-018", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "AFL", "time": "11:00-12:00", "room": "C25-A-314", "faculty": "" },
+      { "subject": "DS (L)", "time": "12:00-02:00", "room": "C25-A-004", "faculty": "" },
+      { "subject": "DS", "time": "03:15-04:15", "room": "C25-A-001", "faculty": "" },
+      { "subject": "PS", "time": "04:15-05:15", "room": "C25-A-001", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "PS", "time": "11:00-12:00", "room": "C25-B-108", "faculty": "" },
+      { "subject": "DS", "time": "12:00-01:00", "room": "C25-B-108", "faculty": "" },
+      { "subject": "IND4", "time": "01:00-02:00", "room": "C25-B-108", "faculty": "" },
+      { "subject": "DSD", "time": "03:15-04:15", "room": "C25-A-007", "faculty": "" },
+      { "subject": "AFL", "time": "04:15-05:15", "room": "C25-A-007", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "AFL", "time": "10:00-11:00", "room": "C25-B-309", "faculty": "" },
+      { "subject": "PS", "time": "11:00-12:00", "room": "C25-B-109", "faculty": "" },
+      { "subject": "DS", "time": "12:00-01:00", "room": "C25-B-109", "faculty": "" },
+      { "subject": "DSD", "time": "01:00-02:00", "room": "C25-B-109", "faculty": "" }
+    ]
+  }
+},
+
+
+
+
+  "CSE-4": {
+     "coreSubjects": {
+    "monday": [
+      { "subject": "IND4", "time": "11:00-12:00", "room": "C25-B-110", "faculty": "" },
+      { "subject": "DS", "time": "12:00-01:00", "room": "C25-B-110", "faculty": "" },
+      { "subject": "STW", "time": "01:00-02:00", "room": "C25-B-110", "faculty": "" },
+      { "subject": "DSD", "time": "03:15-04:15", "room": "C25-A-006", "faculty": "" },
+      { "subject": "AFL", "time": "04:15-05:15", "room": "C25-A-006", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "DSD (L)", "time": "09:00-11:00", "room": "C25-B-018", "faculty": "" },
+      { "subject": "DSD", "time": "11:00-12:00", "room": "C25-B-013", "faculty": "" },
+      { "subject": "PS", "time": "12:00-01:00", "room": "C25-B-013", "faculty": "" },
+      { "subject": "DS", "time": "01:00-02:00", "room": "C25-B-013", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "DSD", "time": "10:00-11:00", "room": "C25-B-319", "faculty": "" },
+      { "subject": "AFL", "time": "11:00-12:00", "room": "C25-B-109", "faculty": "" },
+      { "subject": "DS", "time": "12:00-01:00", "room": "C25-B-109", "faculty": "" },
+      { "subject": "PS", "time": "01:00-02:00", "room": "C25-B-109", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "PS", "time": "10:00-11:00", "room": "C25-B-319", "faculty": "" },
+      { "subject": "AFL", "time": "11:00-12:00", "room": "C25-B-120", "faculty": "" },
+      { "subject": "DS (L)", "time": "12:00-02:00", "room": "C25-A-003", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "IND4", "time": "11:00-12:00", "room": "C25-B-110", "faculty": "" },
+      { "subject": "AFL", "time": "12:00-01:00", "room": "C25-B-110", "faculty": "" },
+      { "subject": "STW", "time": "01:00-02:00", "room": "C25-B-110", "faculty": "" },
+      { "subject": "PS", "time": "03:15-04:15", "room": "C25-A-010", "faculty": "" },
+      { "subject": "DS", "time": "04:15-05:15", "room": "C25-A-010", "faculty": "" }
+    ]
+  }
+},
+
+
+  "CSE-5": {
+     "coreSubjects": {
+    "monday": [
+      { "subject": "IND4", "time": "09:00-10:00", "room": "C25-A-114", "faculty": "" },
+      { "subject": "DSD", "time": "10:00-11:00", "room": "C25-A-114", "faculty": "" },
+      { "subject": "AFL", "time": "11:00-12:00", "room": "C25-B-119", "faculty": "" },
+      { "subject": "PS", "time": "12:00-01:00", "room": "C25-B-119", "faculty": "" },
+      { "subject": "DS", "time": "01:00-02:00", "room": "C25-B-119", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "DSD", "time": "12:00-01:00", "room": "C25-A-116", "faculty": "" },
+      { "subject": "AFL", "time": "01:00-02:00", "room": "C25-A-116", "faculty": "" },
+      { "subject": "PS", "time": "03:15-04:15", "room": "C25-B-110", "faculty": "" },
+      { "subject": "DS", "time": "04:15-05:15", "room": "C25-B-110", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "DS", "time": "11:00-12:00", "room": "C25-B-110", "faculty": "" },
+      { "subject": "PS", "time": "12:00-01:00", "room": "C25-B-110", "faculty": "" },
+      { "subject": "AFL", "time": "01:00-02:00", "room": "C25-B-110", "faculty": "" },
+      { "subject": "DSD (L)", "time": "03:15-05:15", "room": "C25-B-018", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "STW", "time": "09:00-10:00", "room": "C25-A-014", "faculty": "" },
+      { "subject": "DSD", "time": "10:00-11:00", "room": "C25-A-014", "faculty": "" },
+      { "subject": "AFL", "time": "11:00-12:00", "room": "C25-B-109", "faculty": "" },
+      { "subject": "DS", "time": "12:00-01:00", "room": "C25-B-109", "faculty": "" },
+      { "subject": "IND4", "time": "01:00-02:00", "room": "C25-B-109", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "STW", "time": "10:00-11:00", "room": "C25-B-310", "faculty": "" },
+      { "subject": "PS", "time": "11:00-12:00", "room": "C25-A-309", "faculty": "" },
+      { "subject": "DS (L)", "time": "12:00-02:00", "room": "C25-A-004", "faculty": "" }
+    ]
+  }
+},
+
+
+
+  "CSE-6": {
+    "coreSubjects": {
+    "monday": [
+      { "subject": "DS (L)", "time": "09:00-11:00", "room": "C25-B-212", "faculty": "" },
+      { "subject": "DS", "time": "11:00-12:00", "room": "C25-B-201", "faculty": "" },
+      { "subject": "AFL", "time": "12:00-01:00", "room": "C25-B-201", "faculty": "" },
+      { "subject": "PS", "time": "01:00-02:00", "room": "C25-B-201", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "DSD", "time": "11:00-12:00", "room": "C25-A-114", "faculty": "" },
+      { "subject": "DS", "time": "12:00-01:00", "room": "C25-A-114", "faculty": "" },
+      { "subject": "PS", "time": "01:00-02:00", "room": "C25-A-114", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "DSD", "time": "11:00-12:00", "room": "C25-B-119", "faculty": "" },
+      { "subject": "IND4", "time": "12:00-01:00", "room": "C25-B-119", "faculty": "" },
+      { "subject": "AFL", "time": "01:00-02:00", "room": "C25-B-119", "faculty": "" },
+      { "subject": "DSD (L)", "time": "03:15-05:15", "room": "C25-B-118", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "DS", "time": "11:00-12:00", "room": "C25-B-110", "faculty": "" },
+      { "subject": "AFL", "time": "12:00-01:00", "room": "C25-B-110", "faculty": "" },
+      { "subject": "DSD", "time": "01:00-02:00", "room": "C25-B-110", "faculty": "" },
+      { "subject": "PS", "time": "03:15-04:15", "room": "C25-A-008", "faculty": "" },
+      { "subject": "STW", "time": "04:15-05:15", "room": "C25-A-008", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "DS", "time": "09:00-10:00", "room": "C25-B-319", "faculty": "" },
+      { "subject": "PS", "time": "10:00-11:00", "room": "C25-B-319", "faculty": "" },
+      { "subject": "AFL", "time": "11:00-12:00", "room": "C25-B-119", "faculty": "" },
+      { "subject": "STW", "time": "12:00-01:00", "room": "C25-B-119", "faculty": "" },
+      { "subject": "IND4", "time": "01:00-02:00", "room": "C25-B-119", "faculty": "" }
+    ]
+  }
+},
+
+
+
+
+  "CSE7": {
+    "coreSubjects": {
+      "monday": [
+        { "subject": "DSD", "time": "10:00-11:00", "room": "C25-A-309", "faculty": "" },
+        { "subject": "DS", "time": "11:00-12:00", "room": "C25-A-309", "faculty": "" },
+        { "subject": "PS", "time": "03:15-04:15", "room": "C25-A-007", "faculty": "" },
+        { "subject": "AFL", "time": "04:15-05:15", "room": "C25-A-007", "faculty": "" }
+      ],
+      "tuesday": [
+        { "subject": "DS (L)", "time": "09:00-11:00", "room": "C25-B-314", "faculty": "" },
+        { "subject": "DS", "time": "11:00-12:00", "room": "C25-B-015", "faculty": "" },
+        { "subject": "IND4", "time": "12:00-01:00", "room": "C25-B-015", "faculty": "" }
+      ],
+      "wednesday": [
+        { "subject": "DS", "time": "09:00-10:00", "room": "C25-A-014", "faculty": "" },
+        { "subject": "AFL", "time": "10:00-11:00", "room": "C25-A-014", "faculty": "" },
+        { "subject": "STW", "time": "11:00-12:00", "room": "C25-B-201", "faculty": "" },
+        { "subject": "PS", "time": "12:00-01:00", "room": "C25-B-201", "faculty": "" },
+        { "subject": "DSD", "time": "01:00-02:00", "room": "C25-B-201", "faculty": "" }
+      ],
+      "thursday": [
+        { "subject": "PS", "time": "10:00-11:00", "room": "C25-B-119", "faculty": "" },
+        { "subject": "STW", "time": "11:00-12:00", "room": "C25-B-119", "faculty": "" },
+        { "subject": "AFL", "time": "12:00-01:00", "room": "C25-B-119", "faculty": "" },
+        { "subject": "DSD (L)", "time": "03:15-05:15", "room": "C25-B-018", "faculty": "" }
+      ],
+      "friday": [
+        { "subject": "IND4", "time": "10:00-11:00", "room": "C25-B-201", "faculty": "" },
+        { "subject": "DS", "time": "11:00-12:00", "room": "C25-B-201", "faculty": "" },
+        { "subject": "DSD", "time": "12:00-01:00", "room": "C25-B-201", "faculty": "" },
+        { "subject": "PS", "time": "03:15-04:15", "room": "C25-A-011", "faculty": "" },
+        { "subject": "AFL", "time": "04:15-05:15", "room": "C25-A-011", "faculty": "" }
+      ]
+    }
+  },
+
+  "CSE8": {
+  "coreSubjects": {
+    "monday": [
+      { "subject": "PS", "time": "10:00-11:00", "room": "C25-B-206", "faculty": "" },
+      { "subject": "DS", "time": "11:00-12:00", "room": "C25-B-206", "faculty": "" },
+      { "subject": "DSD", "time": "03:15-04:15", "room": "C25-A-008", "faculty": "" },
+      { "subject": "AFL", "time": "04:15-05:15", "room": "C25-A-008", "faculty": "" }
+    ],
+    "tuesday": [
+      { "subject": "STW", "time": "11:00-12:00", "room": "C25-B-319", "faculty": "" },
+      { "subject": "DS", "time": "12:00-01:00", "room": "C25-B-319", "faculty": "" },
+      { "subject": "AFL", "time": "03:15-04:15", "room": "C25-B-119", "faculty": "" },
+      { "subject": "PS", "time": "04:15-05:15", "room": "C25-B-119", "faculty": "" }
+    ],
+    "wednesday": [
+      { "subject": "DS (L)", "time": "09:00-11:00", "room": "C25-A-303", "faculty": "" },
+      { "subject": "IND4", "time": "11:00-12:00", "room": "C25-B-206", "faculty": "" },
+      { "subject": "AFL", "time": "12:00-01:00", "room": "C25-B-206", "faculty": "" },
+      { "subject": "DSD", "time": "01:00-02:00", "room": "C25-B-206", "faculty": "" }
+    ],
+    "thursday": [
+      { "subject": "DSD (L)", "time": "09:00-11:00", "room": "C25-B-018", "faculty": "" },
+      { "subject": "PS", "time": "11:00-12:00", "room": "C25-B-201", "faculty": "" },
+      { "subject": "STW", "time": "12:00-01:00", "room": "C25-B-201", "faculty": "" },
+      { "subject": "DS", "time": "01:00-02:00", "room": "C25-B-201", "faculty": "" }
+    ],
+    "friday": [
+      { "subject": "DS", "time": "10:00-11:00", "room": "C25-B-206", "faculty": "" },
+      { "subject": "AFL", "time": "11:00-12:00", "room": "C25-B-206", "faculty": "" },
+      { "subject": "IND4", "time": "12:00-01:00", "room": "C25-B-206", "faculty": "" },
+      { "subject": "PS", "time": "03:15-04:15", "room": "C25-A-101", "faculty": "" },
+      { "subject": "DSD", "time": "04:15-05:15", "room": "C25-A-101", "faculty": "" }
+    ]
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
