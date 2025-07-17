@@ -23,7 +23,7 @@ export default function PricingPage() {
         "Priority support",
         "Advanced analytics",
       ],
-      buttonText: "Upgrade to Premium",
+      buttonText: "Will be available next sem",
       isFree: false,
       popular: true,
     },
