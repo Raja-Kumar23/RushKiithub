@@ -77,16 +77,16 @@ export default function Home() {
   }
   const currentTheme = isDarkMode ? theme.dark : theme.light
 
-  // Load theme preference and search history
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme")
-    if (savedTheme === "dark") {
-      setIsDarkMode(true)
-    }
+  // // Load theme preference and search history
+  // useEffect(() => {
+  //   const savedTheme = localStorage.getItem("theme")
+  //   if (savedTheme === "dark") {
+  //     setIsDarkMode(true)
+  //   }
 
-    const history = JSON.parse(localStorage.getItem("searchHistory")) || []
-    setSearchHistory(history)
-  }, [])
+  //   const history = JSON.parse(localStorage.getItem("searchHistory")) || []
+  //   setSearchHistory(history)
+  // }, [])
 
   // Authentication state management with Firebase persistence
   useEffect(() => {
@@ -289,7 +289,7 @@ export default function Home() {
 
   return (
     <div className={`app ${isDarkMode ? "dark" : "light"}`} style={{ background: currentTheme.background }}>
-      {/* History Button */}
+      {/* History Button
       <button
         onClick={() => setIsHistorySidebarOpen(true)}
         style={{
@@ -322,7 +322,7 @@ export default function Home() {
       >
         <History size={20} />
         History
-      </button>
+      </button> */}
 
       <ProfileSection
         user={user}

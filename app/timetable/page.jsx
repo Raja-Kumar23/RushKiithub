@@ -34,7 +34,7 @@ export default function TimetablePage() {
   const [authLoading, setAuthLoading] = useState(true)
   const [userSections, setUserSections] = useState([])
   const [selectedDay, setSelectedDay] = useState("monday")
-  const [isDarkMode, setIsDarkMode] = useState(false)
+  const [isDarkMode, setIsDarkMode] = useState(true)
   const [showProfileDropdown, setShowProfileDropdown] = useState(false)
   const [loginError, setLoginError] = useState("")
   const [currentTime, setCurrentTime] = useState(new Date())
