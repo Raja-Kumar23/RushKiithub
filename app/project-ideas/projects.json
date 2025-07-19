@@ -1,0 +1,376 @@
+{
+  "beginner": [
+    {
+      "id": 1,
+      "title": "  Chess Game App ",
+      "description": " A Two Player Chess game application using JavaScript ",
+      "youtubeUrl": " https://www.youtube.com/watch?v=SS5amIbX0Mo&list=LL&index=3&t=56s  ",
+      "difficulty": "  beginner ",
+      "technology": "   "
+    },
+    {
+      "id": 2,
+      "title": " Audio Book  ",
+      "description": " PDF to Audio Book using Python ",
+      "youtubeUrl": " https://www.youtube.com/watch?v=Flm2YHEFd5A  ",
+      "difficulty": "  beginner ",
+      "technology": " Python  "
+    },
+    {
+      "id": 3,
+      "title": "  Face Recognition App ",
+      "description": " Face Recognition + Attendance using OpenCV ",
+      "youtubeUrl": " https://www.youtube.com/watch?v=sz25xxF_AVE  ",
+      "difficulty": "  beginner ",
+      "technology": "   "
+    },
+    {
+      "id": 4,
+      "title": "Todo App",
+      "description": "Task management application with add, edit, delete functionality",
+      "youtubeUrl": "https://www.youtube.com/watch?v=hQAHSlTtcmY",
+      "difficulty": "Beginner",
+      "technology": "JavaScript"
+    },
+    {
+      "id": 5,
+      "title": "Weather App",
+      "description": "Real-time weather dashboard with location-based forecasts",
+      "youtubeUrl": "https://www.youtube.com/watch?v=UjeXpct3p7M",
+      "difficulty": "Beginner",
+      "technology": "React"
+    },
+    {
+      "id": 6,
+      "title": "Calculator",
+      "description": "Scientific calculator with history and memory functions",
+      "youtubeUrl": "https://www.youtube.com/watch?v=DgRrrOt0Vr8",
+      "difficulty": "Beginner",
+      "technology": "HTML/CSS"
+    },
+    {
+      "id": 7,
+      "title": "Portfolio Website",
+      "description": "Personal portfolio showcase with responsive design",
+      "youtubeUrl": "https://www.youtube.com/watch?v=ldwlOzRvYOU",
+      "difficulty": "Beginner",
+      "technology": "HTML/CSS"
+    },
+    {
+      "id": 8,
+      "title": "Expense Tracker",
+      "description": "Personal finance management with charts and analytics",
+      "youtubeUrl": "https://www.youtube.com/watch?v=XuFDcZABiDQ",
+      "difficulty": "Beginner",
+      "technology": "React"
+    },
+    {
+      "id": 9,
+      "title": "Digital Clock",
+      "description": "Animated digital clock with multiple time zones",
+      "youtubeUrl": "https://www.youtube.com/watch?v=Ki0XXrlKlHY",
+      "difficulty": "Beginner",
+      "technology": "JavaScript"
+    },
+    {
+      "id": 10,
+      "title": "Color Picker",
+      "description": "RGB and hex color selector with palette generator",
+      "youtubeUrl": "https://www.youtube.com/watch?v=yyW105giLTQ",
+      "difficulty": "Beginner",
+      "technology": "HTML/CSS"
+    },
+    {
+      "id": 50,
+      "title": "Password Generator",
+      "description": "Secure password creation tool with customizable options",
+      "youtubeUrl": "https://www.youtube.com/watch?v=iKo9pDKKHnc",
+      "difficulty": "Beginner",
+      "technology": "JavaScript"
+    },
+    {
+      "id": 51,
+      "title": "BMI Calculator",
+      "description": "Health and fitness calculator with recommendations",
+      "youtubeUrl": "https://www.youtube.com/watch?v=inX0931bH10",
+      "difficulty": "Beginner",
+      "technology": "HTML/CSS"
+    },
+    {
+      "id": 52,
+      "title": "Tip Calculator",
+      "description": "Restaurant bill calculator with split functionality",
+      "youtubeUrl": "https://www.youtube.com/watch?v=7b4aMzb2WYM",
+      "difficulty": "Beginner",
+      "technology": "JavaScript"
+    },
+    {
+      "id": 53,
+      "title": "Unit Converter",
+      "description": "Multi-unit conversion tool for various measurements",
+      "youtubeUrl": "https://www.youtube.com/watch?v=7l-ZAuU8TXc",
+      "difficulty": "Beginner",
+      "technology": "JavaScript"
+    },
+    {
+      "id": 54,
+      "title": "Stopwatch",
+      "description": "Precision timing application with lap functionality",
+      "youtubeUrl": "https://www.youtube.com/watch?v=x8QXjsYJNQw",
+      "difficulty": "Beginner",
+      "technology": "JavaScript"
+    }
+  ],
+
+  "intermediate": [
+    {
+      "id": 11,
+      "title": " Airbnb Clone Application  ",
+      "description": " A React App for Airbnb Home page Clone ",
+      "youtubeUrl": "  https://www.youtube.com/watch?v=IQaCL8_bwA4&list=PLgxM_xd-x_qHa6ErJkxh4wIRc7Q36AMfC&index=7 ",
+      "difficulty": "  intermediate ",
+      "technology": "   "
+    },
+    {
+      "id": 12,
+      "title": "  TMDB Movie App ",
+      "description": " An interactive Movie Database app using ReactJS. ",
+      "youtubeUrl": "  https://www.youtube.com/watch?v=ufodJVcpmps ",
+      "difficulty": "  intermediate ",
+      "technology": "   "
+    },
+    {
+      "id": 13,
+      "title": " Github Jobs App  ",
+      "description": " A GitHub Jobs App using React Hooks and Github API ",
+      "youtubeUrl": "  https://www.youtube.com/watch?v=fxY1q4SCB64&list=LL&index=2 ",
+      "difficulty": " intermediate  ",
+      "technology": "   "
+    },
+    {
+      "id": 14,
+      "title": " Weather App  ",
+      "description": " Weather app in React JS using the Open Weather Map API ",
+      "youtubeUrl": " https://www.youtube.com/watch?v=GuA0_Z1llYU  ",
+      "difficulty": " intermediate  ",
+      "technology": "   "
+    },
+    {
+      "id": 15,
+      "title": " Business Card Generator  ",
+      "description": " A Business Card Generator using React JS ",
+      "youtubeUrl": "  https://www.youtube.com/watch?v=mGORpgEOsT4 ",
+      "difficulty": " intermediate  ",
+      "technology": "   "
+    },
+    {
+      "id": 16,
+      "title": " React Photo Gallery  ",
+      "description": " Photo Gallery App using React JS and Firebase ",
+      "youtubeUrl": "  https://www.youtube.com/watch?v=vUe91uOx7R0 ",
+      "difficulty": " intermediate  ",
+      "technology": "   "
+    },
+    {
+      "id": 17,
+      "title": " Chat-Bot Application  ",
+      "description": " A Chat-Bot which can answer your queries using python ",
+      "youtubeUrl": " https://www.youtube.com/watch?v=FFT4p6me2g0  ",
+      "difficulty": "  intermediate ",
+      "technology": "   "
+    },
+    {
+      "id": 18,
+      "title": " Movie Recomendation Engine  ",
+      "description": " A Movie Recommendation System Using ML ",
+      "youtubeUrl": "  https://www.youtube.com/watch?v=XoTwndOgXBM ",
+      "difficulty": " intermediate  ",
+      "technology": "   "
+    },
+    {
+      "id": 19,
+      "title": "  Credit Card Fraud Detection ",
+      "description": " Credit Card Fraud Detection using ML ",
+      "youtubeUrl": "  https://www.youtube.com/watch?v=jCoF1rMs_0s ",
+      "difficulty": " intermediate  ",
+      "technology": "   "
+    },
+    {
+      "id": 20,
+      "title": " Wildfire Tracker With React  ",
+      "description": " Wild Fire Detection using React, NASA API ",
+      "youtubeUrl": "  https://www.youtube.com/watch?v=ontX4zfVqK8&list=PLgxM_xd-x_qHa6ErJkxh4wIRc7Q36AMfC&index=18 ",
+      "difficulty": " intermediate  ",
+      "technology": "   "
+    },
+    {
+      "id": 21,
+      "title": " Google Drive Clone With React  ",
+      "description": " Google Drive Clone using React, Firebase ",
+      "youtubeUrl": "  https://www.youtube.com/watch?v=ljuCH6_jrYE ",
+      "difficulty": " intermediate  ",
+      "technology": "   "
+    },
+    {
+      "id": 22,
+      "title": " Fitness App  ",
+      "description": " A fitness app that sends you new workouts per email every day using Python and HarperDB. ",
+      "youtubeUrl": " https://www.youtube.com/watch?v=KMkmA4i2FQc  ",
+      "difficulty": " intermediate  ",
+      "technology": "   "
+    }
+  ],
+
+  "advanced": [
+    {
+      "id": 23,
+      "title": "  Facebook Clone Application ",
+      "description": " A facebook Clone Application using React JS and Firebase ",
+      "youtubeUrl": "  https://www.youtube.com/watch?v=B-kxUMHBxNo&list=PLgxM_xd-x_qHa6ErJkxh4wIRc7Q36AMfC&index=7 ",
+      "difficulty": "  advanced ",
+      "technology": "   "
+    },
+    {
+      "id": 24,
+      "title": " Netflix Clone - FullStack  ",
+      "description": " A Netflix clone application using TMDB API ",
+      "youtubeUrl": "  https://www.youtube.com/watch?v=x_EEwGe-a9o&list=PLgxM_xd-x_qHa6ErJkxh4wIRc7Q36AMfC&index=1&t=291s ",
+      "difficulty": " advanced  ",
+      "technology": "   "
+    },
+    {
+      "id": 25,
+      "title": " Instagram Clone Application  ",
+      "description": " An Instagram Clone application using React JS ",
+      "youtubeUrl": " https://www.youtube.com/watch?v=f7T48W0cwXM  ",
+      "difficulty": " advanced  ",
+      "technology": "  React JS "
+    },
+    {
+      "id": 26,
+      "title": " A COVID-19 Tracker  ",
+      "description": " A COVID-19 Tracker using React JS ",
+      "youtubeUrl": "  https://www.youtube.com/watch?v=cF3pIMJUZxM&list=PLgxM_xd-x_qHa6ErJkxh4wIRc7Q36AMfC&index=2 ",
+      "difficulty": "  advanced ",
+      "technology": " React JS  "
+    },
+    {
+      "id": 27,
+      "title": "  Full-Stack Amazon Clone ",
+      "description": " A Full-Stack AMAZON Clone using REACT JS ",
+      "youtubeUrl": " https://www.youtube.com/watch?v=RDV3Z1KCBvo&feature=youtu.be&ck_subscriber_id=857936933  ",
+      "difficulty": " advanced  ",
+      "technology": " REACT JS  "
+    },
+    {
+      "id": 28,
+      "title": "  Flipkart Clone Application ",
+      "description": "A Full Stack Flipkart Clone using MERN Stack ",
+      "youtubeUrl": "  https://www.youtube.com/watch?v=tvdFYmJEaw4&list=PLB_Wd4-5SGAYsxD4JGaVdXll3PnoyI-AM ",
+      "difficulty": " advanced  ",
+      "technology": "  MERN Stack "
+    },
+    {
+      "id": 29,
+      "title": "  Voting Application - MERN ",
+      "description": " A Voting App using MERN Stack ",
+      "youtubeUrl": " https://www.youtube.com/watch?v=0oziV0FLhXc&list=PLBeQxJQNprbgrNfcntLO8N2Y-dzlMZXZe  ",
+      "difficulty": "  advanced ",
+      "technology": " MERN Stack  "
+    },
+    {
+      "id": 30,
+      "title": " Travel Log - MERN STACK  ",
+      "description": " Travel Log App using MERN Stack ",
+      "youtubeUrl": " https://www.youtube.com/watch?v=5pQsl9u_10M  ",
+      "difficulty": "  advanced ",
+      "technology": "  MERN Stack "
+    },
+    {
+      "id": 31,
+      "title": "  Discord Clone - MERN STACK ",
+      "description": " Discord Clone App using MERN Stack ",
+      "youtubeUrl": "  https://www.youtube.com/watch?v=YzcnqYNXM90 ",
+      "difficulty": " advanced  ",
+      "technology": "  MERN Stack "
+    },
+    {
+      "id": 32,
+      "title": " Messenger Clone - MERN STACK  ",
+      "description": " Messenger Clone App using MERN Stack ",
+      "youtubeUrl": " https://www.youtube.com/watch?v=8GMx8r9zQXg  ",
+      "difficulty": " advanced  ",
+      "technology": " MERN Stack  "
+    },
+    
+    {
+      "id": 34,
+      "title": " Robinhood Clone  ",
+      "description": " Robinhood Clone using React JS ",
+      "youtubeUrl": " https://www.youtube.com/watch?v=TxggrQ0nHjY&list=PLgxM_xd-x_qHa6ErJkxh4wIRc7Q36AMfC&index=18  ",
+      "difficulty": "  advanced ",
+      "technology": "  React JS "
+    },
+    {
+      "id": 35,
+      "title": " LinkedIn Clone  ",
+      "description": " LinkedIn Clone using React JS ",
+      "youtubeUrl": "  https://www.youtube.com/watch?v=QaYts9sPmcY&t=3s ",
+      "difficulty": " advanced  ",
+      "technology": "   "
+    },
+    {
+      "id": 36,
+      "title": " Signal Clone  ",
+      "description": " Signal Clone using React JS ",
+      "youtubeUrl": " https://www.youtube.com/watch?v=MJzmZ9qmdaE  ",
+      "difficulty": "  advanced ",
+      "technology": " React JS  "
+    },
+    {
+      "id": 37,
+      "title": " Gmail Clone  ",
+      "description": " Gmail Clone using React JS ",
+      "youtubeUrl": "  https://www.youtube.com/watch?v=b7nrXjS6Dqs ",
+      "difficulty": "  advanced ",
+      "technology": "   "
+    },
+    {
+      "id": 38,
+      "title": " E-Commerce Application  ",
+      "description": "  ",
+      "youtubeUrl": "  https://www.youtube.com/watch?v=XtciU6BnQdo ",
+      "difficulty": "  advanced ",
+      "technology": "  MongoDB, Reactjs, Nextjs "
+    },
+    {
+      "id": 39,
+      "title": " Full Stack NFT Marketplace  ",
+      "description": "  ",
+      "youtubeUrl": "  https://www.youtube.com/watch?v=GKJBEEXUha0 ",
+      "difficulty": " advanced  ",
+      "technology": "   "
+    },
+    {
+      "id": 40,
+      "title": " Invoice Application  ",
+      "description": "  ",
+      "youtubeUrl": "  https://www.youtube.com/watch?v=vsJtN54aA7w ",
+      "difficulty": " advanced  ",
+      "technology": "  Vue 3, Vuex & Firebase "
+    },
+    {
+      "id": 41,
+      "title": "  Full-Stack Twitter Clone ",
+      "description": "  ",
+      "youtubeUrl": " https://www.youtube.com/watch?v=5Wak0iyGCrc  ",
+      "difficulty": " advanced  ",
+      "technology": " Next JS, Recoil JS, Tailwind CSS, Nextauth & Firebase  "
+    }
+
+
+
+
+    
+  ]
+}

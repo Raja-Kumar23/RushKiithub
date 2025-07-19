@@ -1,5 +1,5 @@
 import React from 'react'
-import { Calculator, CheckSquare, Star, Users, HeadphonesIcon, MessageSquare, ArrowUpRight, Map, FileText } from 'lucide-react'
+import { Calculator, CheckSquare, Star, Users, HeadphonesIcon, MessageSquare, ArrowUpRight, Map, FileText, Code2 } from 'lucide-react'
 import './FeatureGrid.css'
 
 const FeatureGrid = ({ theme, user, setShowLoginPrompt, showNotification }) => {
@@ -67,12 +67,38 @@ const FeatureGrid = ({ theme, user, setShowLoginPrompt, showNotification }) => {
       action: () => handleFeatureClick('pdf-upload'),
       available: true
     },
+    {
+      id: 'project-ideas',
+      title: 'Project Ideas Hub',
+      description: 'Discover amazing project ideas with source code tutorials',
+      icon: Code2,
+      gradient: `linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)`,
+      action: () => handleFeatureClick('project-ideas'),
+      available: true
+    },
   ]
+
+  const checkRollNumberAccess = (rollNumber) => {
+    // Extract the year from roll number (assuming format like 22XXXXXXX or 23XXXXXXX)
+    const year = rollNumber.substring(0, 2)
+    return year === '22' || year === '23'
+  }
 
   const handleFeatureClick = (featureId) => {
     if (!user) {
       setShowLoginPrompt(true)
       return
+    }
+
+    // Special access control for project-ideas
+    if (featureId === 'project-ideas') {
+      // Extract roll number from email (assuming format like rollnumber@kiit.ac.in)
+      const rollNumber = user.email.split('@')[0]
+      
+      if (!checkRollNumberAccess(rollNumber)) {
+        showNotification('Project Ideas Hub is only accessible to 3rd and 4th year students (Roll numbers starting with 22 or 23)', 'error')
+        return
+      }
     }
 
     switch (featureId) {
@@ -103,6 +129,10 @@ const FeatureGrid = ({ theme, user, setShowLoginPrompt, showNotification }) => {
       case 'pdf-upload':
         showNotification('Opening PDF Upload Hub...', 'info')
         window.open('/pdf-upload', '_blank')
+        break
+      case 'project-ideas':
+        showNotification('Opening Project Ideas Hub...', 'info')
+        window.open('/project-ideas', '_blank')
         break
       default:
         break

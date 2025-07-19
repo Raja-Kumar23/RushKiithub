@@ -1,0 +1,488 @@
+{
+  "beginner": [
+    {
+      "id": 1,
+      "title": "Todo App",
+      "description": "Task management application with add, edit, delete functionality",
+      "youtubeUrl": "https://www.youtube.com/watch?v=hQAHSlTtcmY",
+      "difficulty": "Beginner",
+      "technology": "JavaScript"
+    },
+    {
+      "id": 2,
+      "title": "Weather App",
+      "description": "Real-time weather dashboard with location-based forecasts",
+      "youtubeUrl": "https://www.youtube.com/watch?v=UjeXpct3p7M",
+      "difficulty": "Beginner",
+      "technology": "React"
+    },
+    {
+      "id": 3,
+      "title": "Calculator",
+      "description": "Scientific calculator with history and memory functions",
+      "youtubeUrl": "https://www.youtube.com/watch?v=DgRrrOt0Vr8",
+      "difficulty": "Beginner",
+      "technology": "HTML/CSS"
+    },
+    {
+      "id": 4,
+      "title": "Portfolio Website",
+      "description": "Personal portfolio showcase with responsive design",
+      "youtubeUrl": "https://www.youtube.com/watch?v=ldwlOzRvYOU",
+      "difficulty": "Beginner",
+      "technology": "HTML/CSS"
+    },
+    {
+      "id": 5,
+      "title": "Expense Tracker",
+      "description": "Personal finance management with charts and analytics",
+      "youtubeUrl": "https://www.youtube.com/watch?v=XuFDcZABiDQ",
+      "difficulty": "Beginner",
+      "technology": "React"
+    },
+    {
+      "id": 6,
+      "title": "Digital Clock",
+      "description": "Animated digital clock with multiple time zones",
+      "youtubeUrl": "https://www.youtube.com/watch?v=Ki0XXrlKlHY",
+      "difficulty": "Beginner",
+      "technology": "JavaScript"
+    },
+    {
+      "id": 7,
+      "title": "Color Picker",
+      "description": "RGB and hex color selector with palette generator",
+      "youtubeUrl": "https://www.youtube.com/watch?v=9YffrCViTVk",
+      "difficulty": "Beginner",
+      "technology": "HTML/CSS"
+    },
+    {
+      "id": 8,
+      "title": "Random Quote Generator",
+      "description": "Inspirational quotes display with sharing functionality",
+      "youtubeUrl": "https://www.youtube.com/watch?v=1yW1F4foDWE",
+      "difficulty": "Beginner",
+      "technology": "JavaScript"
+    },
+    {
+      "id": 9,
+      "title": "Password Generator",
+      "description": "Secure password creation tool with customizable options",
+      "youtubeUrl": "https://www.youtube.com/watch?v=iKo9pDKKHnc",
+      "difficulty": "Beginner",
+      "technology": "JavaScript"
+    },
+    {
+      "id": 10,
+      "title": "BMI Calculator",
+      "description": "Health and fitness calculator with recommendations",
+      "youtubeUrl": "https://www.youtube.com/watch?v=7Dh4C-s7sPA",
+      "difficulty": "Beginner",
+      "technology": "HTML/CSS"
+    },
+    {
+      "id": 11,
+      "title": "Tip Calculator",
+      "description": "Restaurant bill calculator with split functionality",
+      "youtubeUrl": "https://www.youtube.com/watch?v=7b4aMzb2WYM",
+      "difficulty": "Beginner",
+      "technology": "JavaScript"
+    },
+    {
+      "id": 12,
+      "title": "Unit Converter",
+      "description": "Multi-unit conversion tool for various measurements",
+      "youtubeUrl": "https://www.youtube.com/watch?v=7l-ZAuU8TXc",
+      "difficulty": "Beginner",
+      "technology": "JavaScript"
+    },
+    {
+      "id": 13,
+      "title": "Stopwatch",
+      "description": "Precision timing application with lap functionality",
+      "youtubeUrl": "https://www.youtube.com/watch?v=x8QXjsYJNQw",
+      "difficulty": "Beginner",
+      "technology": "JavaScript"
+    },
+    {
+      "id": 14,
+      "title": "Memory Game",
+      "description": "Card matching brain game with difficulty levels",
+      "youtubeUrl": "https://www.youtube.com/watch?v=ZniVgo8U7ek",
+      "difficulty": "Beginner",
+      "technology": "JavaScript"
+    },
+    {
+      "id": 15,
+      "title": "Rock Paper Scissors",
+      "description": "Classic game implementation with score tracking",
+      "youtubeUrl": "https://www.youtube.com/watch?v=jaVNP3nIAv0",
+      "difficulty": "Beginner",
+      "technology": "JavaScript"
+    },
+    {
+      "id": 16,
+      "title": "Countdown Timer",
+      "description": "Event countdown display with custom alerts",
+      "youtubeUrl": "https://www.youtube.com/watch?v=x7WJEmxNlEs",
+      "difficulty": "Beginner",
+      "technology": "JavaScript"
+    },
+    {
+      "id": 17,
+      "title": "QR Code Generator",
+      "description": "Custom QR code creator with download functionality",
+      "youtubeUrl": "https://www.youtube.com/watch?v=qNiUlml9MDk",
+      "difficulty": "Beginner",
+      "technology": "JavaScript"
+    },
+    {
+      "id": 18,
+      "title": "Image Gallery",
+      "description": "Photo gallery with lightbox and filtering",
+      "youtubeUrl": "https://www.youtube.com/watch?v=Rw_QeJLnCK4",
+      "difficulty": "Beginner",
+      "technology": "HTML/CSS"
+    },
+    {
+      "id": 19,
+      "title": "Music Player",
+      "description": "Audio player with playlist and controls",
+      "youtubeUrl": "https://www.youtube.com/watch?v=QTHRWGn_sJw",
+      "difficulty": "Beginner",
+      "technology": "JavaScript"
+    },
+    {
+      "id": 20,
+      "title": "Text Editor",
+      "description": "Simple text editor with formatting options",
+      "youtubeUrl": "https://www.youtube.com/watch?v=KtL-SQ20Q0s",
+      "difficulty": "Beginner",
+      "technology": "JavaScript"
+    }
+  ],
+  "intermediate": [
+    {
+      "id": 21,
+      "title": "E-commerce Website",
+      "description": "Full-featured online store with cart and payment integration",
+      "youtubeUrl": "https://www.youtube.com/watch?v=1DklrGoAxDE",
+      "difficulty": "Intermediate",
+      "technology": "React"
+    },
+    {
+      "id": 22,
+      "title": "Social Media Dashboard",
+      "description": "Multi-platform social media management tool",
+      "youtubeUrl": "https://www.youtube.com/watch?v=ntLJmHOJ0ME",
+      "difficulty": "Intermediate",
+      "technology": "Next.js"
+    },
+    {
+      "id": 23,
+      "title": "Chat Application",
+      "description": "Real-time messaging app with rooms and file sharing",
+      "youtubeUrl": "https://www.youtube.com/watch?v=ZwFA3YMfkoc",
+      "difficulty": "Intermediate",
+      "technology": "Node.js"
+    },
+    {
+      "id": 24,
+      "title": "Project Management Tool",
+      "description": "Kanban board with drag-drop and team collaboration",
+      "youtubeUrl": "https://www.youtube.com/watch?v=uEVHJf30bWI",
+      "difficulty": "Intermediate",
+      "technology": "React"
+    },
+    {
+      "id": 25,
+      "title": "Recipe Finder App",
+      "description": "Recipe search with meal planning and shopping lists",
+      "youtubeUrl": "https://www.youtube.com/watch?v=xc4uOzlndAk",
+      "difficulty": "Intermediate",
+      "technology": "Vue.js"
+    },
+    {
+      "id": 26,
+      "title": "Blog Platform",
+      "description": "Content management system with user authentication",
+      "youtubeUrl": "https://www.youtube.com/watch?v=VsUzmlZfYNg",
+      "difficulty": "Intermediate",
+      "technology": "Next.js"
+    },
+    {
+      "id": 27,
+      "title": "Expense Management System",
+      "description": "Advanced financial tracking with reports and budgets",
+      "youtubeUrl": "https://www.youtube.com/watch?v=f6h4a3MnzD0",
+      "difficulty": "Intermediate",
+      "technology": "React"
+    },
+    {
+      "id": 28,
+      "title": "Job Board Platform",
+      "description": "Job posting and application management system",
+      "youtubeUrl": "https://www.youtube.com/watch?v=xMCnDesBggM",
+      "difficulty": "Intermediate",
+      "technology": "Node.js"
+    },
+    {
+      "id": 29,
+      "title": "Learning Management System",
+      "description": "Online course platform with progress tracking",
+      "youtubeUrl": "https://www.youtube.com/watch?v=MpQbwtSiZ7E",
+      "difficulty": "Intermediate",
+      "technology": "React"
+    },
+    {
+      "id": 30,
+      "title": "Event Management App",
+      "description": "Event planning with RSVP and ticket management",
+      "youtubeUrl": "https://www.youtube.com/watch?v=6fM3ueN9nYM",
+      "difficulty": "Intermediate",
+      "technology": "Vue.js"
+    },
+    {
+      "id": 31,
+      "title": "Inventory Management",
+      "description": "Stock tracking with alerts and analytics",
+      "youtubeUrl": "https://www.youtube.com/watch?v=T8mqZZ0r-RA",
+      "difficulty": "Intermediate",
+      "technology": "Angular"
+    },
+    {
+      "id": 32,
+      "title": "Real Estate Platform",
+      "description": "Property listing with search and filters",
+      "youtubeUrl": "https://www.youtube.com/watch?v=y47gYvXchXM",
+      "difficulty": "Intermediate",
+      "technology": "React"
+    },
+    {
+      "id": 33,
+      "title": "Fitness Tracker",
+      "description": "Workout logging with progress visualization",
+      "youtubeUrl": "https://www.youtube.com/watch?v=RJSp4A1q6Og",
+      "difficulty": "Intermediate",
+      "technology": "Flutter"
+    },
+    {
+      "id": 34,
+      "title": "Customer Support System",
+      "description": "Ticket management with live chat integration",
+      "youtubeUrl": "https://www.youtube.com/watch?v=ZbX4Ok9YX94",
+      "difficulty": "Intermediate",
+      "technology": "Node.js"
+    },
+    {
+      "id": 35,
+      "title": "Food Delivery App",
+      "description": "Restaurant ordering with delivery tracking",
+      "youtubeUrl": "https://www.youtube.com/watch?v=JzJCDCT98aY",
+      "difficulty": "Intermediate",
+      "technology": "React"
+    },
+    {
+      "id": 36,
+      "title": "Hotel Booking System",
+      "description": "Room reservation with availability calendar",
+      "youtubeUrl": "https://www.youtube.com/watch?v=gzdQDxzW2Tw",
+      "difficulty": "Intermediate",
+      "technology": "Vue.js"
+    },
+    {
+      "id": 37,
+      "title": "Library Management",
+      "description": "Book catalog with borrowing and return system",
+      "youtubeUrl": "https://www.youtube.com/watch?v=VBGgHPQHs6s",
+      "difficulty": "Intermediate",
+      "technology": "Python"
+    },
+    {
+      "id": 38,
+      "title": "CRM System",
+      "description": "Customer relationship management with sales pipeline",
+      "youtubeUrl": "https://www.youtube.com/watch?v=fIllQnpG7sM",
+      "difficulty": "Intermediate",
+      "technology": "Angular"
+    },
+    {
+      "id": 39,
+      "title": "Online Banking System",
+      "description": "Secure banking with transaction history",
+      "youtubeUrl": "https://www.youtube.com/watch?v=DgXhSjqB298",
+      "difficulty": "Intermediate",
+      "technology": "Node.js"
+    },
+    {
+      "id": 40,
+      "title": "Appointment Scheduler",
+      "description": "Booking system with calendar integration",
+      "youtubeUrl": "https://www.youtube.com/watch?v=6fM3ueN9nYM",
+      "difficulty": "Intermediate",
+      "technology": "React"
+    }
+  ],
+  "advanced": [
+    {
+      "id": 41,
+      "title": "Video Streaming Platform",
+      "description": "Netflix-like streaming service with content management",
+      "youtubeUrl": "https://www.youtube.com/watch?v=XtMThy8QKqU",
+      "difficulty": "Advanced",
+      "technology": "Next.js"
+    },
+    {
+      "id": 42,
+      "title": "Cryptocurrency Trading Bot",
+      "description": "Automated trading with machine learning predictions",
+      "youtubeUrl": "https://www.youtube.com/watch?v=GmvMLlBdhbs",
+      "difficulty": "Advanced",
+      "technology": "Python"
+    },
+    {
+      "id": 43,
+      "title": "Cloud-Based IDE",
+      "description": "Online code editor with collaboration features",
+      "youtubeUrl": "https://www.youtube.com/watch?v=SWnxWgNdAn8",
+      "difficulty": "Advanced",
+      "technology": "React"
+    },
+    {
+      "id": 44,
+      "title": "AI Chatbot Platform",
+      "description": "Intelligent chatbot with natural language processing",
+      "youtubeUrl": "https://www.youtube.com/watch?v=h8cPPfP6p5M",
+      "difficulty": "Advanced",
+      "technology": "Python"
+    },
+    {
+      "id": 45,
+      "title": "Blockchain Voting System",
+      "description": "Secure voting platform using blockchain technology",
+      "youtubeUrl": "https://www.youtube.com/watch?v=nh2WzCW2Xxo",
+      "difficulty": "Advanced",
+      "technology": "Node.js"
+    },
+    {
+      "id": 46,
+      "title": "Microservices Architecture",
+      "description": "Distributed system with containerized services",
+      "youtubeUrl": "https://www.youtube.com/watch?v=CdBtNQZH8a4",
+      "difficulty": "Advanced",
+      "technology": "Node.js"
+    },
+    {
+      "id": 47,
+      "title": "Machine Learning Pipeline",
+      "description": "End-to-end ML workflow with model deployment",
+      "youtubeUrl": "https://www.youtube.com/watch?v=MqZgoNaBzAM",
+      "difficulty": "Advanced",
+      "technology": "Python"
+    },
+    {
+      "id": 48,
+      "title": "Real-time Analytics Dashboard",
+      "description": "Big data visualization with streaming analytics",
+      "youtubeUrl": "https://www.youtube.com/watch?v=6wS5xOz7-60",
+      "difficulty": "Advanced",
+      "technology": "React"
+    },
+    {
+      "id": 49,
+      "title": "Distributed File System",
+      "description": "Scalable file storage with replication",
+      "youtubeUrl": "https://www.youtube.com/watch?v=eRSQiReiLJ0",
+      "difficulty": "Advanced",
+      "technology": "Python"
+    },
+    {
+      "id": 50,
+      "title": "IoT Device Management",
+      "description": "Platform for managing connected devices",
+      "youtubeUrl": "https://www.youtube.com/watch?v=LlhmzVL5bm8",
+      "difficulty": "Advanced",
+      "technology": "Node.js"
+    },
+    {
+      "id": 51,
+      "title": "Computer Vision System",
+      "description": "Image recognition with deep learning",
+      "youtubeUrl": "https://www.youtube.com/watch?v=aircAruvnKk",
+      "difficulty": "Advanced",
+      "technology": "Python"
+    },
+    {
+      "id": 52,
+      "title": "Recommendation Engine",
+      "description": "Personalized content recommendation system",
+      "youtubeUrl": "https://www.youtube.com/watch?v=n3RKsY2H-NE",
+      "difficulty": "Advanced",
+      "technology": "Python"
+    },
+    {
+      "id": 53,
+      "title": "Serverless Architecture",
+      "description": "Event-driven serverless application framework",
+      "youtubeUrl": "https://www.youtube.com/watch?v=vxJobGtqKVM",
+      "difficulty": "Advanced",
+      "technology": "Node.js"
+    },
+    {
+      "id": 54,
+      "title": "Graph Database System",
+      "description": "Social network analysis with graph algorithms",
+      "youtubeUrl": "https://www.youtube.com/watch?v=GekQqFZm7mA",
+      "difficulty": "Advanced",
+      "technology": "Python"
+    },
+    {
+      "id": 55,
+      "title": "Quantum Computing Simulator",
+      "description": "Quantum algorithm simulation platform",
+      "youtubeUrl": "https://www.youtube.com/watch?v=F_Riqjdh2oM",
+      "difficulty": "Advanced",
+      "technology": "Python"
+    },
+    {
+      "id": 56,
+      "title": "Autonomous System Controller",
+      "description": "Self-driving vehicle control system",
+      "youtubeUrl": "https://www.youtube.com/watch?v=eLTLtUVuuy4",
+      "difficulty": "Advanced",
+      "technology": "Python"
+    },
+    {
+      "id": 57,
+      "title": "Cybersecurity Framework",
+      "description": "Threat detection and prevention system",
+      "youtubeUrl": "https://www.youtube.com/watch?v=inWWhr5tnEA",
+      "difficulty": "Advanced",
+      "technology": "Python"
+    },
+    {
+      "id": 58,
+      "title": "Neural Network Framework",
+      "description": "Custom deep learning library implementation",
+      "youtubeUrl": "https://www.youtube.com/watch?v=aircAruvnKk",
+      "difficulty": "Advanced",
+      "technology": "Python"
+    },
+    {
+      "id": 59,
+      "title": "Distributed Database",
+      "description": "Scalable database with ACID properties",
+      "youtubeUrl": "https://www.youtube.com/watch?v=UF9Iqmg94tk",
+      "difficulty": "Advanced",
+      "technology": "Node.js"
+    },
+    {
+      "id": 60,
+      "title": "Virtual Reality Platform",
+      "description": "Immersive VR experience development",
+      "youtubeUrl": "https://www.youtube.com/watch?v=gGbmF-a-QhA",
+      "difficulty": "Advanced",
+      "technology": "JavaScript"
+    }
+  ]
+}
