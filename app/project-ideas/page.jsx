@@ -1,8 +1,7 @@
 "use client"
-
 import React, { useState, useEffect } from 'react'
 import { onAuthStateChanged } from 'firebase/auth'
-import { Search, ExternalLink, Youtube, Code, X, Sparkles, TrendingUp, Users, Zap, Send, Star, CheckCircle, ArrowRight, Target, Lightbulb, Rocket, Menu, Bell, User, Briefcase, Award, Globe, Home, BookOpen } from 'lucide-react'
+import { Search, ExternalLink, Youtube, Code, X, Sparkles, TrendingUp, Users, Zap, Send, Star, CheckCircle, ArrowRight, Target, Lightbulb, Rocket, Menu, Bell, User, Briefcase, Award, Globe, Home, BookOpen, ChevronLeft, ChevronRight } from 'lucide-react'
 import { auth } from '../../lib/firebase'
 import projectsData from './projects.json'
 import './styles.css'
@@ -17,6 +16,8 @@ const ProjectIdeasPage = () => {
   const [showPopup, setShowPopup] = useState(false)
   const [showProjectForm, setShowProjectForm] = useState(false)
   const [showMobileMenu, setShowMobileMenu] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [projectsPerPage] = useState(6)
   const [formData, setFormData] = useState({
     projectTitle: '',
     projectDescription: '',
@@ -54,10 +55,10 @@ const ProjectIdeasPage = () => {
           const rollNumber = currentUser.email.split('@')[0]
           if (rollNumber.startsWith('22') || rollNumber.startsWith('23')) {
             setUser(currentUser)
-            setFormData(prev => ({ 
-              ...prev, 
+            setFormData(prev => ({
+              ...prev,
               contactEmail: currentUser.email,
-              rollNumber: rollNumber 
+              rollNumber: rollNumber
             }))
           } else {
             setAuthLoading(false)
@@ -79,11 +80,10 @@ const ProjectIdeasPage = () => {
       }
       setAuthLoading(false)
     })
-
     return () => unsubscribe()
   }, [])
 
-  // Filter projects - limit to 10
+  // Filter projects
   useEffect(() => {
     let allProjects = []
     
@@ -94,21 +94,29 @@ const ProjectIdeasPage = () => {
     }
 
     if (selectedTech !== 'all') {
-      allProjects = allProjects.filter(project => 
+      allProjects = allProjects.filter(project =>
         project.technology === selectedTech
       )
     }
 
     if (searchTerm) {
-      allProjects = allProjects.filter(project => 
+      allProjects = allProjects.filter(project =>
         project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         project.description.toLowerCase().includes(searchTerm.toLowerCase())
       )
     }
 
-    // Limit to 10 projects
-    setFilteredProjects(allProjects.slice(0, 10))
+    setFilteredProjects(allProjects)
+    setCurrentPage(1) // Reset to first page when filters change
   }, [selectedLevel, selectedTech, searchTerm])
+
+  // Pagination logic
+  const indexOfLastProject = currentPage * projectsPerPage
+  const indexOfFirstProject = indexOfLastProject - projectsPerPage
+  const currentProjects = filteredProjects.slice(indexOfFirstProject, indexOfLastProject)
+  const totalPages = Math.ceil(filteredProjects.length / projectsPerPage)
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber)
 
   const getDifficultyColor = (difficulty) => {
     switch (difficulty) {
@@ -117,22 +125,6 @@ const ProjectIdeasPage = () => {
       case 'Advanced': return 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'
       default: return theme.primary
     }
-  }
-
-  const getButtonGradient = (index) => {
-    const gradients = [
-      'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
-      'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
-      'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-      'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-      'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-      'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)',
-      'linear-gradient(135deg, #84cc16 0%, #65a30d 100%)',
-      'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
-      'linear-gradient(135deg, #ec4899 0%, #db2777 100%)',
-      'linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%)',
-    ]
-    return gradients[index % gradients.length]
   }
 
   const getTechColor = (tech) => {
@@ -152,11 +144,9 @@ const ProjectIdeasPage = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault()
-    // Here you would typically send the form data to your backend
     console.log('Form submitted:', formData)
     alert('Your project request has been submitted! Our team will contact you within 24 hours.')
     setShowProjectForm(false)
-    // Reset form
     setFormData({
       projectTitle: '',
       projectDescription: '',
@@ -192,99 +182,53 @@ const ProjectIdeasPage = () => {
     )
   }
 
-  // Show message for non-KIIT emails
   if (!user && !authLoading) {
     const currentUser = auth.currentUser
     if (!currentUser || (currentUser && !currentUser.email.endsWith('@kiit.ac.in'))) {
       return (
-        <div className="access-denied-container" style={{ background: theme.background }}>
-          <div className="access-denied-content" style={{ background: theme.cardBg, color: theme.textPrimary }}>
-            <div className="access-denied-icon">
-              <Target size={64} />
-            </div>
-            <h2>Authentication Required</h2>
-            <p>Please sign in with your KIIT Gmail account to access this premium feature.</p>
-            <p>Redirecting to sign in page...</p>
+        <div className="access-denied" style={{ background: theme.background }}>
+          <div className="access-denied-content">
+            <h2>Access Restricted</h2>
+            <p>This page is only accessible to KIIT students with valid @kiit.ac.in email addresses.</p>
+            <p>Redirecting to home page...</p>
           </div>
         </div>
       )
     }
-    
-    // Show message for other KIIT students (not 3rd/4th year)
-    if (currentUser && currentUser.email.endsWith('@kiit.ac.in')) {
-      const rollNumber = currentUser.email.split('@')[0]
-      if (!rollNumber.startsWith('22') && !rollNumber.startsWith('23')) {
-        return (
-          <div className="access-denied-container" style={{ background: theme.background }}>
-            <div className="access-denied-content" style={{ background: theme.cardBg, color: theme.textPrimary }}>
-              <div className="access-denied-icon">
-                <Target size={64} />
-              </div>
-              <h2>Premium Feature - 3rd & 4th Year Only</h2>
-              <p>This advanced project section is exclusively available for 3rd and 4th year students (2022 & 2023 batch).</p>
-              <p>Redirecting to main page...</p>
-            </div>
-          </div>
-        )
-      }
-    }
   }
 
   return (
-    <div className="project-ideas-page" style={{ background: theme.background, minHeight: '100vh' }}>
-      {/* Header */}
+    <div className="project-ideas-page" style={{ background: theme.background }}>
+      {/* Updated Header */}
       <header className="page-header">
         <div className="header-content">
-          {/* Logo & Navigation */}
-          <div className="header-left">
-            <div className="logo">
-              <Sparkles size={24} />
-              <span>KiitHub Projects</span>
+          <div className="updated-logo-brand">
+            <div className="updated-logo-container">
+              <div className="updated-logo-icon">
+                <Sparkles size={24} />
+              </div>
             </div>
-            
-            <nav className="desktop-nav">
-              <a href="#projects-section">Projects</a>
-              <a href="#industry-section">Industry</a>
-              <a href="#assistance-section">Help</a>
-            </nav>
+            <div className="updated-brand-info">
+              <div className="updated-brand-name">KiitHub</div>
+              <div className="updated-brand-tagline">PROJECT IDEAS</div>
+            </div>
           </div>
-
-          {/* Mobile Menu Button */}
-          <button 
-            className="mobile-menu-btn"
-            onClick={() => setShowMobileMenu(!showMobileMenu)}
-          >
-            <Menu size={24} />
-          </button>
-
-          {/* User Actions */}
-          <div className="header-actions">
-            <button className="action-btn">
-              <Bell size={18} />
+          
+          <div className="header-right">
+            <button className="notification-btn">
+              <Bell size={20} />
             </button>
-            
-            <div className="user-info">
+            <div className="user-avatar">
               <User size={20} />
-              <span>{user?.email?.split('@')[0]}</span>
             </div>
+            <button 
+              className="mobile-menu-btn"
+              onClick={() => setShowMobileMenu(!showMobileMenu)}
+            >
+              <Menu size={20} />
+            </button>
           </div>
         </div>
-
-        {/* Mobile Menu */}
-        {showMobileMenu && (
-          <div className="mobile-menu">
-            <div className="mobile-nav">
-              <a href="#projects-section" onClick={() => setShowMobileMenu(false)}>Projects</a>
-              <a href="#industry-section" onClick={() => setShowMobileMenu(false)}>Industry</a>
-              <a href="#assistance-section" onClick={() => setShowMobileMenu(false)}>Help</a>
-            </div>
-            
-            <div className="mobile-user">
-              <User size={16} />
-              <span>{user?.email?.split('@')[0]}</span>
-            </div>
-          </div>
-        )}
       </header>
 
       {/* Hero Banner */}
@@ -322,7 +266,7 @@ const ProjectIdeasPage = () => {
         </div>
       </section>
 
-      {/* Industry Insights Section - Centered */}
+      {/* Industry Insights Section */}
       <section className="industry-section">
         <div className="industry-container">
           <div className="section-header">
@@ -507,10 +451,9 @@ const ProjectIdeasPage = () => {
         <div className="projects-header">
           <div className="projects-title-section">
             <h2>Featured Project Ideas</h2>
-            <p>Hand-picked projects with comprehensive tutorials and source code • Showing {filteredProjects.length} of 10 max</p>
+            <p>Hand-picked projects with comprehensive tutorials and source code</p>
           </div>
           
-          {/* Filters moved here */}
           <div className="projects-filters">
             <div className="search-wrapper">
               <Search size={18} />
@@ -548,9 +491,9 @@ const ProjectIdeasPage = () => {
         </div>
         
         <div className="projects-grid">
-          {filteredProjects.map((project, index) => (
+          {currentProjects.map((project, index) => (
             <div 
-              key={project.id} 
+              key={project.id}
               className="project-card"
               style={{
                 background: theme.cardBg,
@@ -561,7 +504,7 @@ const ProjectIdeasPage = () => {
               <div className="project-header">
                 <span 
                   className="difficulty-badge"
-                  style={{ 
+                  style={{
                     background: getDifficultyColor(project.difficulty),
                   }}
                 >
@@ -570,14 +513,13 @@ const ProjectIdeasPage = () => {
                 
                 <span 
                   className="tech-badge"
-                  style={{ 
+                  style={{
                     background: getTechColor(project.technology),
                   }}
                 >
                   {project.technology}
                 </span>
               </div>
-
               <div className="project-content">
                 <h3 className="project-title" style={{ color: theme.textPrimary }}>
                   {project.title}
@@ -586,35 +528,82 @@ const ProjectIdeasPage = () => {
                   {project.description}
                 </p>
               </div>
-
               <div className="project-actions">
                 <a
                   href={project.youtubeUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="action-icon-btn youtube-btn"
-                  style={{
-                    background: '#ff0000',
-                  }}
                 >
-                  <Youtube size={16} />
+                  <Youtube size={18} />
                 </a>
-                
                 <button
                   onClick={handleSourceCodeClick}
                   className="action-icon-btn source-btn"
-                  style={{
-                    background: 'rgba(30, 41, 59, 0.6)',
-                    color: theme.textMuted,
-                    border: `1px solid ${theme.border}`
-                  }}
                 >
-                  <Code size={16} />
+                  <Code size={18} />
                 </button>
               </div>
             </div>
           ))}
         </div>
+
+        {/* Enhanced Pagination */}
+        {totalPages > 1 && (
+          <div className="enhanced-pagination">
+            <button 
+              className="pagination-btn"
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              <ChevronLeft size={16} />
+            </button>
+            
+            <div className="pagination-numbers">
+              {[...Array(totalPages)].map((_, index) => {
+                const pageNumber = index + 1
+                const isCurrentPage = pageNumber === currentPage
+                
+                // Show first page, last page, current page, and pages around current
+                if (
+                  pageNumber === 1 ||
+                  pageNumber === totalPages ||
+                  (pageNumber >= currentPage - 1 && pageNumber <= currentPage + 1)
+                ) {
+                  return (
+                    <button
+                      key={pageNumber}
+                      className={`pagination-number ${isCurrentPage ? 'active' : ''}`}
+                      onClick={() => paginate(pageNumber)}
+                    >
+                      {pageNumber}
+                    </button>
+                  )
+                } else if (
+                  pageNumber === currentPage - 2 ||
+                  pageNumber === currentPage + 2
+                ) {
+                  return <span key={pageNumber} className="pagination-dots">...</span>
+                }
+                return null
+              })}
+            </div>
+            
+            <button 
+              className="pagination-btn"
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              <ChevronRight size={16} />
+            </button>
+            
+            <div className="pagination-info">
+              <span>
+                Showing {indexOfFirstProject + 1}-{Math.min(indexOfLastProject, filteredProjects.length)} of {filteredProjects.length} projects
+              </span>
+            </div>
+          </div>
+        )}
 
         {filteredProjects.length === 0 && (
           <div className="no-results" style={{ color: theme.textMuted }}>
@@ -756,7 +745,6 @@ const ProjectIdeasPage = () => {
                     </select>
                   </div>
                 </div>
-                
               </div>
               
               <div className="form-section">
@@ -783,7 +771,7 @@ const ProjectIdeasPage = () => {
                       type="email"
                       value={formData.contactEmail}
                       readOnly
-                      style={{ 
+                      style={{
                         backgroundColor: 'rgba(51, 65, 85, 0.3)',
                         cursor: 'not-allowed',
                         opacity: 0.7
