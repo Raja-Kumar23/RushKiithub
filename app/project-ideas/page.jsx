@@ -257,43 +257,11 @@ const ProjectIdeasPage = () => {
             <Menu size={24} />
           </button>
 
-          {/* Search & Filters */}
-          <div className="header-search">
-            <div className="search-wrapper">
-              <Search size={18} />
-              <input
-                type="text"
-                placeholder="Search projects..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-          </div>
-
           {/* User Actions */}
           <div className="header-actions">
-            <select
-              value={selectedLevel}
-              onChange={(e) => setSelectedLevel(e.target.value)}
-              className="filter-select"
-            >
-              <option value="all">All Levels</option>
-              <option value="beginner">Beginner</option>
-              <option value="intermediate">Intermediate</option>
-              <option value="advanced">Advanced</option>
-            </select>
-            
-            <select
-              value={selectedTech}
-              onChange={(e) => setSelectedTech(e.target.value)}
-              className="filter-select"
-            >
-              {technologies.map(tech => (
-                <option key={tech} value={tech}>
-                  {tech === 'all' ? 'All Tech' : tech}
-                </option>
-              ))}
-            </select>
+            <button className="action-btn">
+              <Bell size={18} />
+            </button>
             
             <div className="user-info">
               <User size={20} />
@@ -311,50 +279,9 @@ const ProjectIdeasPage = () => {
               <a href="#assistance-section" onClick={() => setShowMobileMenu(false)}>Help</a>
             </div>
             
-            <div className="mobile-search">
-              <div className="search-wrapper">
-                <Search size={18} />
-                <input
-                  type="text"
-                  placeholder="Search projects..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-            </div>
-            
             <div className="mobile-user">
               <User size={16} />
               <span>{user?.email?.split('@')[0]}</span>
-            </div>
-            
-            <div className="mobile-filters">
-              <div className="mobile-filters">
-                <h4>Level</h4>
-                <select
-                  value={selectedLevel}
-                  onChange={(e) => setSelectedLevel(e.target.value)}
-                  className="mobile-filter-select"
-                >
-                  <option value="all">All Levels</option>
-                  <option value="beginner">Beginner</option>
-                  <option value="intermediate">Intermediate</option>
-                  <option value="advanced">Advanced</option>
-                </select>
-                
-                <h4>Technology</h4>
-                <select
-                  value={selectedTech}
-                  onChange={(e) => setSelectedTech(e.target.value)}
-                  className="mobile-filter-select"
-                >
-                  {technologies.map(tech => (
-                    <option key={tech} value={tech}>
-                      {tech === 'all' ? 'All Tech' : tech}
-                    </option>
-                  ))}
-                </select>
-              </div>
             </div>
           </div>
         )}
@@ -475,7 +402,7 @@ const ProjectIdeasPage = () => {
                 </div>
                 <div className="detail-item">
                   <CheckCircle size={16} />
-                  <span>Cloud-native development practices</span>
+                  <span>Cloud-native development capabilities</span>
                 </div>
               </div>
             </div>
@@ -578,8 +505,46 @@ const ProjectIdeasPage = () => {
       {/* Projects Grid */}
       <section id="projects-section" className="projects-section">
         <div className="projects-header">
-          <h2>Featured Project Ideas</h2>
-          <p>Hand-picked projects with comprehensive tutorials and source code • Showing {filteredProjects.length} of 10 max</p>
+          <div className="projects-title-section">
+            <h2>Featured Project Ideas</h2>
+            <p>Hand-picked projects with comprehensive tutorials and source code • Showing {filteredProjects.length} of 10 max</p>
+          </div>
+          
+          {/* Filters moved here */}
+          <div className="projects-filters">
+            <div className="search-wrapper">
+              <Search size={18} />
+              <input
+                type="text"
+                placeholder="Search projects..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            
+            <select
+              value={selectedLevel}
+              onChange={(e) => setSelectedLevel(e.target.value)}
+              className="filter-select"
+            >
+              <option value="all">All Levels</option>
+              <option value="beginner">Beginner</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="advanced">Advanced</option>
+            </select>
+            
+            <select
+              value={selectedTech}
+              onChange={(e) => setSelectedTech(e.target.value)}
+              className="filter-select"
+            >
+              {technologies.map(tech => (
+                <option key={tech} value={tech}>
+                  {tech === 'all' ? 'All Tech' : tech}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
         
         <div className="projects-grid">
@@ -627,27 +592,24 @@ const ProjectIdeasPage = () => {
                   href={project.youtubeUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="watch-tutorial-btn"
+                  className="action-icon-btn youtube-btn"
                   style={{
-                    background: getButtonGradient(index),
+                    background: '#ff0000',
                   }}
                 >
                   <Youtube size={16} />
-                  Watch Tutorial
-                  <ExternalLink size={14} />
                 </a>
                 
                 <button
                   onClick={handleSourceCodeClick}
-                  className="source-code-btn"
+                  className="action-icon-btn source-btn"
                   style={{
-                    background: 'transparent',
+                    background: 'rgba(30, 41, 59, 0.6)',
                     color: theme.textMuted,
                     border: `1px solid ${theme.border}`
                   }}
                 >
                   <Code size={16} />
-                  Source Code
                 </button>
               </div>
             </div>
