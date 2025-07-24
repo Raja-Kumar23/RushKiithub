@@ -1,5 +1,5 @@
 import React from 'react'
-import { Calculator, CheckSquare, Star, Users, HeadphonesIcon, MessageSquare, ArrowUpRight, Map, FileText, Code2 } from 'lucide-react'
+import { Calculator, CheckSquare, Star, Users, HeadphonesIcon, MessageSquare, ArrowUpRight, Map, FileText, Code2, Github } from 'lucide-react'
 import './FeatureGrid.css'
 
 const FeatureGrid = ({ theme, user, setShowLoginPrompt, showNotification }) => {
@@ -76,6 +76,15 @@ const FeatureGrid = ({ theme, user, setShowLoginPrompt, showNotification }) => {
       action: () => handleFeatureClick('project-ideas'),
       available: true
     },
+    {
+      id: 'github-readme',
+      title: 'GitHub README Generator',
+      description: 'Create stunning GitHub profile READMEs instantly',
+      icon: Github,
+      gradient: `linear-gradient(135deg, #24292e 0%, #6f42c1 100%)`,
+      action: () => handleFeatureClick('github-readme'),
+      available: true
+    },
   ]
 
   const checkRollNumberAccess = (rollNumber) => {
@@ -133,6 +142,10 @@ const FeatureGrid = ({ theme, user, setShowLoginPrompt, showNotification }) => {
       case 'project-ideas':
         showNotification('Opening Project Ideas Hub...', 'info')
         window.open('/project-ideas', '_blank')
+        break
+      case 'github-readme':
+        showNotification('Opening GitHub README Generator...', 'info')
+        window.open('/github-readme-generator', '_blank')
         break
       default:
         break
