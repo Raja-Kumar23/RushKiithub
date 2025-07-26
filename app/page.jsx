@@ -1,9 +1,8 @@
 "use client"
 import { useEffect, useState } from "react"
 import { onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth"
-import { collection, getDocs } from "firebase/firestore"
-import { History } from "lucide-react"
-import { auth, db, provider } from "../lib/firebase" // Import from centralized file
+import { auth, provider } from "../lib/firebase"
+import { loadSubjectsFromStorage } from "../lib/storageHelpers"
 
 // Import Components
 import ProfileSection from "../components/ProfileSection/ProfileSection"
@@ -34,11 +33,16 @@ export default function Home() {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false)
   const [showLoginPrompt, setShowLoginPrompt] = useState(false)
   const [loginError, setLoginError] = useState("")
-  const [hasInteracted, setHasInteracted] = useState(false) // State to track user interaction
+  const [hasInteracted, setHasInteracted] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [notification, setNotification] = useState(null)
   const [isDarkMode, setIsDarkMode] = useState(true)
   const [activeMethod, setActiveMethod] = useState("search")
+
+  // Silent loading states - no popup
+  const [isLoadingData, setIsLoadingData] = useState(false)
+  const [dataError, setDataError] = useState(null)
+  const [totalFiles, setTotalFiles] = useState(0)
 
   // Enhanced Theme Configuration
   const theme = {
@@ -75,20 +79,10 @@ export default function Home() {
       glassBg: "rgba(30, 41, 59, 0.4)",
     },
   }
+
   const currentTheme = isDarkMode ? theme.dark : theme.light
 
-  // // Load theme preference and search history
-  // useEffect(() => {
-  //   const savedTheme = localStorage.getItem("theme")
-  //   if (savedTheme === "dark") {
-  //     setIsDarkMode(true)
-  //   }
-
-  //   const history = JSON.parse(localStorage.getItem("searchHistory")) || []
-  //   setSearchHistory(history)
-  // }, [])
-
-  // Authentication state management with Firebase persistence
+  // Authentication state management
   useEffect(() => {
     if (!auth) {
       setAuthLoading(false)
@@ -98,7 +92,6 @@ export default function Home() {
 
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       console.log("Auth state changed:", currentUser?.email || "No user")
-
       if (currentUser && (currentUser.email.endsWith("@kiit.ac.in") || currentUser.email === "davidtomdon@gmail.com")) {
         const userData = {
           uid: currentUser.uid,
@@ -108,99 +101,58 @@ export default function Home() {
         }
         setUser(userData)
         setLoginError("")
-        setShowLoginPrompt(false) // Hide prompt if user successfully authenticated
-
-        loadSubjects() // Load subjects only when a valid user is authenticated
+        setShowLoginPrompt(false)
+        loadSubjectsFromStorageAsync()
       } else if (currentUser) {
-        // Invalid email domain
         console.log("Invalid email domain, signing out:", currentUser.email)
-        signOut(auth) // Sign out the invalid user
+        signOut(auth)
         setLoginError("Please use your KIIT Gmail account (@kiit.ac.in) to sign in")
-        setUser(null) // Clear user state
+        setUser(null)
       } else {
-        // No user signed in
         console.log("No user signed in.")
-        setUser(null) // Clear user state
+        setUser(null)
       }
-
-      setAuthLoading(false) // Auth check is complete
-      setIsLoading(false) // Initial loading is complete
+      setAuthLoading(false)
+      setIsLoading(false)
     })
 
     return () => unsubscribe()
-  }, []) // Dependencies: auth (should be stable after initial render)
+  }, [])
 
-  const loadSubjects = async () => {
-    if (!db) {
-      const sampleData = {
-        first: {
-          Mathematics: {
-            Syllabus: "https://drive.google.com/file/d/1d1Tftn_oZJjCYaqZjA_PlOusp=drive_link",
-            Notes: "https://drive.google.com/file/d/1d1Tftn_oZJjCYaqZjA_PlOusp=drive_link",
-            "Mid Sem Papers": "https://drive.google.com/file/d/1d1Tftn_oZJjCYaqZjA_PlOusp=drive_link",
-            "End Sem Papers": "https://drive.google.com/file/d/1d1Tftn_oZJjCYaqZjA_PlOusp=drive_link",
-          },
-          Physics: {
-            Syllabus: "https://drive.google.com/file/d/1d1Tftn_oZJjCYaqZjA_PlOusp=drive_link",
-            Notes: "https://drive.google.com/file/d/1d1Tftn_oZJjCYaqZjA_PlOusp=drive_link",
-            "Mid Sem Papers": "https://drive.google.com/file/d/1d1Tftn_oZJjCYaqZjA_PlOusp=drive_link",
-            "End Sem Papers": "https://drive.google.com/file/d/1d1Tftn_oZJjCYaqZjA_PlOusp=drive_link",
-          },
-          Chemistry: {
-            Syllabus: "https://drive.google.com/file/d/1d1Tftn_oZJjCYaqZjA_PlOusp=drive_link",
-            Notes: "https://drive.google.com/file/d/1d1Tftn_oZJjCYaqZjA_PlOusp=drive_link",
-            "Mid Sem Papers": "https://drive.google.com/file/d/1d1Tftn_oZJjCYaqZjA_PlOusp=drive_link",
-            "End Sem Papers": "https://drive.google.com/file/d/1d1Tftn_oZJjCYaqZjA_PlOusp=drive_link",
-          },
-        },
-        second: {
-          Mathematics: {
-            Syllabus: "https://drive.google.com/file/d/1d1Tftn_oZJjCYaqZjA_PlOusp=drive_link",
-            Notes: "https://drive.google.com/file/d/1d1Tftn_oZJjCYaqZjA_PlOusp=drive_link",
-            "Mid Sem Papers": "https://drive.google.com/file/d/1d1Tftn_oZJjCYaqZjA_PlOusp=drive_link",
-            "End Sem Papers": "https://drive.google.com/file/d/1d1Tftn_oZJjCYaqZjA_PlOusp=drive_link",
-          },
-          "Computer Science": {
-            Syllabus: "https://drive.google.com/file/d/1d1Tftn_oZJjCYaqZjA_PlOusp=drive_link",
-            Notes: "https://drive.google.com/file/d/1d1Tftn_oZJjCYaqZjA_PlOusp=drive_link",
-            "Mid Sem Papers": "https://drive.google.com/file/d/1d1Tftn_oZJjCYaqZjA_PlOusp=drive_link",
-            "End Sem Papers": "https://drive.google.com/file/d/1d1Tftn_oZJjCYaqZjA_PlOusp=drive_link",
-          },
-        },
-      }
-      setSubjectsData(sampleData)
-      return
-    }
+  // SILENT loading - no popup, just background loading
+  const loadSubjectsFromStorageAsync = async () => {
+    setIsLoadingData(true)
+    setDataError(null)
 
     try {
-      const collections = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth"]
-      const data = {}
-      for (const collectionName of collections) {
-        const collectionRef = collection(db, collectionName)
-        const querySnapshot = await getDocs(collectionRef)
-        const collectionData = {}
+      console.log("🔄 Silent loading subjects from Firebase Storage...")
+      const result = await loadSubjectsFromStorage()
 
-        querySnapshot.forEach((doc) => {
-          collectionData[doc.id] = doc.data()
-        })
+      if (result.error) {
+        setDataError(result.error)
+        setSubjectsData({})
+        setTotalFiles(0)
+        showNotification(`Error loading data: ${result.error}`, "error")
+      } else {
+        setSubjectsData(result.data || {})
+        setTotalFiles(result.totalFiles || 0)
+        localStorage.setItem("subjectsData", JSON.stringify(result.data || {}))
 
-        if (Object.keys(collectionData).length > 0) {
-          data[collectionName] = collectionData
+        if (result.totalFiles > 0) {
+          showNotification(`🚀 Loaded ${result.totalFiles} study materials silently!`, "success")
+          console.log("✅ Successfully loaded subjects from storage")
+        } else {
+          showNotification("No study materials found in Firebase Storage", "warning")
         }
       }
-      setSubjectsData(data)
-      localStorage.setItem("subjectsData", JSON.stringify(data))
     } catch (error) {
-      console.error("Error loading subjects:", error)
-      const sampleData = {
-        first: {
-          Mathematics: {
-            Syllabus: "sample-link-1",
-            Notes: "sample-link-2",
-          },
-        },
-      }
-      setSubjectsData(sampleData)
+      console.error("❌ Error loading subjects from storage:", error)
+      setDataError(error.message)
+      setSubjectsData({})
+      setTotalFiles(0)
+      showNotification(`Failed to load data: ${error.message}`, "error")
+    } finally {
+      setIsLoadingData(false)
     }
   }
 
@@ -214,21 +166,23 @@ export default function Home() {
       setLoginError("")
       const result = await signInWithPopup(auth, provider)
       const currentUser = result.user
+
       if (!currentUser.email.endsWith("@kiit.ac.in") && currentUser.email !== "davidtomdon@gmail.com") {
         setLoginError("Please use your KIIT Gmail account (@kiit.ac.in) to sign in")
         await signOut(auth)
         return
       }
+
       const userData = {
         uid: currentUser.uid,
         displayName: currentUser.displayName,
         email: currentUser.email,
         photoURL: currentUser.photoURL || "/default-profile.png",
       }
+
       setUser(userData)
       setShowLoginPrompt(false)
-      setHasInteracted(true) // User has interacted by trying to sign in
-
+      setHasInteracted(true)
       showNotification(`Welcome, ${currentUser.displayName?.split(" ")[0]}!`, "success")
     } catch (error) {
       console.error("Sign in error:", error)
@@ -266,21 +220,15 @@ export default function Home() {
     showNotification(`Switched to ${newTheme ? "dark" : "light"} mode`, "success")
   }
 
-  // Simplified isAuthenticated: relies solely on the 'user' state
-  const isAuthenticated = () => {
-    return !!user
-  }
-
-  // This effect ensures the login prompt is shown if no user is authenticated
-  // and the auth check is complete, and the user has interacted.
   useEffect(() => {
     if (!authLoading && !user && hasInteracted) {
       setShowLoginPrompt(true)
     }
   }, [authLoading, user, hasInteracted])
 
+  // Load data on component mount
   useEffect(() => {
-    loadSubjects()
+    loadSubjectsFromStorageAsync()
   }, [])
 
   if (isLoading) {
@@ -289,41 +237,6 @@ export default function Home() {
 
   return (
     <div className={`app ${isDarkMode ? "dark" : "light"}`} style={{ background: currentTheme.background }}>
-      {/* History Button
-      <button
-        onClick={() => setIsHistorySidebarOpen(true)}
-        style={{
-          position: "fixed",
-          top: "20px",
-          left: "20px",
-          zIndex: 1001,
-          background: `linear-gradient(135deg, ${currentTheme.primary} 0%, ${currentTheme.secondary} 100%)`,
-          color: "white",
-          border: "none",
-          padding: "14px 18px",
-          borderRadius: "14px",
-          cursor: "pointer",
-          fontWeight: "600",
-          transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-          boxShadow: currentTheme.shadow,
-          display: "flex",
-          alignItems: "center",
-          gap: "10px",
-          fontSize: "14px",
-        }}
-        onMouseEnter={(e) => {
-          e.target.style.transform = "translateY(-3px) scale(1.05)"
-          e.target.style.boxShadow = `0 25px 60px ${currentTheme.primary}40`
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.transform = "translateY(0)"
-          e.target.style.boxShadow = currentTheme.shadow
-        }}
-      >
-        <History size={20} />
-        History
-      </button> */}
-
       <ProfileSection
         user={user}
         showProfileDropdown={showProfileDropdown}
@@ -334,6 +247,7 @@ export default function Home() {
         isDarkMode={isDarkMode}
         toggleTheme={toggleTheme}
       />
+
       <HistorySidebar
         isOpen={isHistorySidebarOpen}
         setIsOpen={setIsHistorySidebarOpen}
@@ -342,7 +256,9 @@ export default function Home() {
         user={user}
         setShowLoginPrompt={setShowLoginPrompt}
       />
+
       <HeroSection user={user} theme={currentTheme} />
+
       <div className="main-content">
         {/* Enhanced Method Toggle */}
         <div
@@ -372,18 +288,6 @@ export default function Home() {
               textTransform: "uppercase",
               letterSpacing: "0.5px",
             }}
-            onMouseEnter={(e) => {
-              if (activeMethod !== "search") {
-                e.target.style.transform = "translateY(-2px)"
-                e.target.style.background = `${currentTheme.primary}20`
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (activeMethod !== "search") {
-                e.target.style.transform = "translateY(0)"
-                e.target.style.background = currentTheme.glassBg
-              }
-            }}
           >
             🔍 Search Method
           </button>
@@ -406,22 +310,11 @@ export default function Home() {
               textTransform: "uppercase",
               letterSpacing: "0.5px",
             }}
-            onMouseEnter={(e) => {
-              if (activeMethod !== "browse") {
-                e.target.style.transform = "translateY(-2px)"
-                e.target.style.background = `${currentTheme.primary}20`
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (activeMethod !== "browse") {
-                e.target.style.transform = "translateY(0)"
-                e.target.style.background = currentTheme.glassBg
-              }
-            }}
           >
             📂 Browse Method
           </button>
         </div>
+
         {activeMethod === "search" ? (
           <>
             <CategorySelector
@@ -445,7 +338,10 @@ export default function Home() {
               setShowLoginPrompt={setShowLoginPrompt}
               setSearchHistory={setSearchHistory}
               searchHistory={searchHistory}
-              setHasInteracted={setHasInteracted} // Pass setHasInteracted
+              setHasInteracted={setHasInteracted}
+              isLoadingData={isLoadingData}
+              dataError={dataError}
+              totalFiles={totalFiles}
             />
           </>
         ) : (
@@ -455,30 +351,33 @@ export default function Home() {
             user={user}
             setShowLoginPrompt={setShowLoginPrompt}
             showNotification={showNotification}
-            setHasInteracted={setHasInteracted} // Pass setHasInteracted
+            setHasInteracted={setHasInteracted}
           />
         )}
+
         <FeatureGrid
           theme={currentTheme}
           user={user}
           setShowLoginPrompt={setShowLoginPrompt}
           showNotification={showNotification}
         />
+
         <FacultyReviewSection theme={currentTheme} />
         <SectionSwappingSection theme={currentTheme} />
         <TestimonialsSection theme={currentTheme} />
       </div>
+
       <Footer theme={currentTheme} />
-      {showLoginPrompt &&
-        !user &&
-        !authLoading && ( // Updated condition
-          <LoginPrompt
-            onClose={() => setShowLoginPrompt(false)}
-            onSignIn={handleGoogleSignIn}
-            error={loginError}
-            theme={currentTheme}
-          />
-        )}
+
+      {showLoginPrompt && !user && !authLoading && (
+        <LoginPrompt
+          onClose={() => setShowLoginPrompt(false)}
+          onSignIn={handleGoogleSignIn}
+          error={loginError}
+          theme={currentTheme}
+        />
+      )}
+
       {notification && (
         <NotificationToast
           message={notification.message}
@@ -486,6 +385,40 @@ export default function Home() {
           onClose={() => setNotification(null)}
           theme={currentTheme}
         />
+      )}
+
+      {/* Small loading indicator in corner instead of popup */}
+      {isLoadingData && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: "20px",
+            right: "20px",
+            background: currentTheme.cardBg,
+            padding: "12px 16px",
+            borderRadius: "12px",
+            border: `2px solid ${currentTheme.border}`,
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            zIndex: 1000,
+            boxShadow: currentTheme.shadow,
+          }}
+        >
+          <div
+            style={{
+              width: "16px",
+              height: "16px",
+              border: `2px solid ${currentTheme.primary}20`,
+              borderTop: `2px solid ${currentTheme.primary}`,
+              borderRadius: "50%",
+              animation: "spin 1s linear infinite",
+            }}
+          ></div>
+          <span style={{ color: currentTheme.textPrimary, fontSize: "14px", fontWeight: "500" }}>
+            Loading silently...
+          </span>
+        </div>
       )}
     </div>
   )

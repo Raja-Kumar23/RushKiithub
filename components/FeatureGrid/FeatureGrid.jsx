@@ -125,7 +125,7 @@ const FeatureGrid = ({ theme, user, setShowLoginPrompt, showNotification }) => {
         break
       case 'section':
         showNotification('Opening Section Swapping...', 'info')
-        window.open('/section-swapping', '_blank')
+        window.open('/swap', '_blank')
         break
       case 'support':
         showNotification('Opening Support Hub...', 'info')
