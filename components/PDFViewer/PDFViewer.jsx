@@ -2,6 +2,8 @@
 import { useState, useEffect, useRef, useCallback } from "react"
 import { X, Maximize, Minimize, FileText } from "lucide-react"
 import "./PDFViewer.css"
+import * as pdfjsLib from 'pdfjs-dist';
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
 
 const PDFViewer = ({ isOpen, onClose, fileUrl, fileName, theme }) => {
   const [isLoading, setIsLoading] = useState(true)

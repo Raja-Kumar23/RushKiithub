@@ -1,5 +1,4 @@
 "use client"
-
 import {
   Heart,
   Github,
@@ -12,8 +11,8 @@ import {
   ArrowRightLeft,
   HeadphonesIcon,
   Map,
+  Bell,
 } from "lucide-react"
-
 import { useRouter, usePathname } from "next/navigation"
 import "./Footer.css"
 
@@ -26,6 +25,7 @@ const Footer = ({ theme }) => {
     {
       tittle: "Quick Links",
       items: [
+        { name: "Updates", href: "/updates", icon: Bell }, // Added Updates section
         { name: "Todo List", href: "/to-do-list", icon: CheckSquare },
         { name: "CGPA Calculator", href: "/cgpa", icon: Calculator },
         { name: "WhatsApp Group", href: "https://chat.whatsapp.com/L49NFqYQ1aWCRObYUBpZax", icon: MessageSquare },
@@ -52,19 +52,21 @@ const Footer = ({ theme }) => {
     },
   ]
 
- const handleLinkClick = (href) => {
-  if (href.startsWith("http") || href.startsWith("/")) {
-    // Open external or internal route in new tab
-    window.open(href, "_blank", "noopener noreferrer")
-  } else if (href.startsWith("#")) {
-    // Scroll to section within the same page
-    const element = document.querySelector(href)
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" })
+  const handleLinkClick = (href) => {
+    if (href.startsWith("http")) {
+      // Open external links in new tab
+      window.open(href, "_blank", "noopener noreferrer")
+    } else if (href.startsWith("/")) {
+      // Navigate to internal routes
+      router.push(href)
+    } else if (href.startsWith("#")) {
+      // Scroll to section within the same page
+      const element = document.querySelector(href)
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" })
+      }
     }
   }
-}
-
 
   const stats = [
     { number: "5K+", label: "Students", color: theme.primary },
@@ -102,12 +104,10 @@ const Footer = ({ theme }) => {
                 KIITHub
               </h3>
             </div>
-
             <p className="brand-description" style={{ color: theme.textMuted }}>
               Your ultimate academic companion for KIIT University. Empowering students with resources, tools, and
               community support.
             </p>
-
             <div className="social-links">
               <a
                 href="https://github.com/Raja-Kumar23"
@@ -137,7 +137,6 @@ const Footer = ({ theme }) => {
               </a>
             </div>
           </div>
-
           <div className="footer-links">
             {links.map((section, index) => (
               <div key={index} className="link-section">
@@ -186,7 +185,6 @@ const Footer = ({ theme }) => {
             ))}
           </div>
         </div>
-
         <div className="footer-stats" style={{ borderColor: theme.border }}>
           {stats.map((stat, index) => (
             <div key={index} className="stat-item">
@@ -199,7 +197,6 @@ const Footer = ({ theme }) => {
             </div>
           ))}
         </div>
-
         <div className="footer-bottom" style={{ borderColor: theme.border }}>
           <div className="copyright">
             <p style={{ color: theme.textMuted }}>
