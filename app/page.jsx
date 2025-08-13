@@ -1733,7 +1733,7 @@ export default function Home() {
     setDataError(null)
 
     try {
-      console.log("🔄 Setting up real-time listeners for Cloud Firestore...")
+    
       
       const collectionNames = ["first", "second", "third", "fourth", "fifth", "sixth", "seventh", "Routine"]
       const listeners = []
@@ -1778,7 +1778,7 @@ export default function Home() {
         const unsubscribe = onSnapshot(
           collection(db, collectionName),
           (querySnapshot) => {
-            console.log(`📡 Real-time update received for /${collectionName}`)
+           
             
             const semesterData = {}
             querySnapshot.forEach((doc) => {
@@ -1795,10 +1795,10 @@ export default function Home() {
             completedCollections++
             
             updateCombinedData()
-            console.log(`✅ Real-time data updated for /${collectionName}`)
+           
           },
           (error) => {
-            console.error(`❌ Error in real-time listener for /${collectionName}:`, error)
+           
             completedCollections++
             if (completedCollections === collectionNames.length) {
               setIsLoadingData(false)
@@ -1810,10 +1810,10 @@ export default function Home() {
       })
 
       setRealtimeListeners(listeners)
-      console.log("✅ Real-time listeners set up successfully")
+
 
     } catch (error) {
-      console.error("❌ Error setting up real-time listeners:", error)
+   
       setDataError(error.message)
       setSubjectsData({})
       setTotalFiles(0)
@@ -1830,7 +1830,7 @@ export default function Home() {
       }
     })
     setRealtimeListeners([])
-    console.log("🧹 Real-time listeners cleaned up")
+  
   }
 
   // Force refresh data (fallback method)

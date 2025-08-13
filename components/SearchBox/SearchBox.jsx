@@ -441,11 +441,8 @@
 // import CategorySelector from "../CategorySelector/CategorySelector"
 
 
-
-"use client"
-
-import { useRef, useEffect, useState } from "react"
-import { Search, X, ChevronDown, FileText, Eye } from "lucide-react"
+import { useRef, useEffect, useState, useCallback } from "react"
+import { Search, X, ChevronDown, FileText, Eye, BookOpen } from 'lucide-react'
 
 const SearchBox = ({
   searchInput,
@@ -481,8 +478,121 @@ const SearchBox = ({
     { value: "End Semester", label: "End" },
   ]
 
+  // Extract year from title
+  const extractYear = useCallback((title) => {
+    const yearMatch = title.match(/\b(19|20)\d{2}\b/)
+    return yearMatch ? yearMatch[0] : ""
+  }, [])
+
+  // Helper function to validate URLs - moved up to be defined first
+  const isValidUrl = useCallback((url) => {
+    if (typeof url !== "string") return false
+    const trimmedUrl = url.trim()
+    if (trimmedUrl === "" || trimmedUrl === "undefined" || trimmedUrl.toLowerCase() === "null") return false
+
+    return (
+      trimmedUrl.includes("http") ||
+      trimmedUrl.includes("drive.google.com") ||
+      trimmedUrl.includes("docs.google.com") ||
+      trimmedUrl.includes("firebasestorage.googleapis.com") ||
+      trimmedUrl.startsWith("gs://") ||
+      trimmedUrl.includes(".pdf") ||
+      trimmedUrl.includes(".doc")
+    )
+  }, [])
+
+  // Get category color scheme
+  const getCategoryColors = useCallback((category) => {
+    const categoryLower = category.toLowerCase()
+    if (categoryLower.includes('mid semester') || categoryLower.includes('midsem')) {
+      return { bg: '#3B82F620', border: '#3B82F6', badge: '#3B82F6' } // Blue
+    } else if (categoryLower.includes('end semester') || categoryLower.includes('endsem')) {
+      return { bg: '#10B98120', border: '#10B981', badge: '#10B981' } // Green
+    } else if (categoryLower.includes('notes')) {
+      return { bg: '#8B5CF620', border: '#8B5CF6', badge: '#8B5CF6' } // Purple
+    } else if (categoryLower.includes('syllabus')) {
+      return { bg: '#F59E0B20', border: '#F59E0B', badge: '#F59E0B' } // Orange
+    } else if (categoryLower.includes('solution')) {
+      return { bg: '#EF444420', border: '#EF4444', badge: '#EF4444' } // Red
+    }
+    return { bg: theme.primary + '20', border: theme.primary, badge: theme.primary } // Default
+  }, [theme.primary])
+
+  // Find solution for a given paper
+  const findSolution = useCallback((paperTitle, data) => {
+    const solutionTitle = paperTitle + " Solution"
+    
+    try {
+      for (const [semesterKey, semesterData] of Object.entries(data)) {
+        if (semesterData && typeof semesterData === "object") {
+          for (const [subjectName, subjectData] of Object.entries(semesterData)) {
+            if (subjectData && typeof subjectData === "object") {
+              for (const [fieldName, fieldValue] of Object.entries(subjectData)) {
+                // Check if this field is the solution we're looking for
+                if (fieldName.includes(solutionTitle)) {
+                  if (fieldValue && typeof fieldValue === "object") {
+                    // If it's nested, get the first valid URL
+                    for (const [yearKey, url] of Object.entries(fieldValue)) {
+                      if (isValidUrl(url)) {
+                        return {
+                          subject: subjectName,
+                          category: fieldName,
+                          year: extractYear(yearKey) || extractYear(fieldName) || "Unknown",
+                          url: url,
+                          fileName: `${subjectName} - ${fieldName} - ${yearKey}`,
+                          originalField: fieldName,
+                          semester: semesterKey
+                        }
+                      }
+                    }
+                  } else if (isValidUrl(fieldValue)) {
+                    // If it's a direct URL
+                    return {
+                      subject: subjectName,
+                      category: fieldName,
+                      year: extractYear(fieldName) || "Unknown",
+                      url: fieldValue,
+                      fileName: `${subjectName} - ${fieldName}`,
+                      originalField: fieldName,
+                      semester: semesterKey
+                    }
+                  }
+                }
+                
+                // Also check within nested objects for solution
+                if (fieldValue && typeof fieldValue === "object") {
+                  for (const [yearKey, url] of Object.entries(fieldValue)) {
+                    if (yearKey.includes(solutionTitle) && isValidUrl(url)) {
+                      return {
+                        subject: subjectName,
+                        category: fieldName,
+                        year: extractYear(yearKey) || extractYear(fieldName) || "Unknown",
+                        url: url,
+                        fileName: `${subjectName} - ${fieldName} - ${yearKey}`,
+                        originalField: yearKey,
+                        semester: semesterKey
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error finding solution:", error)
+    }
+    return null
+  }, [extractYear, isValidUrl])
+
+  // Check if solution exists for a paper
+  const checkSolutionExists = useCallback((paperTitle, data) => {
+    return findSolution(paperTitle, data) !== null
+  }, [findSolution])
+
   // Enhanced function to determine if there's searchable data
-  const hasSearchableData = () => {
+  const hasSearchableData = useCallback(() => {
     try {
       if (!subjectsData || typeof subjectsData !== "object") {
         return false
@@ -523,27 +633,10 @@ const SearchBox = ({
       console.error("❌ Error checking searchable data:", error)
       return false
     }
-  }
+  }, [subjectsData])
 
-  // Helper function to validate URLs
-  const isValidUrl = (url) => {
-    if (typeof url !== "string") return false
-    const trimmedUrl = url.trim()
-    if (trimmedUrl === "" || trimmedUrl === "undefined" || trimmedUrl.toLowerCase() === "null") return false
-
-    return (
-      trimmedUrl.includes("http") ||
-      trimmedUrl.includes("drive.google.com") ||
-      trimmedUrl.includes("docs.google.com") ||
-      trimmedUrl.includes("firebasestorage.googleapis.com") ||
-      trimmedUrl.startsWith("gs://") ||
-      trimmedUrl.includes(".pdf") ||
-      trimmedUrl.includes(".doc")
-    )
-  }
-
-  // Enhanced search function
-  const searchInFirestoreData = (query, data, selectedCategoryFilter) => {
+  // Enhanced search function with solution detection and smart sorting
+  const searchInFirestoreData = useCallback((query, data, selectedCategoryFilter) => {
     try {
       const uniqueResultsMap = new Map()
       const searchTerm = query.toLowerCase().trim()
@@ -561,8 +654,10 @@ const SearchBox = ({
 
               Object.entries(fieldValue).forEach(([yearKey, url]) => {
                 if (isValidUrl(url)) {
+                  // Fix for "All" category - only filter if a specific category is selected
                   if (
                     selectedCategoryFilter &&
+                    selectedCategoryFilter.trim() !== "" &&
                     !categoryName.toLowerCase().includes(selectedCategoryFilter.toLowerCase()) &&
                     !selectedCategoryFilter.toLowerCase().includes(categoryName.toLowerCase())
                   ) {
@@ -575,16 +670,24 @@ const SearchBox = ({
 
                   if (subjectMatch || categoryMatch || yearMatch) {
                     const relevance = (subjectMatch ? 4 : 0) + (categoryMatch ? 3 : 0) + (yearMatch ? 2 : 0)
+                    const year = extractYear(yearKey) || extractYear(categoryName) || "Unknown"
+                    const hasSolution = checkSolutionExists(categoryName, data)
+                    
                     const result = {
                       subject: subjectName,
                       category: categoryName,
-                      year: yearKey,
+                      year: year,
                       url: url,
                       fileName: `${subjectName} - ${categoryName} - ${yearKey}`,
+                      displayTitle: subjectName,
+                      displayCategory: categoryName,
+                      displaySubtitle: categoryName,
                       relevance: relevance,
                       semester: semesterKey,
                       originalField: `${categoryName} - ${yearKey}`,
                       isNested: true,
+                      hasSolution: hasSolution,
+                      colors: getCategoryColors(categoryName)
                     }
 
                     const existingResult = uniqueResultsMap.get(url)
@@ -605,16 +708,17 @@ const SearchBox = ({
                 categoryName = "Mid Semester"
               else if (fieldLower.includes("notes")) categoryName = "Notes"
 
+              // Fix for "All" category - only filter if a specific category is selected
               if (
                 selectedCategoryFilter &&
+                selectedCategoryFilter.trim() !== "" &&
                 !categoryName.toLowerCase().includes(selectedCategoryFilter.toLowerCase()) &&
                 !selectedCategoryFilter.toLowerCase().includes(categoryName.toLowerCase())
               ) {
                 return
               }
 
-              const yearMatch = fieldName.match(/(\d{4})/)
-              const year = yearMatch ? yearMatch[1] : "Unknown"
+              const year = extractYear(fieldName) || "Unknown"
 
               const subjectMatch = subjectName.toLowerCase().includes(searchTerm)
               const fieldMatch = fieldName.toLowerCase().includes(searchTerm)
@@ -624,16 +728,23 @@ const SearchBox = ({
               if (subjectMatch || fieldMatch || categoryMatch || yearMatchesSearch) {
                 const relevance =
                   (subjectMatch ? 4 : 0) + (categoryMatch ? 3 : 0) + (fieldMatch ? 2 : 0) + (yearMatchesSearch ? 1 : 0)
+                const hasSolution = checkSolutionExists(fieldName, data)
+                
                 const result = {
                   subject: subjectName,
                   category: categoryName,
                   year: year,
                   url: fieldValue,
                   fileName: `${subjectName} - ${fieldName}`,
+                  displayTitle: subjectName,
+                  displayCategory: categoryName,
+                  displaySubtitle: categoryName,
                   relevance: relevance,
                   semester: semesterKey,
                   originalField: fieldName,
                   isNested: false,
+                  hasSolution: hasSolution,
+                  colors: getCategoryColors(categoryName)
                 }
 
                 const existingResult = uniqueResultsMap.get(fieldValue)
@@ -646,19 +757,32 @@ const SearchBox = ({
         })
       })
 
+      // Smart sorting: Mid first, then End, then others, with relevance within each group
       const results = Array.from(uniqueResultsMap.values())
         .sort((a, b) => {
+          // Priority sorting
+          const getPriority = (item) => {
+            const cat = item.category.toLowerCase()
+            if (cat.includes('mid semester') || cat.includes('midsem')) return 1
+            if (cat.includes('end semester') || cat.includes('endsem')) return 2
+            return 3
+          }
+          
+          const priorityA = getPriority(a)
+          const priorityB = getPriority(b)
+          
+          if (priorityA !== priorityB) return priorityA - priorityB
           if (a.relevance !== b.relevance) return b.relevance - a.relevance
           return a.fileName.localeCompare(b.fileName)
         })
-        .slice(0, 6)
+        .slice(0, 50)
 
       return results
     } catch (error) {
       console.error("❌ Error in search function:", error)
       return []
     }
-  }
+  }, [extractYear, checkSolutionExists, getCategoryColors, isValidUrl])
 
   const handleSearchFocus = () => {
     if (!user) {
@@ -724,6 +848,38 @@ const SearchBox = ({
         console.error("❌ Error opening PDF:", error)
         showNotification("❌ Error opening PDF. Please try again.", "error")
       }
+    }
+  }
+
+  const handleOpenSolution = (suggestion) => {
+    if (!user) {
+      setShowLoginPrompt(true)
+      setHasInteracted(true)
+      return
+    }
+    
+    try {
+      // Find the solution for this paper
+      const solutionData = findSolution(suggestion.originalField, subjectsData)
+      
+      if (solutionData && solutionData.url) {
+        const previewUrl = getPreviewLink(solutionData.url)
+        const fileUrl = encodeURIComponent(previewUrl)
+        const fileTitle = encodeURIComponent(solutionData.fileName)
+        const viewerUrl = `/viewer?url=${fileUrl}&title=${fileTitle}`
+
+        const newWindow = window.open(viewerUrl, "_blank")
+        if (newWindow) {
+          showNotification(`📖 Opening Solution: ${solutionData.originalField}`, "success")
+        } else {
+          showNotification("❌ Popup blocked. Please allow popups and try again.", "error")
+        }
+      } else {
+        showNotification("❌ Solution not found or unavailable.", "error")
+      }
+    } catch (error) {
+      console.error("❌ Error opening solution:", error)
+      showNotification("❌ Error opening solution. Please try again.", "error")
     }
   }
 
@@ -805,7 +961,7 @@ const SearchBox = ({
       setSuggestions([])
       setShowSuggestions(false)
     }
-  }, [selectedCategory, searchInput, subjectsData])
+  }, [selectedCategory, searchInput, subjectsData, hasSearchableData, searchInFirestoreData])
 
   const selectedCategoryLabel = categories.find((cat) => cat.value === selectedCategory)?.label || "All"
 
@@ -865,46 +1021,63 @@ const SearchBox = ({
                       key={`${suggestion.url}-${index}`}
                       className="result-card-top"
                       style={{
-                        background: theme.cardBg,
-                        borderColor: theme.primary,
+                        background: suggestion.colors.bg,
+                        borderColor: suggestion.colors.border,
                       }}
-                      onClick={() => handleOpenPaper(suggestion)}
                     >
                       <div className="result-card-content-top">
                         <div className="result-card-header-top">
-                          <div className="result-card-icon-top" style={{ color: theme.primary }}>
+                          <div className="result-card-icon-top" style={{ color: suggestion.colors.border }}>
                             <FileText size={20} />
                           </div>
-                          <div
-                            className="result-card-badge-top"
-                            style={{
-                              background: theme.primary,
-                              color: "white",
-                            }}
-                          >
-                            {suggestion.year}
-                          </div>
+                          {suggestion.year && suggestion.year !== "Unknown" && (
+                            <div
+                              className="result-card-badge-top"
+                              style={{
+                                background: suggestion.colors.badge,
+                                color: "white",
+                              }}
+                            >
+                              {suggestion.year}
+                            </div>
+                          )}
                         </div>
 
                         <div className="result-card-body-top">
                           <h3 className="result-card-title-top" style={{ color: theme.textPrimary }}>
-                            {suggestion.subject}
+                            {suggestion.displayTitle}
                           </h3>
                           <p className="result-card-category-top" style={{ color: theme.textMuted }}>
-                            {suggestion.category}
+                            {suggestion.displaySubtitle}
                           </p>
                         </div>
 
-                        <div className="result-card-action-top">
-                          <div
-                            className="view-button-top"
+                        <div className="result-card-actions-top">
+                          <button
+                            className="action-button-top"
+                            onClick={() => handleOpenPaper(suggestion)}
                             style={{
-                              background: `${theme.primary}20`,
-                              color: theme.primary,
+                              background: `${suggestion.colors.border}20`,
+                              color: suggestion.colors.border,
                             }}
                           >
                             <Eye size={16} />
-                          </div>
+                            <span>View Paper</span>
+                          </button>
+                          
+                          {suggestion.hasSolution && (
+                            <button
+                              className="action-button-top solution-button"
+                              onClick={() => handleOpenSolution(suggestion)}
+                              style={{
+                                background: `${suggestion.colors.border}20`,
+                                color: suggestion.colors.border,
+                              }}
+                            >
+                              <BookOpen size={16} />
+                              <span>View Solution</span>
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -926,7 +1099,8 @@ const SearchBox = ({
                 <div className="search-hint-top" style={{ color: theme.textMuted }}>
                   <Search size={48} style={{ opacity: 0.3 }} />
                   <h3>Start typing to search</h3>
-                  <p>Search through {totalFiles} study materials</p>
+                <p>Search by subject short name</p>
+
                 </div>
               )}
             </div>
@@ -1028,6 +1202,9 @@ const SearchBox = ({
           </div>
         </>
       )}
+ 
+
+ 
 
       <style jsx>{`
         /* Original Search Section */
@@ -1134,7 +1311,7 @@ const SearchBox = ({
         }
 
         .result-card-top {
-          border: 1px solid;
+          border: 2px solid;
           border-radius: 12px;
           backdrop-filter: blur(20px);
           cursor: pointer;
@@ -1144,8 +1321,7 @@ const SearchBox = ({
 
         .result-card-top:hover {
           transform: translateY(-2px);
-          box-shadow: 0 8px 32px ${theme.primary}30;
-          border-color: ${theme.primary};
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
         }
 
         .result-card-content-top {
@@ -1153,7 +1329,7 @@ const SearchBox = ({
           display: flex;
           flex-direction: column;
           gap: 16px;
-          min-height: 120px;
+          min-height: 140px;
         }
 
         .result-card-header-top {
@@ -1169,7 +1345,7 @@ const SearchBox = ({
           width: 40px;
           height: 40px;
           border-radius: 10px;
-          background: ${theme.primary}20;
+          background: rgba(255, 255, 255, 0.1);
         }
 
         .result-card-badge-top {
@@ -1196,23 +1372,31 @@ const SearchBox = ({
           opacity: 0.8;
         }
 
-        .result-card-action-top {
+        .result-card-actions-top {
           display: flex;
-          justify-content: flex-end;
+          gap: 8px;
+          flex-wrap: wrap;
         }
 
-        .view-button-top {
+        .action-button-top {
           display: flex;
           align-items: center;
-          justify-content: center;
-          width: 36px;
-          height: 36px;
-          border-radius: 50%;
+          gap: 6px;
+          padding: 8px 12px;
+          border: none;
+          border-radius: 8px;
+          font-size: 12px;
+          font-weight: 500;
+          cursor: pointer;
           transition: all 0.2s ease;
+          flex: 1;
+          min-width: 100px;
+          justify-content: center;
         }
 
-        .view-button-top:hover {
-          transform: scale(1.1);
+        .action-button-top:hover {
+          transform: translateY(-1px);
+          opacity: 0.9;
         }
 
         .no-results-top,
@@ -1409,11 +1593,16 @@ const SearchBox = ({
 
           .result-card-content-top {
             padding: 16px;
-            min-height: 100px;
+            min-height: 120px;
           }
 
           .result-card-title-top {
             font-size: 16px;
+          }
+
+          .action-button-top {
+            font-size: 11px;
+            padding: 6px 10px;
           }
         }
 
@@ -1440,4 +1629,3 @@ const SearchBox = ({
 }
 
 export default SearchBox
-
