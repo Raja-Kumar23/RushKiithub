@@ -1,448 +1,7 @@
-// "use client"
-
-// import { useRef, useEffect, useState } from "react"
-// import { Search, RefreshCw, X, AlertCircle, Loader, FileText, Eye, ArrowLeft } from "lucide-react"
-// import { searchInStorageData } from "../../lib/storageHelpers"
-// import PDFViewer from "../PDFViewer/PDFViewer"
-// import "./SearchBox.css"
-
-// const SearchBox = ({
-//   searchInput,
-//   setSearchInput,
-//   showSuggestions,
-//   setShowSuggestions,
-//   suggestions,
-//   setSuggestions,
-//   subjectsData,
-//   selectedCategory,
-//   theme,
-//   user,
-//   setShowLoginPrompt,
-//   setSearchHistory,
-//   searchHistory,
-//   setHasInteracted,
-//   isLoadingData,
-//   dataError,
-//   totalFiles,
-// }) => {
-//   const searchInputRef = useRef(null)
-//   const suggestionsRef = useRef(null)
-//   const [isSearchActive, setIsSearchActive] = useState(false)
-//   const [pdfViewer, setPdfViewer] = useState({
-//     isOpen: false,
-//     fileUrl: "",
-//     fileName: "",
-//   })
-
-//   // Check if we have any real data
-//   const hasRealData = totalFiles > 0 && Object.keys(subjectsData).length > 0
-
-//   const handleSearchFocus = () => {
-//     if (!user) {
-//       setShowLoginPrompt(true)
-//       setHasInteracted(true)
-//       return
-//     }
-//     setIsSearchActive(true)
-//     document.body.style.overflow = "hidden"
-//   }
-
-//   const handleSearchInput = (e) => {
-//     if (!user) {
-//       setShowLoginPrompt(true)
-//       setHasInteracted(true)
-//       return
-//     }
-
-//     const input = e.target.value
-//     setSearchInput(input)
-
-//     if (!input.trim()) {
-//       setSuggestions([])
-//       setShowSuggestions(false)
-//       return
-//     }
-
-//     if (!hasRealData) {
-//       setSuggestions([])
-//       setShowSuggestions(false)
-//       return
-//     }
-
-//     const results = searchInStorageData(input.toLowerCase().trim(), selectedCategory, subjectsData)
-//     setSuggestions(results)
-//     setShowSuggestions(results.length > 0)
-//   }
-
-//   const openPaper = (subject, docType, url, fileName, pdfName) => {
-//     if (!user) {
-//       setShowLoginPrompt(true)
-//       setHasInteracted(true)
-//       return
-//     }
-
-//     if (url && url.startsWith("https://firebasestorage.googleapis.com")) {
-//       const displayName = pdfName || fileName || `${subject} - ${docType}`
-//       setPdfViewer({
-//         isOpen: true,
-//         fileUrl: url,
-//         fileName: displayName,
-//       })
-//       storeSearch(displayName)
-//       closeSearch()
-//     } else {
-//       alert(`Unable to open: ${subject} - ${docType}\n\nThe file URL is invalid or the document is not available.`)
-//     }
-//   }
-
-//   const closePDFViewer = () => {
-//     setPdfViewer({
-//       isOpen: false,
-//       fileUrl: "",
-//       fileName: "",
-//     })
-//   }
-
-//   const storeSearch = (query) => {
-//     const history = JSON.parse(localStorage.getItem("searchHistory")) || []
-//     if (!history.includes(query)) {
-//       const newHistory = [query, ...history].slice(0, 10)
-//       localStorage.setItem("searchHistory", JSON.stringify(newHistory))
-//       setSearchHistory(newHistory)
-//     }
-//   }
-
-//   const clearSearch = () => {
-//     setSearchInput("")
-//     setSuggestions([])
-//     setShowSuggestions(false)
-//     if (searchInputRef.current) {
-//       searchInputRef.current.focus()
-//     }
-//   }
-
-//   const closeSearch = () => {
-//     setSearchInput("")
-//     setSuggestions([])
-//     setShowSuggestions(false)
-//     setIsSearchActive(false)
-//     document.body.style.overflow = "auto"
-//     if (searchInputRef.current) {
-//       searchInputRef.current.blur()
-//     }
-//   }
-
-//   // Handle escape key
-//   useEffect(() => {
-//     const handleEscape = (e) => {
-//       if (e.key === "Escape" && isSearchActive) {
-//         closeSearch()
-//       }
-//     }
-
-//     document.addEventListener("keydown", handleEscape)
-//     return () => document.removeEventListener("keydown", handleEscape)
-//   }, [isSearchActive])
-
-//   // Cleanup on unmount
-//   useEffect(() => {
-//     return () => {
-//       document.body.style.overflow = "auto"
-//     }
-//   }, [])
-
-//   const getStatusMessage = () => {
-//     if (isLoadingData) {
-//       return {
-//         icon: <Loader size={20} className="animate-spin" color={theme.primary} />,
-//         title: "Loading study materials...",
-//         message: "Please wait while we fetch your documents from Firebase Storage.",
-//       }
-//     }
-
-//     if (dataError) {
-//       return {
-//         icon: <AlertCircle size={20} color={theme.error} />,
-//         title: "Error loading data",
-//         message: `Failed to load study materials: ${dataError}`,
-//       }
-//     }
-
-//     if (!hasRealData) {
-//       return {
-//         icon: <AlertCircle size={20} color={theme.warning} />,
-//         title: "No study materials found",
-//         message: "Please upload PDF files to your Firebase Storage to enable search functionality.",
-//       }
-//     }
-
-//     return null
-//   }
-
-//   const statusMessage = getStatusMessage()
-
-//   return (
-//     <>
-//       <div className={`search-section ${isSearchActive ? "search-active" : ""}`}>
-//         {/* Search Instructions - Centered and Compact */}
-//         {!isSearchActive && (
-//           <div className="search-instructions-compact">
-//             <div className="instruction-row">
-//               <div className="instruction-item-compact">
-//                 <span className="semester-badge-compact sem-3">3RD SEM</span>
-//                 <span>Search by full subject name (e.g., "Data Structure")</span>
-//               </div>
-//             </div>
-//             <div className="instruction-row">
-//               <div className="instruction-item-compact">
-//                 <span className="semester-badge-compact sem-5">5TH SEM</span>
-//                 <span>Search by short subject codes (e.g., "CN", "SE", "EE", "HPC")</span>
-//               </div>
-//             </div>
-//           </div>
-//         )}
-
-//         <div className="search-container">
-//           {/* Status Message - Only show when not active */}
-//           {!isSearchActive && statusMessage && (
-//             <div
-//               className="status-message"
-//               style={{
-//                 background: `${statusMessage.icon.props.color}15`,
-//                 borderColor: `${statusMessage.icon.props.color}40`,
-//                 color: theme.textPrimary,
-//               }}
-//             >
-//               {statusMessage.icon}
-//               <div>
-//                 <p className="status-title">{statusMessage.title}</p>
-//                 <p className="status-description" style={{ color: theme.textMuted }}>
-//                   {statusMessage.message}
-//                 </p>
-//               </div>
-//             </div>
-//           )}
-
-//           {/* Search Box */}
-//           <div
-//             className={`search-box ${isSearchActive ? "search-box-active" : ""}`}
-//             style={{
-//               background: theme.glassBg,
-//               borderColor: theme.border,
-//               boxShadow: theme.shadow,
-//             }}
-//           >
-//             <div className="search-icon">
-//               <Search size={20} color={theme.primary} />
-//             </div>
-//             <input
-//               ref={searchInputRef}
-//               type="text"
-//               placeholder={
-//                 isLoadingData
-//                   ? "Loading..."
-//                   : hasRealData
-//                     ? `Search through ${totalFiles} study materials...`
-//                     : "No data available - please upload files to Firebase Storage"
-//               }
-//               value={searchInput}
-//               onChange={handleSearchInput}
-//               onFocus={handleSearchFocus}
-//               className="search-input"
-//               disabled={!hasRealData || isLoadingData}
-//               style={{
-//                 color: hasRealData ? theme.textPrimary : theme.textMuted,
-//                 background: "transparent",
-//                 cursor: hasRealData && !isLoadingData ? "text" : "not-allowed",
-//               }}
-//             />
-//             {searchInput && !isSearchActive && (
-//               <button className="clear-search" onClick={clearSearch} style={{ color: theme.textMuted }}>
-//                 <X size={16} />
-//               </button>
-//             )}
-//             {!isSearchActive && (
-//               <div className="search-actions">
-//                 <button
-//                   className="search-action refresh"
-//                   onClick={() => window.location.reload()}
-//                   style={{ color: theme.textMuted }}
-//                   title="Refresh page"
-//                 >
-//                   <RefreshCw size={16} />
-//                 </button>
-//               </div>
-//             )}
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* Full Screen Search Overlay */}
-//       {isSearchActive && (
-//         <div className="search-overlay-fullscreen">
-//           {/* Blur Background */}
-//           <div className="search-blur-background" />
-
-//           {/* Close Bar at Top */}
-//           <div className="search-close-bar" style={{ background: theme.cardBg, borderColor: theme.border }}>
-//             <div className="close-bar-content">
-//               <button className="close-button" onClick={closeSearch} style={{ color: theme.textPrimary }}>
-//                 <ArrowLeft size={20} />
-//                 <span>Back</span>
-//               </button>
-//               <div className="search-title" style={{ color: theme.textPrimary }}>
-//                 Search Materials
-//               </div>
-//               <button className="close-button-x" onClick={closeSearch} style={{ color: theme.textMuted }}>
-//                 <X size={20} />
-//               </button>
-//             </div>
-//           </div>
-
-//           {/* Search Results */}
-//           {showSuggestions && suggestions.length > 0 && (
-//             <div
-//               ref={suggestionsRef}
-//               className="search-results-fullscreen"
-//               style={{
-//                 background: theme.cardBg,
-//                 borderColor: theme.border,
-//               }}
-//             >
-//               <div className="search-results-header" style={{ color: theme.textMuted }}>
-//                 <Search size={16} />
-//                 <span>Found {suggestions.length} results</span>
-//               </div>
-//               <div className="results-grid">
-//                 {suggestions.map((suggestion, index) => {
-//                   const displayName =
-//                     suggestion.pdfName || suggestion.fileName || `${suggestion.subject} - ${suggestion.docType}`
-//                   return (
-//                     <div
-//                       key={`${suggestion.url}-${index}`}
-//                       className="result-card"
-//                       style={{
-//                         background: theme.glassBg,
-//                         borderColor: theme.border,
-//                       }}
-//                     >
-//                       <div className="result-card-header">
-//                         <div className="result-icon" style={{ color: theme.primary }}>
-//                           <FileText size={20} />
-//                         </div>
-//                         <div className="result-type" style={{ background: theme.primary, color: "white" }}>
-//                           {suggestion.docType}
-//                         </div>
-//                       </div>
-//                       <div className="result-content">
-//                         <h4 className="result-title" style={{ color: theme.textPrimary }}>
-//                           {displayName}
-//                         </h4>
-//                         <div className="result-meta">
-//                           <span style={{ color: theme.textMuted }}>📁 {suggestion.subject}</span>
-//                           <span style={{ color: theme.textMuted }}>🎓 {suggestion.semester}</span>
-//                         </div>
-//                       </div>
-//                       <button
-//                         className="result-action"
-//                         onClick={() =>
-//                           openPaper(
-//                             suggestion.subject,
-//                             suggestion.docType,
-//                             suggestion.url,
-//                             suggestion.fileName,
-//                             suggestion.pdfName,
-//                           )
-//                         }
-//                         style={{
-//                           background: `linear-gradient(135deg, ${theme.primary} 0%, ${theme.secondary} 100%)`,
-//                           color: "white",
-//                         }}
-//                       >
-//                         <Eye size={16} />
-//                         View
-//                       </button>
-//                     </div>
-//                   )
-//                 })}
-//               </div>
-//             </div>
-//           )}
-
-//           {/* No Results Message */}
-//           {isSearchActive && searchInput && (!suggestions || suggestions.length === 0) && (
-//             <div className="no-results" style={{ color: theme.textMuted }}>
-//               <Search size={48} />
-//               <h3>No results found</h3>
-//               <p>Try searching with different keywords or check your spelling</p>
-//             </div>
-//           )}
-
-//           {/* Search Hint */}
-//           {isSearchActive && !searchInput && (
-//             <div className="search-hint-fullscreen" style={{ color: theme.textMuted }}>
-//               <div className="hint-content">
-//                 <Search size={48} style={{ opacity: 0.5 }} />
-//                 <h3>Start typing to search</h3>
-//                 <div className="search-tips">
-//                   <div className="tip-item">
-//                     <span className="tip-badge sem-3">3RD SEM</span>
-//                     <span>Use full subject names</span>
-//                   </div>
-//                   <div className="tip-item">
-//                     <span className="tip-badge sem-5">5TH SEM</span>
-//                     <span>Use short codes (CN, SE, EE, HPC)</span>
-//                   </div>
-//                 </div>
-//                 <p className="hint-footer">
-//                   Press <kbd>Esc</kbd> or click the back button to close
-//                 </p>
-//               </div>
-//             </div>
-//           )}
-
-//           {/* Fixed Search Box at Bottom */}
-//           <div className="search-box-fixed" style={{ background: theme.cardBg, borderColor: theme.border }}>
-//             <div className="search-icon">
-//               <Search size={20} color={theme.primary} />
-//             </div>
-//             <input
-//               type="text"
-//               placeholder="Search through your study materials..."
-//               value={searchInput}
-//               onChange={handleSearchInput}
-//               className="search-input-fixed"
-//               style={{ color: theme.textPrimary }}
-//               autoFocus
-//             />
-//             {searchInput && (
-//               <button className="clear-search-fixed" onClick={clearSearch} style={{ color: theme.textMuted }}>
-//                 <X size={16} />
-//               </button>
-//             )}
-//           </div>
-//         </div>
-//       )}
-
-//       {/* PDF Viewer Modal */}
-//       <PDFViewer
-//         isOpen={pdfViewer.isOpen}
-//         onClose={closePDFViewer}
-//         fileUrl={pdfViewer.fileUrl}
-//         fileName={pdfViewer.fileName}
-//         theme={theme}
-//       />
-//     </>
-//   )
-// }
-
-// export default SearchBox
-
-// import CategorySelector from "../CategorySelector/CategorySelector"
-
+"use client"
 
 import { useRef, useEffect, useState, useCallback } from "react"
-import { Search, X, ChevronDown, FileText, Eye, BookOpen } from 'lucide-react'
+import { Search, X, ChevronDown, FileText, Eye, BookOpen } from "lucide-react"
 
 const SearchBox = ({
   searchInput,
@@ -502,75 +61,97 @@ const SearchBox = ({
   }, [])
 
   // Get category color scheme
-  const getCategoryColors = useCallback((category) => {
-    const categoryLower = category.toLowerCase()
-    if (categoryLower.includes('mid semester') || categoryLower.includes('midsem')) {
-      return { bg: '#3B82F620', border: '#3B82F6', badge: '#3B82F6' } // Blue
-    } else if (categoryLower.includes('end semester') || categoryLower.includes('endsem')) {
-      return { bg: '#10B98120', border: '#10B981', badge: '#10B981' } // Green
-    } else if (categoryLower.includes('notes')) {
-      return { bg: '#8B5CF620', border: '#8B5CF6', badge: '#8B5CF6' } // Purple
-    } else if (categoryLower.includes('syllabus')) {
-      return { bg: '#F59E0B20', border: '#F59E0B', badge: '#F59E0B' } // Orange
-    } else if (categoryLower.includes('solution')) {
-      return { bg: '#EF444420', border: '#EF4444', badge: '#EF4444' } // Red
-    }
-    return { bg: theme.primary + '20', border: theme.primary, badge: theme.primary } // Default
-  }, [theme.primary])
+  const getCategoryColors = useCallback(
+    (category) => {
+      const categoryLower = category.toLowerCase()
+      if (categoryLower.includes("mid semester") || categoryLower.includes("midsem")) {
+        return { bg: "#3B82F620", border: "#3B82F6", badge: "#3B82F6" } // Blue
+      } else if (categoryLower.includes("end semester") || categoryLower.includes("endsem")) {
+        return { bg: "#10B98120", border: "#10B981", badge: "#10B981" } // Green
+      } else if (categoryLower.includes("notes")) {
+        return { bg: "#8B5CF620", border: "#8B5CF6", badge: "#8B5CF6" } // Purple
+      } else if (categoryLower.includes("syllabus")) {
+        return { bg: "#F59E0B20", border: "#F59E0B", badge: "#F59E0B" } // Orange
+      } else if (categoryLower.includes("solution")) {
+        return { bg: "#EF444420", border: "#EF4444", badge: "#EF4444" } // Red
+      }
+      return { bg: theme.primary + "20", border: theme.primary, badge: theme.primary } // Default
+    },
+    [theme.primary],
+  )
 
-  // Find solution for a given paper
-  const findSolution = useCallback((paperTitle, data) => {
-    const solutionTitle = paperTitle + " Solution"
-    
-    try {
-      for (const [semesterKey, semesterData] of Object.entries(data)) {
-        if (semesterData && typeof semesterData === "object") {
-          for (const [subjectName, subjectData] of Object.entries(semesterData)) {
-            if (subjectData && typeof subjectData === "object") {
-              for (const [fieldName, fieldValue] of Object.entries(subjectData)) {
-                // Check if this field is the solution we're looking for
-                if (fieldName.includes(solutionTitle)) {
+  const findSolution = useCallback(
+    (paperTitle, data, currentSubject) => {
+      const solutionTitle = paperTitle + " Solution"
+      const cleanPaperTitle = paperTitle.toLowerCase().trim()
+
+      try {
+        for (const [semesterKey, semesterData] of Object.entries(data)) {
+          if (semesterData && typeof semesterData === "object") {
+            for (const [subjectName, subjectData] of Object.entries(semesterData)) {
+              if (subjectName !== currentSubject) continue
+
+              if (subjectData && typeof subjectData === "object") {
+                for (const [fieldName, fieldValue] of Object.entries(subjectData)) {
+                  const cleanFieldName = fieldName.toLowerCase().trim()
+
+                  // Check for exact solution match (e.g., "2018 - Autumn End Semester Solution")
+                  const isExactSolutionMatch = cleanFieldName === solutionTitle.toLowerCase()
+
+                  // Check if this field contains "solution" and matches the paper pattern
+                  const isSolutionField = cleanFieldName.includes("solution")
+                  const matchesPaperPattern =
+                    isSolutionField && cleanFieldName.replace(/\s*solution\s*/g, "").trim() === cleanPaperTitle
+
+                  if (isExactSolutionMatch || matchesPaperPattern) {
+                    if (fieldValue && typeof fieldValue === "object") {
+                      // Handle nested structure
+                      for (const [yearKey, url] of Object.entries(fieldValue)) {
+                        if (isValidUrl(url)) {
+                          return {
+                            subject: subjectName,
+                            category: fieldName,
+                            year: extractYear(yearKey) || extractYear(fieldName) || "Unknown",
+                            url: url,
+                            fileName: `${subjectName} - ${fieldName} - ${yearKey}`,
+                            originalField: fieldName,
+                            semester: semesterKey,
+                          }
+                        }
+                      }
+                    } else if (isValidUrl(fieldValue)) {
+                      // Handle direct URL
+                      return {
+                        subject: subjectName,
+                        category: fieldName,
+                        year: extractYear(fieldName) || "Unknown",
+                        url: fieldValue,
+                        fileName: `${subjectName} - ${fieldName}`,
+                        originalField: fieldName,
+                        semester: semesterKey,
+                      }
+                    }
+                  }
+
+                  // Also check within nested objects for solution entries
                   if (fieldValue && typeof fieldValue === "object") {
-                    // If it's nested, get the first valid URL
                     for (const [yearKey, url] of Object.entries(fieldValue)) {
-                      if (isValidUrl(url)) {
+                      const cleanYearKey = yearKey.toLowerCase().trim()
+                      const isNestedSolutionMatch = cleanYearKey === solutionTitle.toLowerCase()
+                      const isNestedSolutionField =
+                        cleanYearKey.includes("solution") &&
+                        cleanYearKey.replace(/\s*solution\s*/g, "").trim() === cleanPaperTitle
+
+                      if ((isNestedSolutionMatch || isNestedSolutionField) && isValidUrl(url)) {
                         return {
                           subject: subjectName,
                           category: fieldName,
                           year: extractYear(yearKey) || extractYear(fieldName) || "Unknown",
                           url: url,
                           fileName: `${subjectName} - ${fieldName} - ${yearKey}`,
-                          originalField: fieldName,
-                          semester: semesterKey
+                          originalField: yearKey,
+                          semester: semesterKey,
                         }
-                      }
-                    }
-                  } else if (isValidUrl(fieldValue)) {
-                    // If it's a direct URL
-                    return {
-                      subject: subjectName,
-                      category: fieldName,
-                      year: extractYear(fieldName) || "Unknown",
-                      url: fieldValue,
-                      fileName: `${subjectName} - ${fieldName}`,
-                      originalField: fieldName,
-                      semester: semesterKey
-                    }
-                  }
-                }
-                
-                // Also check within nested objects for solution
-                if (fieldValue && typeof fieldValue === "object") {
-                  for (const [yearKey, url] of Object.entries(fieldValue)) {
-                    if (yearKey.includes(solutionTitle) && isValidUrl(url)) {
-                      return {
-                        subject: subjectName,
-                        category: fieldName,
-                        year: extractYear(yearKey) || extractYear(fieldName) || "Unknown",
-                        url: url,
-                        fileName: `${subjectName} - ${fieldName} - ${yearKey}`,
-                        originalField: yearKey,
-                        semester: semesterKey
                       }
                     }
                   }
@@ -579,17 +160,28 @@ const SearchBox = ({
             }
           }
         }
+      } catch (error) {
+        console.error("Error finding solution:", error)
       }
-    } catch (error) {
-      console.error("Error finding solution:", error)
-    }
-    return null
-  }, [extractYear, isValidUrl])
+      return null
+    },
+    [extractYear, isValidUrl],
+  )
 
-  // Check if solution exists for a paper
-  const checkSolutionExists = useCallback((paperTitle, data) => {
-    return findSolution(paperTitle, data) !== null
-  }, [findSolution])
+  const checkSolutionExists = useCallback(
+    (paperTitle, data, currentSubject) => {
+      const solution = findSolution(paperTitle, data, currentSubject)
+      return solution !== null
+    },
+    [findSolution],
+  )
+
+  const checkSolutionExistsOriginal = useCallback(
+    (paperTitle, data) => {
+      return findSolution(paperTitle, data) !== null
+    },
+    [findSolution],
+  )
 
   // Enhanced function to determine if there's searchable data
   const hasSearchableData = useCallback(() => {
@@ -635,154 +227,163 @@ const SearchBox = ({
     }
   }, [subjectsData])
 
-  // Enhanced search function with solution detection and smart sorting
-  const searchInFirestoreData = useCallback((query, data, selectedCategoryFilter) => {
-    try {
-      const uniqueResultsMap = new Map()
-      const searchTerm = query.toLowerCase().trim()
-      if (!searchTerm) return []
+  const searchInFirestoreData = useCallback(
+    (query, data, selectedCategoryFilter) => {
+      try {
+        const uniqueResultsMap = new Map()
+        const searchTerm = query.toLowerCase().trim()
+        if (!searchTerm) return []
 
-      Object.entries(data).forEach(([semesterKey, semesterData]) => {
-        if (!semesterData || typeof semesterData !== "object") return
+        Object.entries(data).forEach(([semesterKey, semesterData]) => {
+          if (!semesterData || typeof semesterData !== "object") return
 
-        Object.entries(semesterData).forEach(([subjectName, subjectData]) => {
-          if (!subjectData || typeof subjectData !== "object") return
+          Object.entries(semesterData).forEach(([subjectName, subjectData]) => {
+            if (!subjectData || typeof subjectData !== "object") return
 
-          Object.entries(subjectData).forEach(([fieldName, fieldValue]) => {
-            if (fieldValue && typeof fieldValue === "object") {
-              const categoryName = fieldName
+            Object.entries(subjectData).forEach(([fieldName, fieldValue]) => {
+              if (fieldValue && typeof fieldValue === "object") {
+                const categoryName = fieldName
 
-              Object.entries(fieldValue).forEach(([yearKey, url]) => {
-                if (isValidUrl(url)) {
-                  // Fix for "All" category - only filter if a specific category is selected
-                  if (
-                    selectedCategoryFilter &&
-                    selectedCategoryFilter.trim() !== "" &&
-                    !categoryName.toLowerCase().includes(selectedCategoryFilter.toLowerCase()) &&
-                    !selectedCategoryFilter.toLowerCase().includes(categoryName.toLowerCase())
-                  ) {
-                    return
-                  }
-
-                  const subjectMatch = subjectName.toLowerCase().includes(searchTerm)
-                  const categoryMatch = categoryName.toLowerCase().includes(searchTerm)
-                  const yearMatch = yearKey.toLowerCase().includes(searchTerm)
-
-                  if (subjectMatch || categoryMatch || yearMatch) {
-                    const relevance = (subjectMatch ? 4 : 0) + (categoryMatch ? 3 : 0) + (yearMatch ? 2 : 0)
-                    const year = extractYear(yearKey) || extractYear(categoryName) || "Unknown"
-                    const hasSolution = checkSolutionExists(categoryName, data)
-                    
-                    const result = {
-                      subject: subjectName,
-                      category: categoryName,
-                      year: year,
-                      url: url,
-                      fileName: `${subjectName} - ${categoryName} - ${yearKey}`,
-                      displayTitle: subjectName,
-                      displayCategory: categoryName,
-                      displaySubtitle: categoryName,
-                      relevance: relevance,
-                      semester: semesterKey,
-                      originalField: `${categoryName} - ${yearKey}`,
-                      isNested: true,
-                      hasSolution: hasSolution,
-                      colors: getCategoryColors(categoryName)
+                Object.entries(fieldValue).forEach(([yearKey, url]) => {
+                  if (isValidUrl(url)) {
+                    // Fix for "All" category - only filter if a specific category is selected
+                    if (
+                      selectedCategoryFilter &&
+                      selectedCategoryFilter.trim() !== "" &&
+                      !categoryName.toLowerCase().includes(selectedCategoryFilter.toLowerCase()) &&
+                      !selectedCategoryFilter.toLowerCase().includes(categoryName.toLowerCase())
+                    ) {
+                      return
                     }
 
-                    const existingResult = uniqueResultsMap.get(url)
-                    if (!existingResult || relevance > existingResult.relevance) {
-                      uniqueResultsMap.set(url, result)
+                    const subjectMatch = subjectName.toLowerCase().includes(searchTerm)
+                    const categoryMatch = categoryName.toLowerCase().includes(searchTerm)
+                    const yearMatch = yearKey.toLowerCase().includes(searchTerm)
+
+                    if (subjectMatch || categoryMatch || yearMatch) {
+                      const relevance = (subjectMatch ? 4 : 0) + (categoryMatch ? 3 : 0) + (yearMatch ? 2 : 0)
+                      const year = extractYear(yearKey) || extractYear(categoryName) || "Unknown"
+                      const hasSolution = !categoryName.toLowerCase().includes("solution")
+                        ? checkSolutionExists(categoryName, data, subjectName)
+                        : false
+
+                      const result = {
+                        subject: subjectName,
+                        category: categoryName,
+                        year: year,
+                        url: url,
+                        fileName: `${subjectName} - ${categoryName} - ${yearKey}`,
+                        displayTitle: subjectName,
+                        displayCategory: categoryName,
+                        displaySubtitle: categoryName,
+                        relevance: relevance,
+                        semester: semesterKey,
+                        originalField: `${categoryName} - ${yearKey}`,
+                        isNested: true,
+                        hasSolution: hasSolution,
+                        colors: getCategoryColors(categoryName),
+                      }
+
+                      const existingResult = uniqueResultsMap.get(url)
+                      if (!existingResult || relevance > existingResult.relevance) {
+                        uniqueResultsMap.set(url, result)
+                      }
                     }
                   }
+                })
+              } else if (isValidUrl(fieldValue)) {
+                let categoryName = fieldName
+
+                const fieldLower = fieldName.toLowerCase()
+                if (fieldLower.includes("syllabus")) categoryName = "Syllabus"
+                else if (fieldLower.includes("end semester") || fieldLower.includes("endsem"))
+                  categoryName = "End Semester"
+                else if (fieldLower.includes("mid semester") || fieldLower.includes("midsem"))
+                  categoryName = "Mid Semester"
+                else if (fieldLower.includes("notes")) categoryName = "Notes"
+
+                // Fix for "All" category - only filter if a specific category is selected
+                if (
+                  selectedCategoryFilter &&
+                  selectedCategoryFilter.trim() !== "" &&
+                  !categoryName.toLowerCase().includes(selectedCategoryFilter.toLowerCase()) &&
+                  !selectedCategoryFilter.toLowerCase().includes(categoryName.toLowerCase())
+                ) {
+                  return
                 }
-              })
-            } else if (isValidUrl(fieldValue)) {
-              let categoryName = fieldName
 
-              const fieldLower = fieldName.toLowerCase()
-              if (fieldLower.includes("syllabus")) categoryName = "Syllabus"
-              else if (fieldLower.includes("end semester") || fieldLower.includes("endsem"))
-                categoryName = "End Semester"
-              else if (fieldLower.includes("mid semester") || fieldLower.includes("midsem"))
-                categoryName = "Mid Semester"
-              else if (fieldLower.includes("notes")) categoryName = "Notes"
+                const year = extractYear(fieldName) || "Unknown"
 
-              // Fix for "All" category - only filter if a specific category is selected
-              if (
-                selectedCategoryFilter &&
-                selectedCategoryFilter.trim() !== "" &&
-                !categoryName.toLowerCase().includes(selectedCategoryFilter.toLowerCase()) &&
-                !selectedCategoryFilter.toLowerCase().includes(categoryName.toLowerCase())
-              ) {
-                return
+                const subjectMatch = subjectName.toLowerCase().includes(searchTerm)
+                const fieldMatch = fieldName.toLowerCase().includes(searchTerm)
+                const categoryMatch = categoryName.toLowerCase().includes(searchTerm)
+                const yearMatchesSearch = year.toLowerCase().includes(searchTerm)
+
+                if (subjectMatch || fieldMatch || categoryMatch || yearMatchesSearch) {
+                  const relevance =
+                    (subjectMatch ? 4 : 0) +
+                    (categoryMatch ? 3 : 0) +
+                    (fieldMatch ? 2 : 0) +
+                    (yearMatchesSearch ? 1 : 0)
+                  const hasSolution = !fieldName.toLowerCase().includes("solution")
+                    ? checkSolutionExists(fieldName, data, subjectName)
+                    : false
+
+                  const result = {
+                    subject: subjectName,
+                    category: categoryName,
+                    year: year,
+                    url: fieldValue,
+                    fileName: `${subjectName} - ${fieldName}`,
+                    displayTitle: subjectName,
+                    displayCategory: categoryName,
+                    displaySubtitle: categoryName,
+                    relevance: relevance,
+                    semester: semesterKey,
+                    originalField: fieldName,
+                    isNested: false,
+                    hasSolution: hasSolution,
+                    colors: getCategoryColors(categoryName),
+                  }
+
+                  const existingResult = uniqueResultsMap.get(fieldValue)
+                  if (!existingResult || relevance > existingResult.relevance) {
+                    uniqueResultsMap.set(fieldValue, result)
+                  }
+                }
               }
-
-              const year = extractYear(fieldName) || "Unknown"
-
-              const subjectMatch = subjectName.toLowerCase().includes(searchTerm)
-              const fieldMatch = fieldName.toLowerCase().includes(searchTerm)
-              const categoryMatch = categoryName.toLowerCase().includes(searchTerm)
-              const yearMatchesSearch = year.toLowerCase().includes(searchTerm)
-
-              if (subjectMatch || fieldMatch || categoryMatch || yearMatchesSearch) {
-                const relevance =
-                  (subjectMatch ? 4 : 0) + (categoryMatch ? 3 : 0) + (fieldMatch ? 2 : 0) + (yearMatchesSearch ? 1 : 0)
-                const hasSolution = checkSolutionExists(fieldName, data)
-                
-                const result = {
-                  subject: subjectName,
-                  category: categoryName,
-                  year: year,
-                  url: fieldValue,
-                  fileName: `${subjectName} - ${fieldName}`,
-                  displayTitle: subjectName,
-                  displayCategory: categoryName,
-                  displaySubtitle: categoryName,
-                  relevance: relevance,
-                  semester: semesterKey,
-                  originalField: fieldName,
-                  isNested: false,
-                  hasSolution: hasSolution,
-                  colors: getCategoryColors(categoryName)
-                }
-
-                const existingResult = uniqueResultsMap.get(fieldValue)
-                if (!existingResult || relevance > existingResult.relevance) {
-                  uniqueResultsMap.set(fieldValue, result)
-                }
-              }
-            }
+            })
           })
         })
-      })
 
-      // Smart sorting: Mid first, then End, then others, with relevance within each group
-      const results = Array.from(uniqueResultsMap.values())
-        .sort((a, b) => {
-          // Priority sorting
-          const getPriority = (item) => {
-            const cat = item.category.toLowerCase()
-            if (cat.includes('mid semester') || cat.includes('midsem')) return 1
-            if (cat.includes('end semester') || cat.includes('endsem')) return 2
-            return 3
-          }
-          
-          const priorityA = getPriority(a)
-          const priorityB = getPriority(b)
-          
-          if (priorityA !== priorityB) return priorityA - priorityB
-          if (a.relevance !== b.relevance) return b.relevance - a.relevance
-          return a.fileName.localeCompare(b.fileName)
-        })
-        .slice(0, 50)
+        // Smart sorting: Mid first, then End, then others, with relevance within each group
+        const results = Array.from(uniqueResultsMap.values())
+          .sort((a, b) => {
+            // Priority sorting
+            const getPriority = (item) => {
+              const cat = item.category.toLowerCase()
+              if (cat.includes("mid semester") || cat.includes("midsem")) return 1
+              if (cat.includes("end semester") || cat.includes("endsem")) return 2
+              return 3
+            }
 
-      return results
-    } catch (error) {
-      console.error("❌ Error in search function:", error)
-      return []
-    }
-  }, [extractYear, checkSolutionExists, getCategoryColors, isValidUrl])
+            const priorityA = getPriority(a)
+            const priorityB = getPriority(b)
+
+            if (priorityA !== priorityB) return priorityA - priorityB
+            if (a.relevance !== b.relevance) return b.relevance - a.relevance
+            return a.fileName.localeCompare(b.fileName)
+          })
+          .slice(0, 50)
+
+        return results
+      } catch (error) {
+        console.error("❌ Error in search function:", error)
+        return []
+      }
+    },
+    [extractYear, checkSolutionExists, getCategoryColors, isValidUrl],
+  )
 
   const handleSearchFocus = () => {
     if (!user) {
@@ -857,12 +458,12 @@ const SearchBox = ({
       setHasInteracted(true)
       return
     }
-    
+
     try {
       // Find the solution for this paper
-      const solutionData = findSolution(suggestion.originalField, subjectsData)
-      
-      if (solutionData && solutionData.url) {
+      const solutionData = findSolution(suggestion.originalField, subjectsData, suggestion.subject)
+
+      if (solutionData && solutionData.url && isValidUrl(solutionData.url)) {
         const previewUrl = getPreviewLink(solutionData.url)
         const fileUrl = encodeURIComponent(previewUrl)
         const fileTitle = encodeURIComponent(solutionData.fileName)
@@ -984,13 +585,8 @@ const SearchBox = ({
             <input
               ref={searchInputRef}
               type="text"
-              placeholder={
-                isLoadingData
-                  ? "Syncing..."
-                  : hasSearchableData()
-                    ? `Search ${totalFiles} materials...`
-                    : "No data available"
-              }
+              placeholder="Search here"
+
               value={searchInput}
               onChange={handleSearchInput}
               onFocus={handleSearchFocus}
@@ -1064,7 +660,7 @@ const SearchBox = ({
                             <Eye size={16} />
                             <span>View Paper</span>
                           </button>
-                          
+
                           {suggestion.hasSolution && (
                             <button
                               className="action-button-top solution-button"
@@ -1099,8 +695,7 @@ const SearchBox = ({
                 <div className="search-hint-top" style={{ color: theme.textMuted }}>
                   <Search size={48} style={{ opacity: 0.3 }} />
                   <h3>Start typing to search</h3>
-                <p>Search by subject short name</p>
-
+                  <p>Search by subject short name</p>
                 </div>
               )}
             </div>
@@ -1202,9 +797,6 @@ const SearchBox = ({
           </div>
         </>
       )}
- 
-
- 
 
       <style jsx>{`
         /* Original Search Section */
@@ -1629,3 +1221,4 @@ const SearchBox = ({
 }
 
 export default SearchBox
+

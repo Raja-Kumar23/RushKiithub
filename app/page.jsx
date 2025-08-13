@@ -1976,7 +1976,7 @@ export default function Home() {
 
             if (matchKey) {
               foundUrl = categoryData[matchKey]
-              console.log(`openPaper: Found raw URL for ${formattedSubject} - ${category} - ${year}:`, foundUrl)
+             
               break
             }
           }
@@ -2195,12 +2195,13 @@ export default function Home() {
 
       <style jsx>{`
         .app {
-          width: 100vw;
+          width: 100%;
           min-height: 100vh;
           margin: 0;
           padding: 0;
           overflow-x: hidden;
           box-sizing: border-box;
+          overflow-y: hidden;
         }
 
         .main-content {
