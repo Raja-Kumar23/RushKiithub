@@ -28,15 +28,15 @@ export default function TicketDetail({
   const [error, setError] = useState('')
 
   // Get student information
-  const studentName = ticket.userInfo?.name || ticket.userName || 'Student'
-  const studentEmail = ticket.userEmail || 'No email'
-  const rollNumber = ticket.userInfo?.rollNumber || ticket.rollNumber || 'N/A'
-  const ticketTitle = ticket.title || 'No Title'
+  const studentName = ticket?.userInfo?.name || ticket?.userName || 'Student'
+  const studentEmail = ticket?.userEmail || 'No email'
+  const rollNumber = ticket?.userInfo?.rollNumber || ticket?.rollNumber || 'N/A'
+  const ticketTitle = ticket?.title || 'No Title'
 
   // Filter sub-admins based on category
   const relevantSubAdmins = subAdmins.filter(subAdmin => {
     if (!subAdmin.categories || subAdmin.categories.length === 0) return true
-    return subAdmin.categories.includes(ticket.category)
+    return subAdmin.categories.includes(ticket?.category)
   })
 
   const formatDate = (date) => {
@@ -90,6 +90,7 @@ export default function TicketDetail({
       return
     }
 
+
     setSending(true)
     setError('')
 
@@ -115,6 +116,7 @@ export default function TicketDetail({
   }
 
   const handleStatusChange = async (newStatus) => {
+
     try {
       await onStatusChange(ticket.id, newStatus)
       setError('')
@@ -130,6 +132,7 @@ export default function TicketDetail({
       return
     }
 
+
     setAssigning(true)
     setError('')
 
@@ -144,16 +147,25 @@ export default function TicketDetail({
     }
   }
 
+  const handleBack = () => {
+    if (typeof onBack === 'function') {
+      onBack()
+    } else {
+      console.warn('Back function not available')
+    }
+  }
+
+
   return (
     <div className="ticket-container">
       <div className="header">
-        <button onClick={onBack} className="btn btn-secondary flex" style={{ gap: "8px", alignItems: "center" }}>
+        <button onClick={handleBack} className="btn btn-secondary flex" style={{ gap: "8px", alignItems: "center" }}>
           <ArrowLeft size={16} />
           Back to Tickets
         </button>
         <div>
           <h1 className="title">{ticketTitle}</h1>
-          <p className="ticket-id">ID: {ticket.id}</p>
+          <p className="ticket-id">ID: {ticket?.id}</p>
         </div>
       </div>
 
@@ -175,7 +187,7 @@ export default function TicketDetail({
                 <span 
                   className="status" 
                   style={{
-                    ...getStatusColor(ticket.status),
+                    ...getStatusColor(ticket?.status),
                     padding: "4px 12px",
                     borderRadius: "20px",
                     fontSize: "0.75rem",
@@ -183,12 +195,12 @@ export default function TicketDetail({
                     textTransform: "capitalize"
                   }}
                 >
-                  {ticket.status || 'pending'}
+                  {ticket?.status || 'pending'}
                 </span>
                 <span 
                   className="priority" 
                   style={{
-                    ...getPriorityColor(ticket.priority),
+                    ...getPriorityColor(ticket?.priority),
                     padding: "4px 12px",
                     borderRadius: "20px",
                     fontSize: "0.75rem",
@@ -196,7 +208,7 @@ export default function TicketDetail({
                     textTransform: "capitalize"
                   }}
                 >
-                  {ticket.priority || 'medium'} priority
+                  {ticket?.priority || 'medium'} priority
                 </span>
               </div>
             </div>
@@ -208,20 +220,20 @@ export default function TicketDetail({
               </div>
               <div className="meta-item flex" style={{ gap: "8px", alignItems: "center" }}>
                 <Clock size={16} />
-                <span>{formatDate(ticket.createdAt)}</span>
+                <span>{formatDate(ticket?.createdAt)}</span>
               </div>
             </div>
 
             <div className="description-box">
               <h3>Description</h3>
-              <p>{ticket.description || 'No description provided'}</p>
+              <p>{ticket?.description || 'No description provided'}</p>
             </div>
 
-            {ticket.assignedTo && (
+            {ticket?.assignedTo && (
               <div className="assigned-box flex" style={{ gap: "8px", alignItems: "center" }}>
                 <UserCheck size={16} />
                 <span>
-                  Assigned to: {subAdmins?.find(sa => sa.email === ticket.assignedTo)?.name || ticket.assignedTo}
+                  Assigned to: {subAdmins?.find(sa => sa.email === ticket?.assignedTo)?.name || ticket?.assignedTo}
                 </span>
               </div>
             )}
@@ -230,12 +242,12 @@ export default function TicketDetail({
           {/* Replies */}
           <div className="card">
             <h3 className="section-title flex" style={{ gap: "8px", alignItems: "center" }}>
-              <MessageSquare size={18} /> Replies ({ticket.replies?.length || 0})
+              <MessageSquare size={18} /> Replies ({ticket?.replies?.length || 0})
             </h3>
 
             <div className="replies">
-              {ticket.replies && ticket.replies.length > 0 ? (
-                ticket.replies.map((reply, index) => (
+              {ticket?.replies && ticket.replies.length > 0 ? (
+                ticket?.replies.map((reply, index) => (
                   <div key={index} className="reply">
                     <div className="reply-header">
                       <div className="reply-author flex" style={{ gap: "12px", alignItems: "center" }}>
@@ -300,17 +312,17 @@ export default function TicketDetail({
             <div className="card">
               <h3 className="section-title">Status Actions</h3>
               <div className="actions" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                {ticket.status !== "resolved" && (
+                {ticket?.status !== "resolved" && (
                   <button onClick={() => handleStatusChange("resolved")} className="btn btn-primary">
                     Mark as Resolved
                   </button>
                 )}
-                {ticket.status !== "closed" && (
+                {ticket?.status !== "closed" && (
                   <button onClick={() => handleStatusChange("closed")} className="btn btn-secondary">
                     Close Ticket
                   </button>
                 )}
-                {ticket.status === "closed" && (
+                {ticket?.status === "closed" && (
                   <button onClick={() => handleStatusChange("assigned")} className="btn btn-secondary">
                     Reopen Ticket
                   </button>
@@ -320,7 +332,7 @@ export default function TicketDetail({
           )}
 
           {/* Assignment */}
-          {canAssign && ticket.status !== "closed" && (
+          {canAssign && ticket?.status !== "closed" && (
             <div className="card">
               <h3 className="section-title">Assign to Sub-Admin</h3>
               <div className="assign-box">
@@ -362,14 +374,14 @@ export default function TicketDetail({
           <div className="card">
             <h3 className="section-title">Ticket Information</h3>
             <div className="ticket-info" style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-              <p><strong>Category:</strong> {ticket.category || 'Not specified'}</p>
+              <p><strong>Category:</strong> {ticket?.category || 'Not specified'}</p>
               <p><strong>Email:</strong> {studentEmail}</p>
               <p><strong>Name:</strong> {studentName}</p>
               <p><strong>Roll No:</strong> {rollNumber}</p>
-              <p><strong>Priority:</strong> {(ticket.priority || 'medium').toUpperCase()}</p>
-              <p><strong>Status:</strong> {(ticket.status || 'pending').toUpperCase()}</p>
-              <p><strong>Created:</strong> {formatDate(ticket.createdAt)}</p>
-              {ticket.updatedAt && <p><strong>Last Updated:</strong> {formatDate(ticket.updatedAt)}</p>}
+              <p><strong>Priority:</strong> {(ticket?.priority || 'medium').toUpperCase()}</p>
+              <p><strong>Status:</strong> {(ticket?.status || 'pending').toUpperCase()}</p>
+              <p><strong>Created:</strong> {formatDate(ticket?.createdAt)}</p>
+              {ticket?.updatedAt && <p><strong>Last Updated:</strong> {formatDate(ticket?.updatedAt)}</p>}
             </div>
           </div>
         </div>

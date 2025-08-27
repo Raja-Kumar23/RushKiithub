@@ -42,24 +42,52 @@ export default function StudentDashboard({ tickets, loading, activeTab, onTicket
   }
 
   return (
-    <div>
-      {/* Welcome Section */}
-      <div className="welcome-section">
-        <div className="welcome-content">
-          <h2 className="welcome-title">Welcome back, {userName}! 👋</h2>
-          <p className="welcome-subtitle">Here's your support dashboard overview</p>
-          <div className="welcome-badges">
-            <div className="welcome-badge">
-              <Zap size={14} />
-              <span>Active User</span>
-            </div>
-            <div className="welcome-badge">
-              <Star size={14} />
-              <span>Verified Student</span>
-            </div>
-          </div>
+    // <div>
+    //   {/* Welcome Section */}
+    //   <div className="welcome-section">
+    //     <div className="welcome-content">
+    //       <h2 className="welcome-title">Welcome back, {userName}! 👋</h2>
+    //       <p className="welcome-subtitle">Here's your support dashboard overview</p>
+    //       <div className="welcome-badges">
+    //         <div className="welcome-badge">
+    //           <Zap size={14} />
+    //           <span>Active User</span>
+    //         </div>
+    //         <div className="welcome-badge">
+    //           <Star size={14} />
+    //           <span>Verified Student</span>
+    //         </div>
+    //       </div>
+    //     </div>
+    //   </div>
+<div>
+  {/* Welcome Section */}
+  <div className="welcome-section">
+    <div className="welcome-content">
+      <h2 className="welcome-title">Welcome back, {userName}! 👋</h2>
+      <p className="welcome-subtitle">Here's your support dashboard overview</p>
+      <div className="welcome-badges">
+        <div className="welcome-badge">
+          <Zap size={14} />
+          <span>Active User</span>
+        </div>
+        <div className="welcome-badge">
+          <Star size={14} />
+          <span>Verified Student</span>
         </div>
       </div>
+
+      {/* 🔴 Notice Section */}
+      <div className="notice-banner">
+        <strong>Notice:</strong> This is just a trial phase.  
+        No sub-admins are added yet, so replies might take a little longer.  
+        Once we are successful in this phase, live support will be available soon 🚀
+      </div>
+    </div>
+  </div>
+
+
+
 
       {/* Stats Grid */}
       <div className="stats-grid">
