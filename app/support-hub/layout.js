@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { auth } from '@/lib/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { getUserRole } from '@/lib/auth';
+import Head from 'next/head';
 import './globals.css';
 
 export default function RootLayout({ children }) {
@@ -29,32 +30,27 @@ export default function RootLayout({ children }) {
 
   if (loading) {
     return (
-      <html lang="en">
-        <head>
-          <title>SupportHub - KIIT</title>
-          <meta name="description" content="KIIT Student Support System" />
-        </head>
-        <body>
-          <div className="loading-container">
-            <div className="loading"></div>
-            <p>Loading SupportHub...</p>
-          </div>
-        </body>
-      </html>
+      <>
+        <Head>
+          <title>Loading... | SupportHub</title>
+        </Head>
+        <div className="loading-container">
+          <div className="loading"></div>
+          <p>Loading SupportHub...</p>
+        </div>
+      </>
     );
   }
 
   return (
-    <html lang="en">
-      <head>
-        <title>SupportHub - KIIT</title>
+    <>
+      <Head>
+        <title>SupportHub | KIITHub</title>
         <meta name="description" content="KIIT Student Support System" />
-      </head>
-      <body>
-        <div id="user-context" data-user={JSON.stringify(user)} data-role={userRole}>
-          {children}
-        </div>
-      </body>
-    </html>
+      </Head>
+      <div id="user-context" data-user={JSON.stringify(user)} data-role={userRole}>
+        {children}
+      </div>
+    </>
   );
 }

@@ -310,10 +310,7 @@ export default function CreateTicket({ user, onSuccess, onCancel, userTickets = 
                 <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#3b82f6" }}></div>
                 <span>Check your existing tickets for updates</span>
               </div>
-              <div className="flex" style={{ gap: "12px", alignItems: "center" }}>
-                <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#3b82f6" }}></div>
-                <span>Browse our FAQ for quick answers</span>
-              </div>
+              
               <div className="flex" style={{ gap: "12px", alignItems: "center" }}>
                 <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#3b82f6" }}></div>
                 <span>Prepare details for your next ticket</span>

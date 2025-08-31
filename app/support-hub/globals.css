@@ -411,6 +411,10 @@ body::before {
   line-height: 1.6;
 }
 
+select.form-input option {
+  background: #1f2937; /* dark background for dropdown items */
+  color: #ffffff;      /* white text inside dropdown */
+}
 /* Status Badges */
 .status-badge {
   display: inline-flex;
