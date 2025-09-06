@@ -62,7 +62,8 @@ const SearchBox = ({
 
   // Normalize text for better matching
   const normalizeText = useCallback((text) => {
-    return text.toLowerCase()
+    return text
+      .toLowerCase()
       .replace(/\s+/g, " ")
       .trim()
       .replace(/semester/g, "sem")
@@ -96,7 +97,7 @@ const SearchBox = ({
       const normalizedPaperTitle = normalizeText(paperTitle)
       const solutionPattern1 = normalizedPaperTitle + " solution"
       const solutionPattern2 = paperTitle.toLowerCase().trim() + " solution"
-      
+
       try {
         for (const [semesterKey, semesterData] of Object.entries(data)) {
           if (semesterData && typeof semesterData === "object") {
@@ -109,12 +110,12 @@ const SearchBox = ({
                   const cleanFieldName = fieldName.toLowerCase().trim()
 
                   // Multiple matching patterns
-                  const isMatch = 
+                  const isMatch =
                     normalizedFieldName === solutionPattern1 ||
                     cleanFieldName === solutionPattern2 ||
-                    (cleanFieldName.includes("solution") && 
-                     (normalizedFieldName.replace(/\s*solution\s*/g, "").trim() === normalizedPaperTitle ||
-                      cleanFieldName.replace(/\s*solution\s*/g, "").trim() === paperTitle.toLowerCase().trim()))
+                    (cleanFieldName.includes("solution") &&
+                      (normalizedFieldName.replace(/\s*solution\s*/g, "").trim() === normalizedPaperTitle ||
+                        cleanFieldName.replace(/\s*solution\s*/g, "").trim() === paperTitle.toLowerCase().trim()))
 
                   if (isMatch) {
                     if (fieldValue && typeof fieldValue === "object") {
@@ -151,13 +152,13 @@ const SearchBox = ({
                     for (const [yearKey, url] of Object.entries(fieldValue)) {
                       const normalizedYearKey = normalizeText(yearKey)
                       const cleanYearKey = yearKey.toLowerCase().trim()
-                      
-                      const isNestedMatch = 
+
+                      const isNestedMatch =
                         normalizedYearKey === solutionPattern1 ||
                         cleanYearKey === solutionPattern2 ||
-                        (cleanYearKey.includes("solution") && 
-                         (normalizedYearKey.replace(/\s*solution\s*/g, "").trim() === normalizedPaperTitle ||
-                          cleanYearKey.replace(/\s*solution\s*/g, "").trim() === paperTitle.toLowerCase().trim()))
+                        (cleanYearKey.includes("solution") &&
+                          (normalizedYearKey.replace(/\s*solution\s*/g, "").trim() === normalizedPaperTitle ||
+                            cleanYearKey.replace(/\s*solution\s*/g, "").trim() === paperTitle.toLowerCase().trim()))
 
                       if (isNestedMatch && isValidUrl(url)) {
                         return {
@@ -273,12 +274,31 @@ const SearchBox = ({
                       return
                     }
 
-                    const subjectMatch = subjectName.toLowerCase().includes(searchTerm)
-                    const categoryMatch = categoryName.toLowerCase().includes(searchTerm)
-                    const yearMatch = yearKey.toLowerCase().includes(searchTerm)
+                    const subjectLower = subjectName.toLowerCase()
+                    const categoryLower = categoryName.toLowerCase()
+                    const yearLower = yearKey.toLowerCase()
 
-                    if (subjectMatch || categoryMatch || yearMatch) {
-                      const relevance = (subjectMatch ? 4 : 0) + (categoryMatch ? 3 : 0) + (yearMatch ? 2 : 0)
+                    const subjectExact = subjectLower === searchTerm
+                    const subjectStartsWith = subjectLower.startsWith(searchTerm)
+                    const subjectContains = subjectLower.includes(searchTerm)
+
+                    const categoryExact = categoryLower === searchTerm
+                    const categoryStartsWith = categoryLower.startsWith(searchTerm)
+                    const categoryContains = categoryLower.includes(searchTerm)
+
+                    const yearExact = yearLower === searchTerm
+                    const yearStartsWith = yearLower.startsWith(searchTerm)
+                    const yearContains = yearLower.includes(searchTerm)
+
+                    const hasMatch = subjectContains || categoryContains || yearContains
+
+                    if (hasMatch) {
+                      // Enhanced relevance scoring: exact match = 10, starts with = 5, contains = 1
+                      const subjectScore = subjectExact ? 40 : subjectStartsWith ? 20 : subjectContains ? 4 : 0
+                      const categoryScore = categoryExact ? 30 : categoryStartsWith ? 15 : categoryContains ? 3 : 0
+                      const yearScore = yearExact ? 20 : yearStartsWith ? 10 : yearContains ? 2 : 0
+
+                      const relevance = subjectScore + categoryScore + yearScore
                       const year = extractYear(yearKey) || extractYear(categoryName) || "Unknown"
                       const hasSolution = checkSolutionExists(categoryName, data, subjectName)
 
@@ -336,17 +356,37 @@ const SearchBox = ({
 
                 const year = extractYear(fieldName) || "Unknown"
 
-                const subjectMatch = subjectName.toLowerCase().includes(searchTerm)
-                const fieldMatch = fieldName.toLowerCase().includes(searchTerm)
-                const categoryMatch = categoryName.toLowerCase().includes(searchTerm)
-                const yearMatchesSearch = year.toLowerCase().includes(searchTerm)
+                const subjectLower = subjectName.toLowerCase()
+                const fieldNameLower = fieldName.toLowerCase()
+                const categoryLower = categoryName.toLowerCase()
+                const yearLower = year.toLowerCase()
 
-                if (subjectMatch || fieldMatch || categoryMatch || yearMatchesSearch) {
-                  const relevance =
-                    (subjectMatch ? 4 : 0) +
-                    (categoryMatch ? 3 : 0) +
-                    (fieldMatch ? 2 : 0) +
-                    (yearMatchesSearch ? 1 : 0)
+                const subjectExact = subjectLower === searchTerm
+                const subjectStartsWith = subjectLower.startsWith(searchTerm)
+                const subjectContains = subjectLower.includes(searchTerm)
+
+                const fieldExact = fieldNameLower === searchTerm
+                const fieldStartsWith = fieldNameLower.startsWith(searchTerm)
+                const fieldContains = fieldNameLower.includes(searchTerm)
+
+                const categoryExact = categoryLower === searchTerm
+                const categoryStartsWith = categoryLower.startsWith(searchTerm)
+                const categoryContains = categoryLower.includes(searchTerm)
+
+                const yearExact = yearLower === searchTerm
+                const yearStartsWith = yearLower.startsWith(searchTerm)
+                const yearContains = yearLower.includes(searchTerm)
+
+                const hasMatch = subjectContains || fieldContains || categoryContains || yearContains
+
+                if (hasMatch) {
+                  // Enhanced relevance scoring: exact match = 10, starts with = 5, contains = 1
+                  const subjectScore = subjectExact ? 40 : subjectStartsWith ? 20 : subjectContains ? 4 : 0
+                  const fieldScore = fieldExact ? 20 : fieldStartsWith ? 10 : fieldContains ? 2 : 0
+                  const categoryScore = categoryExact ? 30 : categoryStartsWith ? 15 : categoryContains ? 3 : 0
+                  const yearScore = yearExact ? 20 : yearStartsWith ? 10 : yearContains ? 1 : 0
+
+                  const relevance = subjectScore + fieldScore + categoryScore + yearScore
                   const hasSolution = checkSolutionExists(fieldName, data, subjectName)
 
                   // Create unique key for deduplication
@@ -380,7 +420,7 @@ const SearchBox = ({
           })
         })
 
-        // Smart sorting: Mid first, then End, then others, with relevance within each group
+        // Smart sorting: Mid first, then End, then others, with relevance and year within each group
         const results = Array.from(uniqueResultsMap.values())
           .sort((a, b) => {
             // Priority sorting
@@ -395,7 +435,14 @@ const SearchBox = ({
             const priorityB = getPriority(b)
 
             if (priorityA !== priorityB) return priorityA - priorityB
+
             if (a.relevance !== b.relevance) return b.relevance - a.relevance
+
+            const yearA = extractYear(a.fileName) || 0
+            const yearB = extractYear(b.fileName) || 0
+
+            if (yearA !== yearB) return yearB - yearA // Recent years first
+
             return a.fileName.localeCompare(b.fileName)
           })
           .slice(0, 50)
@@ -1105,12 +1152,13 @@ const SearchBox = ({
           cursor: pointer;
           font-size: 14px;
           font-weight: 500;
+          text-align: left;
           transition: all 0.2s ease;
-          white-space: nowrap;
+          border-bottom: 1px solid ${theme.border};
         }
 
         .category-button-bottom:hover {
-          background: ${theme.primary}25;
+          background: ${theme.primary}10 !important;
         }
 
         .clear-category-button {
