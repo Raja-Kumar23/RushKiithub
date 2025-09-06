@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { ChevronRight, ArrowLeft, Eye, BookOpen } from "lucide-react"
+import { ChevronRight, ArrowLeft, Eye, BookOpen, FileText, CheckCircle } from "lucide-react"
 
 const BrowseMethod = ({
   subjectsData,
@@ -38,88 +38,168 @@ const BrowseMethod = ({
     Routine: { name: "Routine & Schedule", number: "📅", key: "Routine" },
   }
 
+  const isSolutionField = (fieldName) => {
+    const lowerName = fieldName.toLowerCase()
+    return (
+      lowerName.includes("solution") ||
+      lowerName.includes("answer") ||
+      lowerName.includes("key") ||
+      lowerName.includes("solved") ||
+      lowerName.endsWith("_sol") ||
+      lowerName.endsWith("_solution")
+    )
+  }
+
+  const getPaperSolutionPairs = (subjectData) => {
+    const pairs = []
+    const processedFields = new Set()
+
+    Object.entries(subjectData).forEach(([fieldName, fieldValue]) => {
+      if (
+        processedFields.has(fieldName) ||
+        !fieldValue ||
+        typeof fieldValue !== "string" ||
+        fieldValue.trim() === "" ||
+        fieldValue === "undefined" ||
+        fieldValue.toLowerCase() === "null" ||
+        (!fieldValue.includes("http") && !fieldValue.includes("drive.google.com"))
+      ) {
+        return
+      }
+
+      const isSolution = isSolutionField(fieldName)
+
+      if (isSolution) {
+        // This is a solution, try to find its corresponding paper
+        const baseName = fieldName
+          .toLowerCase()
+          .replace(/[_\s]*(solution|answer|key|solved|sol)s?[_\s]*$/i, "")
+          .trim()
+
+        // Look for corresponding paper
+        const paperField = Object.keys(subjectData).find((key) => {
+          const keyLower = key.toLowerCase()
+          const keyBase = keyLower.replace(/[_\s]*(paper|question|exam)s?[_\s]*$/i, "").trim()
+          return keyBase === baseName && !isSolutionField(key) && key !== fieldName
+        })
+
+        if (paperField && subjectData[paperField]) {
+          pairs.push({
+            baseName: baseName || fieldName.replace(/[_\s]*(solution|answer|key|solved|sol)s?[_\s]*$/i, ""),
+            paperField,
+            paperUrl: subjectData[paperField],
+            solutionField: fieldName,
+            solutionUrl: fieldValue,
+            displayName: paperField,
+            type: getCategoryType(paperField),
+            icon: getCategoryIcon(paperField),
+          })
+          processedFields.add(paperField)
+          processedFields.add(fieldName)
+        } else {
+          // Solution without corresponding paper
+          pairs.push({
+            baseName: baseName || fieldName,
+            paperField: null,
+            paperUrl: null,
+            solutionField: fieldName,
+            solutionUrl: fieldValue,
+            displayName: fieldName,
+            type: getCategoryType(fieldName),
+            icon: getCategoryIcon(fieldName),
+          })
+          processedFields.add(fieldName)
+        }
+      } else {
+        // This is a paper, check if it has a solution
+        const baseName = fieldName
+          .toLowerCase()
+          .replace(/[_\s]*(paper|question|exam)s?[_\s]*$/i, "")
+          .trim()
+
+        const solutionField = Object.keys(subjectData).find((key) => {
+          if (!isSolutionField(key)) return false
+          const keyBase = key
+            .toLowerCase()
+            .replace(/[_\s]*(solution|answer|key|solved|sol)s?[_\s]*$/i, "")
+            .trim()
+          return keyBase === baseName
+        })
+
+        pairs.push({
+          baseName: baseName || fieldName,
+          paperField: fieldName,
+          paperUrl: fieldValue,
+          solutionField: solutionField || null,
+          solutionUrl: solutionField ? subjectData[solutionField] : null,
+          displayName: fieldName,
+          type: getCategoryType(fieldName),
+          icon: getCategoryIcon(fieldName),
+        })
+        processedFields.add(fieldName)
+        if (solutionField) processedFields.add(solutionField)
+      }
+    })
+
+    return pairs
+  }
+
+  const getCategoryType = (fieldName) => {
+    const lowerName = fieldName.toLowerCase()
+    if (lowerName.includes("syllabus")) return "Syllabus"
+    if (lowerName.includes("end semester") || lowerName.includes("end sem")) return "End Semester"
+    if (lowerName.includes("mid semester") || lowerName.includes("mid sem")) return "Mid Semester"
+    if (lowerName.includes("notes")) return "Notes"
+    return "Other"
+  }
+
+  const getCategoryIcon = (fieldName) => {
+    const lowerName = fieldName.toLowerCase()
+    if (lowerName.includes("syllabus")) return "📋"
+    if (lowerName.includes("end semester") || lowerName.includes("end sem")) return "📝"
+    if (lowerName.includes("mid semester") || lowerName.includes("mid sem")) return "📄"
+    if (lowerName.includes("notes")) return "📚"
+    return "📄"
+  }
+
   // Fixed function to get available semesters - handles flat structure
   const getAvailableSemesters = () => {
     try {
       const availableSemesters = []
 
       if (!subjectsData || typeof subjectsData !== "object") {
-        console.log("❌ No valid subjects data available:", subjectsData)
+        
         return availableSemesters
       }
 
       const dataKeys = Object.keys(subjectsData)
-      console.log("📊 Processing semester data keys:", dataKeys)
+      
 
       dataKeys.forEach((key) => {
         const semesterData = subjectsData[key]
 
-        if (!semesterData || typeof semesterData !== "object") {
-          console.log(`⚠️ Skipping invalid semester data for ${key}:`, semesterData)
-          return
-        }
-
-        // Find matching semester info - handle both cases
-        const semesterInfo = semesterMapping[key]
-        if (semesterInfo) {
-          // Count valid subjects with files - FIXED: Handle flat structure
-          let subjectCount = 0
-          let totalFiles = 0
-
-          Object.entries(semesterData).forEach(([subjectName, subjectData]) => {
-            if (subjectData && typeof subjectData === "object") {
-              let hasValidFiles = false
-
-              // FIXED: Handle direct fields as categories/files
-              Object.entries(subjectData).forEach(([fieldName, fieldValue]) => {
-                // Check if field value is a valid URL string
-                if (
-                  typeof fieldValue === "string" &&
-                  fieldValue.trim() !== "" &&
-                  fieldValue !== "undefined" &&
-                  fieldValue.toLowerCase() !== "null" &&
-                  (fieldValue.includes("http") || fieldValue.includes("drive.google.com"))
-                ) {
-                  hasValidFiles = true
-                  totalFiles++
-                  console.log(`✅ Found valid file: ${subjectName} - ${fieldName}`)
-                }
-              })
-
-              if (hasValidFiles) {
-                subjectCount++
-              }
-            }
-          })
-
-          if (subjectCount > 0) {
+        if (semesterData && typeof semesterData === "object") {
+          const semesterNumber = extractSemesterNumber(key)
+          if (semesterNumber !== null) {
             availableSemesters.push({
-              ...semesterInfo,
-              actualKey: key,
-              subjectCount,
-              totalFiles,
+              key,
+              name: key,
+              number: semesterNumber,
+              isRoutine: key.toLowerCase().includes("routine"),
             })
-            console.log(`✅ Added ${key}: ${subjectCount} subjects, ${totalFiles} files`)
-          } else {
-            console.log(`⚠️ Skipping ${key}: no valid subjects found`)
           }
-        } else {
-          console.log(`⚠️ No mapping found for key: ${key}`)
         }
       })
 
-      // Sort semesters
-      const sorted = availableSemesters.sort((a, b) => {
-        if (a.key === "Routine" || a.key === "routine") return 1
-        if (b.key === "Routine" || b.key === "routine") return -1
-        return Number.parseInt(a.number) - Number.parseInt(b.number)
+      // Sort semesters: regular semesters first (ascending), then routine
+      availableSemesters.sort((a, b) => {
+        if (a.isRoutine && !b.isRoutine) return 1
+        if (!a.isRoutine && b.isRoutine) return -1
+        return a.number - b.number // Ascending order: 1st, 2nd, 3rd, etc.
       })
 
-      console.log(
-        "📈 Available semesters:",
-        sorted.map((s) => `${s.name} (${s.subjectCount} subjects)`),
-      )
-      return sorted
+     
+      return availableSemesters
     } catch (error) {
       console.error("❌ Error getting available semesters:", error)
       return []
@@ -130,12 +210,12 @@ const BrowseMethod = ({
   const getSubjectsForSemester = (semesterKey) => {
     try {
       const semesterData = subjectsData[semesterKey] || {}
-      console.log(`📚 Processing subjects for ${semesterKey}:`, Object.keys(semesterData))
+      
 
       const subjects = Object.entries(semesterData)
         .map(([subjectName, subjectData]) => {
           if (!subjectData || typeof subjectData !== "object") {
-            console.log(`⚠️ Skipping invalid subject data for ${subjectName}`)
+           
             return null
           }
 
@@ -155,76 +235,37 @@ const BrowseMethod = ({
           })
 
           if (hasValidFiles) {
-            console.log(`✅ ${subjectName}: has valid files`)
+            
             return {
               name: subjectName,
               data: subjectData,
             }
           } else {
-            console.log(`⚠️ ${subjectName}: no valid files found`)
+            
             return null
           }
         })
         .filter((subject) => subject !== null)
 
-      console.log(`📊 Found ${subjects.length} valid subjects for ${semesterKey}`)
+     
       return subjects
     } catch (error) {
-      console.error("❌ Error getting subjects for semester:", error)
+     
       return []
     }
   }
 
-  // New function to get categories for a subject - shows exact database names
   const getCategoriesForSubject = (semesterKey, subjectName) => {
     try {
       const semesterData = subjectsData[semesterKey] || {}
       const subjectData = semesterData[subjectName] || {}
 
-      console.log(`📂 Processing categories for ${subjectName}:`, Object.keys(subjectData))
+     
 
-      const categories = []
+      const pairs = getPaperSolutionPairs(subjectData)
 
-      // Process direct fields as categories - show EXACT names from database
-      Object.entries(subjectData).forEach(([fieldName, fieldValue]) => {
-        if (
-          typeof fieldValue === "string" &&
-          fieldValue.trim() !== "" &&
-          fieldValue !== "undefined" &&
-          fieldValue.toLowerCase() !== "null" &&
-          (fieldValue.includes("http") || fieldValue.includes("drive.google.com"))
-        ) {
-          // Determine category type for icon only, but keep original name
-          let categoryIcon = "📄"
-          let categoryType = "Other"
-
-          if (fieldName.toLowerCase().includes("syllabus")) {
-            categoryIcon = "📋"
-            categoryType = "Syllabus"
-          } else if (fieldName.toLowerCase().includes("end semester") || fieldName.toLowerCase().includes("end sem")) {
-            categoryIcon = "📝"
-            categoryType = "End Semester"
-          } else if (fieldName.toLowerCase().includes("mid semester") || fieldName.toLowerCase().includes("mid sem")) {
-            categoryIcon = "📄"
-            categoryType = "Mid Semester"
-          } else if (fieldName.toLowerCase().includes("notes")) {
-            categoryIcon = "📚"
-            categoryType = "Notes"
-          }
-
-          categories.push({
-            name: fieldName, // EXACT name from database
-            type: categoryType, // For sorting only
-            icon: categoryIcon,
-            url: fieldValue,
-            originalField: fieldName,
-            displayName: fieldName, // Show exact database name
-          })
-        }
-      })
-
-      // Sort categories by type, then alphabetically
-      const sortedCategories = categories.sort((a, b) => {
+      // Sort pairs by type, then alphabetically
+      const sortedPairs = pairs.sort((a, b) => {
         const categoryOrder = { Syllabus: 1, Notes: 2, "Mid Semester": 3, "End Semester": 4, Other: 5 }
         const aOrder = categoryOrder[a.type] || 5
         const bOrder = categoryOrder[b.type] || 5
@@ -233,49 +274,52 @@ const BrowseMethod = ({
           return aOrder - bOrder
         }
 
-        return a.name.localeCompare(b.name) // Alphabetical order within same type
+        return a.displayName.localeCompare(b.displayName)
       })
 
-      console.log(`📊 Found ${sortedCategories.length} categories for ${subjectName}`)
-      return sortedCategories
+      
+      return sortedPairs
     } catch (error) {
-      console.error("❌ Error getting categories for subject:", error)
+     
       return []
     }
   }
 
-  const handleOpenPaper = (subject, category, year, categoryData = null) => {
+  const handleOpenPaper = (subject, pair, type = "paper") => {
     if (!user) {
       setShowLoginPrompt(true)
       if (setHasInteracted) setHasInteracted(true)
       return
     }
 
-    // If we have the category data with URL, use it directly
-    if (categoryData && categoryData.url) {
-      console.log("📖 Opening paper directly with URL:", categoryData.url)
-      const previewUrl = getPreviewLink(categoryData.url)
-      const fileUrl = encodeURIComponent(previewUrl)
-      const fileTitle = encodeURIComponent(`${subject} - ${categoryData.displayName}`)
-      window.open(`/viewer?url=${fileUrl}&title=${fileTitle}`, "_blank")
-      showNotification(`📖 Opening: ${categoryData.displayName}`, "success")
+    let url, title
+    if (type === "solution" && pair.solutionUrl) {
+      url = pair.solutionUrl
+      title = `${subject} - ${pair.displayName} (Solution)`
+    } else if (pair.paperUrl) {
+      url = pair.paperUrl
+      title = `${subject} - ${pair.displayName}`
+    } else {
+      showNotification("❌ File not available", "error")
       return
     }
 
-    // Fallback to original logic
-    console.log("📖 Opening paper:", { subject, category, year })
-    openPaper(subject, category, year)
-    showNotification(`📖 Opening: ${subject} - ${category} - ${year}`, "success")
+  
+    const previewUrl = getPreviewLink(url)
+    const fileUrl = encodeURIComponent(previewUrl)
+    const fileTitle = encodeURIComponent(title)
+    window.open(`/viewer?url=${fileUrl}&title=${fileTitle}`, "_blank")
+    showNotification(`📖 Opening: ${title}`, "success")
   }
 
   // Helper function to get preview link
   const getPreviewLink = (fullUrl) => {
     const match = fullUrl.match(/(?:id=|\/d\/)([-\w]{25,})/)
     if (match) {
-      console.log("getPreviewLink: Detected Google Drive ID, generating preview link.")
+      
       return `https://drive.google.com/file/d/${match[1]}/preview`
     }
-    console.log("getPreviewLink: No Google Drive ID found, returning original URL.")
+   
     return fullUrl
   }
 
@@ -297,18 +341,18 @@ const BrowseMethod = ({
 
   const getCategoryTypesForSubject = (semesterKey, subjectName) => {
     try {
-      const categories = getCategoriesForSubject(semesterKey, subjectName)
+      const pairs = getCategoriesForSubject(semesterKey, subjectName)
       const uniqueTypes = {}
 
-      categories.forEach((category) => {
-        if (!uniqueTypes[category.type]) {
-          uniqueTypes[category.type] = {
-            type: category.type,
-            icon: category.icon,
+      pairs.forEach((pair) => {
+        if (!uniqueTypes[pair.type]) {
+          uniqueTypes[pair.type] = {
+            type: pair.type,
+            icon: pair.icon,
             count: 0,
           }
         }
-        uniqueTypes[category.type].count++
+        uniqueTypes[pair.type].count++
       })
 
       // Sort by the predefined order
@@ -320,19 +364,58 @@ const BrowseMethod = ({
         return aOrder - bOrder
       })
     } catch (error) {
-      console.error("❌ Error getting category types:", error)
+      
       return []
     }
   }
 
   const getFilesForCategoryType = (semesterKey, subjectName, categoryType) => {
     try {
-      const categories = getCategoriesForSubject(semesterKey, subjectName)
-      return categories.filter((category) => category.type === categoryType)
+      const semesterData = subjectsData[semesterKey]
+      if (!semesterData || !semesterData[subjectName]) {
+        return []
+      }
+
+      const subjectData = semesterData[subjectName]
+      const pairs = getPaperSolutionPairs(subjectData)
+
+      const sortedPairs = pairs
+        .filter((pair) => pair.type === categoryType)
+        .sort((a, b) => {
+          // First, sort by year (newest first)
+          const yearA = extractYearFromFilename(a.displayName)
+          const yearB = extractYearFromFilename(b.displayName)
+
+          if (yearA !== yearB) {
+            return yearB - yearA // Descending order: 2025, 2024, 2023, etc.
+          }
+
+          // If years are the same (or no year found), sort alphabetically
+          return a.displayName.localeCompare(b.displayName)
+        })
+
+    
+      return sortedPairs
     } catch (error) {
-      console.error("❌ Error getting files for category type:", error)
+      console.error("❌ Error getting files for category:", error)
       return []
     }
+  }
+
+  const extractSemesterNumber = (key) => {
+    const lowerKey = key.toLowerCase()
+    const match = lowerKey.match(/(first|second|third|fourth|fifth|sixth|seventh)/)
+    if (match) {
+      const semesterName = match[1]
+      return semesterMapping[semesterName]?.number || null
+    }
+    return null
+  }
+
+  const extractYearFromFilename = (filename) => {
+    // Look for 4-digit years (2020-2030 range)
+    const yearMatch = filename.match(/20[2-3][0-9]/)
+    return yearMatch ? Number.parseInt(yearMatch[0]) : 0
   }
 
   const availableSemesters = getAvailableSemesters()
@@ -346,7 +429,7 @@ const BrowseMethod = ({
             <BookOpen size={32} />
           </div>
           <h2>Browse Study Materials</h2>
-          <p>Navigate through your organized study materials</p>
+          <p>Navigate through your organized study materials with papers and solutions</p>
         </div>
 
         {/* Navigation */}
@@ -367,7 +450,7 @@ const BrowseMethod = ({
                       setSelectedCategory(null)
                     }}
                   >
-                    {availableSemesters.find((s) => s.actualKey === selectedSemester)?.name}
+                    {availableSemesters.find((s) => s.key === selectedSemester)?.name}
                   </button>
                 </>
               )}
@@ -404,16 +487,13 @@ const BrowseMethod = ({
               <div className="semester-grid">
                 {availableSemesters.map((semester) => (
                   <button
-                    key={semester.actualKey}
+                    key={semester.key}
                     className="semester-card"
-                    onClick={() => setSelectedSemester(semester.actualKey)}
+                    onClick={() => setSelectedSemester(semester.key)}
                   >
                     <div className="semester-number">{semester.number}</div>
                     <div className="semester-info">
                       <h4>{semester.name}</h4>
-                      <p>
-                        {semester.subjectCount} subjects • {semester.totalFiles} files
-                      </p>
                     </div>
                     <ChevronRight size={20} className="arrow-icon" />
                   </button>
@@ -472,7 +552,6 @@ const BrowseMethod = ({
                       {categoryType.count} file{categoryType.count !== 1 ? "s" : ""} available
                     </p>
                   </div>
-                  <ChevronRight size={20} className="arrow-icon" />
                 </button>
               ))}
             </div>
@@ -480,7 +559,7 @@ const BrowseMethod = ({
               <div className="empty-state">
                 <div className="empty-icon">📄</div>
                 <h4>No materials found</h4>
-                <p>This subject doesn't have any study materials yet.</p>
+                <p>No study materials available for this subject.</p>
               </div>
             )}
           </div>
@@ -490,27 +569,56 @@ const BrowseMethod = ({
           <div className="step-container">
             <div className="step-header">
               <div className="step-number">4</div>
-              <h3>Select File</h3>
+              <h3>Select Files</h3>
               <p className="step-subtitle">
                 {selectedCategory} materials for {selectedSubject}
               </p>
             </div>
             <div className="files-grid">
-              {getFilesForCategoryType(selectedSemester, selectedSubject, selectedCategory).map((file, index) => (
-                <button
-                  key={`${file.name}-${index}`}
-                  className="file-card"
-                  onClick={() => handleOpenPaper(selectedSubject, file.name, "", file)}
-                >
-                  <div className="file-icon">{file.icon}</div>
-                  <div className="file-info">
-                    <h4>{file.displayName}</h4>
-                    <p>Click to view</p>
+              {getFilesForCategoryType(selectedSemester, selectedSubject, selectedCategory).map((pair, index) => (
+                <div key={`${pair.displayName}-${index}`} className="file-card-container">
+                  <div className="file-card">
+                    <div className="file-icon">{pair.icon}</div>
+                    <div className="file-info">
+                      <h4>{pair.displayName}</h4>
+                      <div className="file-status">
+                        {pair.paperUrl && (
+                          <span className="status-badge paper">
+                            <FileText size={12} />
+                            Paper Available
+                          </span>
+                        )}
+                        {pair.solutionUrl && (
+                          <span className="status-badge solution">
+                            <CheckCircle size={12} />
+                            Solution Available
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <div className="view-btn-small">
-                    <Eye size={16} />
+
+                  <div className="action-buttons">
+                    {pair.paperUrl && (
+                      <button
+                        className="action-btn primary"
+                        onClick={() => handleOpenPaper(selectedSubject, pair, "paper")}
+                      >
+                        <Eye size={16} />
+                        View Paper
+                      </button>
+                    )}
+                    {pair.solutionUrl && (
+                      <button
+                        className="action-btn secondary"
+                        onClick={() => handleOpenPaper(selectedSubject, pair, "solution")}
+                      >
+                        <CheckCircle size={16} />
+                        View Solution
+                      </button>
+                    )}
                   </div>
-                </button>
+                </div>
               ))}
             </div>
             {getFilesForCategoryType(selectedSemester, selectedSubject, selectedCategory).length === 0 && (
@@ -745,7 +853,6 @@ const BrowseMethod = ({
 
         .subject-info {
           flex: 1;
-          text-align: left;
         }
 
         .subject-info h4 {
@@ -786,7 +893,6 @@ const BrowseMethod = ({
 
         .category-info {
           flex: 1;
-          text-align: left;
         }
 
         .category-info h4 {
@@ -800,24 +906,6 @@ const BrowseMethod = ({
           font-size: 0.9rem;
           color: ${theme.textMuted};
           margin: 0;
-        }
-
-        .view-btn-small {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 36px;
-          height: 36px;
-          background: ${theme.primary}20;
-          color: ${theme.primary};
-          border-radius: 50%;
-          transition: all 0.3s ease;
-        }
-
-        .category-card:hover .view-btn-small {
-          background: ${theme.primary};
-          color: white;
-          transform: scale(1.1);
         }
 
         .empty-state {
@@ -843,6 +931,125 @@ const BrowseMethod = ({
           margin: 0 0 16px 0;
         }
 
+        .step-subtitle {
+          font-size: 1rem;
+          color: ${theme.textMuted};
+          margin: 0;
+        }
+
+        .files-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+          gap: 24px;
+        }
+
+        /* Enhanced file card styles with paper/solution options */
+        .file-card-container {
+          background: ${theme.glassBg};
+          border: 2px solid ${theme.border};
+          border-radius: 16px;
+          overflow: hidden;
+          transition: all 0.3s ease;
+          backdrop-filter: blur(10px);
+        }
+
+        .file-card-container:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 12px 40px ${theme.primary}20;
+          border-color: ${theme.primary};
+        }
+
+        .file-card {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          padding: 20px;
+        }
+
+        .file-icon {
+          font-size: 2rem;
+        }
+
+        .file-info {
+          flex: 1;
+        }
+
+        .file-info h4 {
+          font-size: 1.1rem;
+          font-weight: 700;
+          color: ${theme.textPrimary};
+          margin: 0 0 8px 0;
+        }
+
+        .file-status {
+          display: flex;
+          gap: 8px;
+          flex-wrap: wrap;
+        }
+
+        .status-badge {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          padding: 4px 8px;
+          border-radius: 12px;
+          font-size: 0.75rem;
+          font-weight: 600;
+        }
+
+        .status-badge.paper {
+          background: ${theme.primary}20;
+          color: ${theme.primary};
+        }
+
+        .status-badge.solution {
+          background: #10b98120;
+          color: #10b981;
+        }
+
+        .action-buttons {
+          display: flex;
+          gap: 8px;
+          padding: 16px 20px;
+          background: ${theme.glassBg}50;
+          border-top: 1px solid ${theme.border};
+        }
+
+        .action-btn {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          padding: 12px 16px;
+          border: none;
+          border-radius: 10px;
+          font-weight: 600;
+          font-size: 0.9rem;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+
+        .action-btn.primary {
+          background: ${theme.primary};
+          color: white;
+        }
+
+        .action-btn.primary:hover {
+          background: ${theme.primary}dd;
+          transform: translateY(-2px);
+        }
+
+        .action-btn.secondary {
+          background: #10b981;
+          color: white;
+        }
+
+        .action-btn.secondary:hover {
+          background: #059669;
+          transform: translateY(-2px);
+        }
+
         /* Mobile Responsive */
         @media (max-width: 768px) {
           .browse-container {
@@ -865,7 +1072,8 @@ const BrowseMethod = ({
 
           .semester-grid,
           .subject-grid,
-          .category-grid {
+          .category-grid,
+          .files-grid {
             grid-template-columns: 1fr;
           }
 
@@ -874,12 +1082,21 @@ const BrowseMethod = ({
             text-align: center;
             gap: 12px;
           }
+
+          .action-buttons {
+            flex-direction: column;
+          }
+
+          .action-btn {
+            flex: none;
+          }
         }
 
         @media (max-width: 480px) {
           .semester-card,
           .subject-card,
-          .category-card {
+          .category-card,
+          .file-card {
             padding: 16px;
           }
 
@@ -891,62 +1108,10 @@ const BrowseMethod = ({
 
           .semester-info h4,
           .subject-info h4,
-          .category-info h4 {
+          .category-info h4,
+          .file-info h4 {
             font-size: 1rem;
           }
-        }
-
-        .step-subtitle {
-          font-size: 1rem;
-          color: ${theme.textMuted};
-          margin: 0;
-        }
-
-        .files-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-          gap: 20px;
-        }
-
-        .file-card {
-          display: flex;
-          align-items: center;
-          gap: 16px;
-          padding: 20px;
-          background: ${theme.glassBg};
-          border: 2px solid ${theme.border};
-          border-radius: 16px;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          backdrop-filter: blur(10px);
-        }
-
-        .file-card:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 12px 40px ${theme.primary}20;
-          border-color: ${theme.primary};
-        }
-
-        .file-icon {
-          font-size: 2rem;
-        }
-
-        .file-info {
-          flex: 1;
-          text-align: left;
-        }
-
-        .file-info h4 {
-          font-size: 1.1rem;
-          font-weight: 700;
-          color: ${theme.textPrimary};
-          margin: 0;
-        }
-
-        .file-info p {
-          font-size: 0.9rem;
-          color: ${theme.textMuted};
-          margin: 0;
         }
       `}</style>
     </>
