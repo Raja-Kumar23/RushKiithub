@@ -43,7 +43,7 @@ const SearchBox = ({
     return yearMatch ? yearMatch[0] : ""
   }, [])
 
-  // Helper function to validate URLs - moved up to be defined first
+  // Helper function to validate URLs
   const isValidUrl = useCallback((url) => {
     if (typeof url !== "string") return false
     const trimmedUrl = url.trim()
@@ -58,6 +58,16 @@ const SearchBox = ({
       trimmedUrl.includes(".pdf") ||
       trimmedUrl.includes(".doc")
     )
+  }, [])
+
+  // Normalize text for better matching
+  const normalizeText = useCallback((text) => {
+    return text.toLowerCase()
+      .replace(/\s+/g, " ")
+      .trim()
+      .replace(/semester/g, "sem")
+      .replace(/\bmid\s*sem\b/g, "midsem")
+      .replace(/\bend\s*sem\b/g, "endsem")
   }, [])
 
   // Get category color scheme
@@ -80,11 +90,13 @@ const SearchBox = ({
     [theme.primary],
   )
 
+  // Improved solution finding function
   const findSolution = useCallback(
     (paperTitle, data, currentSubject) => {
-      const solutionTitle = paperTitle + " Solution"
-      const cleanPaperTitle = paperTitle.toLowerCase().trim()
-
+      const normalizedPaperTitle = normalizeText(paperTitle)
+      const solutionPattern1 = normalizedPaperTitle + " solution"
+      const solutionPattern2 = paperTitle.toLowerCase().trim() + " solution"
+      
       try {
         for (const [semesterKey, semesterData] of Object.entries(data)) {
           if (semesterData && typeof semesterData === "object") {
@@ -93,17 +105,18 @@ const SearchBox = ({
 
               if (subjectData && typeof subjectData === "object") {
                 for (const [fieldName, fieldValue] of Object.entries(subjectData)) {
+                  const normalizedFieldName = normalizeText(fieldName)
                   const cleanFieldName = fieldName.toLowerCase().trim()
 
-                  // Check for exact solution match (e.g., "2018 - Autumn End Semester Solution")
-                  const isExactSolutionMatch = cleanFieldName === solutionTitle.toLowerCase()
+                  // Multiple matching patterns
+                  const isMatch = 
+                    normalizedFieldName === solutionPattern1 ||
+                    cleanFieldName === solutionPattern2 ||
+                    (cleanFieldName.includes("solution") && 
+                     (normalizedFieldName.replace(/\s*solution\s*/g, "").trim() === normalizedPaperTitle ||
+                      cleanFieldName.replace(/\s*solution\s*/g, "").trim() === paperTitle.toLowerCase().trim()))
 
-                  // Check if this field contains "solution" and matches the paper pattern
-                  const isSolutionField = cleanFieldName.includes("solution")
-                  const matchesPaperPattern =
-                    isSolutionField && cleanFieldName.replace(/\s*solution\s*/g, "").trim() === cleanPaperTitle
-
-                  if (isExactSolutionMatch || matchesPaperPattern) {
+                  if (isMatch) {
                     if (fieldValue && typeof fieldValue === "object") {
                       // Handle nested structure
                       for (const [yearKey, url] of Object.entries(fieldValue)) {
@@ -136,13 +149,17 @@ const SearchBox = ({
                   // Also check within nested objects for solution entries
                   if (fieldValue && typeof fieldValue === "object") {
                     for (const [yearKey, url] of Object.entries(fieldValue)) {
+                      const normalizedYearKey = normalizeText(yearKey)
                       const cleanYearKey = yearKey.toLowerCase().trim()
-                      const isNestedSolutionMatch = cleanYearKey === solutionTitle.toLowerCase()
-                      const isNestedSolutionField =
-                        cleanYearKey.includes("solution") &&
-                        cleanYearKey.replace(/\s*solution\s*/g, "").trim() === cleanPaperTitle
+                      
+                      const isNestedMatch = 
+                        normalizedYearKey === solutionPattern1 ||
+                        cleanYearKey === solutionPattern2 ||
+                        (cleanYearKey.includes("solution") && 
+                         (normalizedYearKey.replace(/\s*solution\s*/g, "").trim() === normalizedPaperTitle ||
+                          cleanYearKey.replace(/\s*solution\s*/g, "").trim() === paperTitle.toLowerCase().trim()))
 
-                      if ((isNestedSolutionMatch || isNestedSolutionField) && isValidUrl(url)) {
+                      if (isNestedMatch && isValidUrl(url)) {
                         return {
                           subject: subjectName,
                           category: fieldName,
@@ -165,20 +182,13 @@ const SearchBox = ({
       }
       return null
     },
-    [extractYear, isValidUrl],
+    [extractYear, isValidUrl, normalizeText],
   )
 
   const checkSolutionExists = useCallback(
     (paperTitle, data, currentSubject) => {
       const solution = findSolution(paperTitle, data, currentSubject)
       return solution !== null
-    },
-    [findSolution],
-  )
-
-  const checkSolutionExistsOriginal = useCallback(
-    (paperTitle, data) => {
-      return findSolution(paperTitle, data) !== null
     },
     [findSolution],
   )
@@ -225,8 +235,9 @@ const SearchBox = ({
       console.error("❌ Error checking searchable data:", error)
       return false
     }
-  }, [subjectsData])
+  }, [subjectsData, isValidUrl])
 
+  // Improved search function with better deduplication
   const searchInFirestoreData = useCallback(
     (query, data, selectedCategoryFilter) => {
       try {
@@ -241,12 +252,18 @@ const SearchBox = ({
             if (!subjectData || typeof subjectData !== "object") return
 
             Object.entries(subjectData).forEach(([fieldName, fieldValue]) => {
+              // Skip solution entries in main results (they'll be linked to their questions)
+              if (fieldName.toLowerCase().includes("solution")) return
+
               if (fieldValue && typeof fieldValue === "object") {
                 const categoryName = fieldName
 
                 Object.entries(fieldValue).forEach(([yearKey, url]) => {
                   if (isValidUrl(url)) {
-                    // Fix for "All" category - only filter if a specific category is selected
+                    // Skip solution entries in nested results too
+                    if (yearKey.toLowerCase().includes("solution")) return
+
+                    // Category filtering
                     if (
                       selectedCategoryFilter &&
                       selectedCategoryFilter.trim() !== "" &&
@@ -263,9 +280,10 @@ const SearchBox = ({
                     if (subjectMatch || categoryMatch || yearMatch) {
                       const relevance = (subjectMatch ? 4 : 0) + (categoryMatch ? 3 : 0) + (yearMatch ? 2 : 0)
                       const year = extractYear(yearKey) || extractYear(categoryName) || "Unknown"
-                      const hasSolution = !categoryName.toLowerCase().includes("solution")
-                        ? checkSolutionExists(categoryName, data, subjectName)
-                        : false
+                      const hasSolution = checkSolutionExists(categoryName, data, subjectName)
+
+                      // Create unique key for deduplication
+                      const uniqueKey = `${subjectName}-${categoryName}-${yearKey}-${url}`
 
                       const result = {
                         subject: subjectName,
@@ -278,20 +296,24 @@ const SearchBox = ({
                         displaySubtitle: categoryName,
                         relevance: relevance,
                         semester: semesterKey,
-                        originalField: `${categoryName} - ${yearKey}`,
+                        originalField: categoryName,
                         isNested: true,
                         hasSolution: hasSolution,
                         colors: getCategoryColors(categoryName),
+                        uniqueKey: uniqueKey,
                       }
 
-                      const existingResult = uniqueResultsMap.get(url)
+                      const existingResult = uniqueResultsMap.get(uniqueKey)
                       if (!existingResult || relevance > existingResult.relevance) {
-                        uniqueResultsMap.set(url, result)
+                        uniqueResultsMap.set(uniqueKey, result)
                       }
                     }
                   }
                 })
               } else if (isValidUrl(fieldValue)) {
+                // Skip solution entries in direct fields too
+                if (fieldName.toLowerCase().includes("solution")) return
+
                 let categoryName = fieldName
 
                 const fieldLower = fieldName.toLowerCase()
@@ -302,7 +324,7 @@ const SearchBox = ({
                   categoryName = "Mid Semester"
                 else if (fieldLower.includes("notes")) categoryName = "Notes"
 
-                // Fix for "All" category - only filter if a specific category is selected
+                // Category filtering
                 if (
                   selectedCategoryFilter &&
                   selectedCategoryFilter.trim() !== "" &&
@@ -325,9 +347,10 @@ const SearchBox = ({
                     (categoryMatch ? 3 : 0) +
                     (fieldMatch ? 2 : 0) +
                     (yearMatchesSearch ? 1 : 0)
-                  const hasSolution = !fieldName.toLowerCase().includes("solution")
-                    ? checkSolutionExists(fieldName, data, subjectName)
-                    : false
+                  const hasSolution = checkSolutionExists(fieldName, data, subjectName)
+
+                  // Create unique key for deduplication
+                  const uniqueKey = `${subjectName}-${fieldName}-${fieldValue}`
 
                   const result = {
                     subject: subjectName,
@@ -344,11 +367,12 @@ const SearchBox = ({
                     isNested: false,
                     hasSolution: hasSolution,
                     colors: getCategoryColors(categoryName),
+                    uniqueKey: uniqueKey,
                   }
 
-                  const existingResult = uniqueResultsMap.get(fieldValue)
+                  const existingResult = uniqueResultsMap.get(uniqueKey)
                   if (!existingResult || relevance > existingResult.relevance) {
-                    uniqueResultsMap.set(fieldValue, result)
+                    uniqueResultsMap.set(uniqueKey, result)
                   }
                 }
               }
@@ -586,7 +610,6 @@ const SearchBox = ({
               ref={searchInputRef}
               type="text"
               placeholder="Search here"
-
               value={searchInput}
               onChange={handleSearchInput}
               onFocus={handleSearchFocus}
@@ -614,7 +637,7 @@ const SearchBox = ({
                 <div className="results-grid-top">
                   {suggestions.map((suggestion, index) => (
                     <div
-                      key={`${suggestion.url}-${index}`}
+                      key={suggestion.uniqueKey || `${suggestion.url}-${index}`}
                       className="result-card-top"
                       style={{
                         background: suggestion.colors.bg,
@@ -1221,4 +1244,3 @@ const SearchBox = ({
 }
 
 export default SearchBox
-
