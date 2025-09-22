@@ -1,5 +1,5 @@
 import React from 'react';
-import { Eye, Edit3, Check, Star, Users, BookOpen, Calendar, Award } from 'lucide-react';
+import { Eye, Edit3, Check, Star, Users, BookOpen, Award, Sparkles } from 'lucide-react';
 import './styles.css';
 
 const TeacherGrid = ({
@@ -19,36 +19,67 @@ const TeacherGrid = ({
   activeSection,
   setActiveSection
 }) => {
-  const getRatingColor = (rating) => {
+  const getRatingLevel = (rating) => {
     const score = parseFloat(rating);
-    if (score >= 4.0) return 'excellent';
-    if (score >= 3.0) return 'good';
-    if (score >= 2.0) return 'average';
+    if (score >= 4.5) return 'excellent';
+    if (score >= 4.0) return 'very-good';
+    if (score >= 3.5) return 'good';
+    if (score >= 2.5) return 'average';
     return 'poor';
   };
 
-  const getRatingText = (rating) => {
-    const score = parseFloat(rating);
-    if (score >= 4.0) return 'Excellent';
-    if (score >= 3.0) return 'Good';
-    if (score >= 2.0) return 'Average';
-    return 'Poor';
+  const getAvatarColor = (rating) => {
+    const level = getRatingLevel(rating);
+    const colors = {
+      excellent: {
+        background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+        shadow: '0 6px 20px rgba(16, 185, 129, 0.4)'
+      },
+      'very-good': {
+        background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)',
+        shadow: '0 6px 20px rgba(6, 182, 212, 0.4)'
+      },
+      good: {
+        background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+        shadow: '0 6px 20px rgba(59, 130, 246, 0.4)'
+      },
+      average: {
+        background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+        shadow: '0 6px 20px rgba(245, 158, 11, 0.4)'
+      },
+      poor: {
+        background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+        shadow: '0 6px 20px rgba(239, 68, 68, 0.4)'
+      }
+    };
+    return colors[level];
+  };
+
+  const getHoverColor = (rating) => {
+    const level = getRatingLevel(rating);
+    return `hover-${level}`;
   };
 
   const renderStars = (rating) => {
     const score = parseFloat(rating);
     const fullStars = Math.floor(score);
     const hasHalfStar = score % 1 >= 0.5;
-    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
 
     return (
       <div className="stars-container">
-        {[...Array(fullStars)].map((_, i) => (
-          <Star key={`full-${i}`} className="star star-full" size={16} fill="currentColor" />
-        ))}
-        {hasHalfStar && <Star key="half" className="star star-half" size={16} fill="currentColor" />}
-        {[...Array(emptyStars)].map((_, i) => (
-          <Star key={`empty-${i}`} className="star star-empty" size={16} />
+        {[...Array(5)].map((_, i) => (
+          <Star
+            key={i}
+            size={12}
+            className={`star ${
+              i < fullStars
+                ? 'star-full'
+                : i === fullStars && hasHalfStar
+                ? 'star-half'
+                : 'star-empty'
+            }`}
+            fill={i < fullStars || (i === fullStars && hasHalfStar) ? 'currentColor' : 'none'}
+          />
         ))}
       </div>
     );
@@ -60,27 +91,32 @@ const TeacherGrid = ({
 
   if (isLoading) {
     return (
-      <div className="teacher-grid-container">
-        <div className="loading-grid">
+      <div className="teacher-grid-wrapper">
+        <div className="grid-header">
+          <div className="header-content">
+            <div className="title-section">
+              <div className="skeleton-title"></div>
+              <div className="skeleton-subtitle"></div>
+            </div>
+          </div>
+        </div>
+        <div className="teacher-grid">
           {[...Array(8)].map((_, i) => (
             <div key={i} className="teacher-card-skeleton">
-              <div className="skeleton-header">
-                <div className="skeleton-avatar"></div>
-                <div className="skeleton-badge"></div>
-              </div>
               <div className="skeleton-content">
-                <div className="skeleton-line skeleton-title"></div>
-                <div className="skeleton-tags">
+                <div className="skeleton-header">
+                  <div className="skeleton-avatar"></div>
+                  <div className="skeleton-rating"></div>
+                </div>
+                <div className="skeleton-name"></div>
+                <div className="skeleton-subjects">
                   <div className="skeleton-tag"></div>
                   <div className="skeleton-tag"></div>
                 </div>
-                <div className="skeleton-stats">
-                  <div className="skeleton-stat"></div>
-                  <div className="skeleton-stat"></div>
-                </div>
-                <div className="skeleton-buttons">
-                  <div className="skeleton-button"></div>
-                  <div className="skeleton-button"></div>
+                <div className="skeleton-sections"></div>
+                <div className="skeleton-actions">
+                  <div className="skeleton-btn"></div>
+                  <div className="skeleton-btn"></div>
                 </div>
               </div>
             </div>
@@ -92,39 +128,43 @@ const TeacherGrid = ({
 
   if (!teachers || teachers.length === 0) {
     return (
-      <div className="teacher-grid-container">
+      <div className="teacher-grid-wrapper">
         <div className="empty-state">
           <div className="empty-icon">
             <Users size={64} />
           </div>
-          <h3 className="empty-title">No Faculty Members Found</h3>
+          <h3 className="empty-title">No Faculty Found</h3>
           <p className="empty-description">
-            Try adjusting your search criteria or filters to discover amazing teachers.
+            Try adjusting your search criteria to discover amazing educators.
           </p>
-          <div className="empty-decoration">
-            <div className="decoration-circle"></div>
-            <div className="decoration-circle"></div>
-            <div className="decoration-circle"></div>
-          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="teacher-grid-container">
+    <div className="teacher-grid-wrapper">
       <div className="grid-header">
-        <div className="grid-title-section">
-          <h2 className="grid-title">Faculty Excellence</h2>
-          <div className="grid-subtitle">
-            <Award size={18} />
-            <span>Discover {teachers.length} exceptional educators</span>
+        <div className="header-content">
+          <div className="title-section">
+            <div className="title-wrapper">
+              <Sparkles className="title-icon" size={28} />
+              <h1 className="grid-title">Faculty Excellence</h1>
+            </div>
+            <div className="subtitle">
+              <span>Discover {teachers.length} exceptional educators</span>
+              <Award size={16} className="subtitle-icon" />
+            </div>
           </div>
-        </div>
-        <div className="grid-stats">
-          <div className="stat-pill">
-            <BookOpen size={16} />
-            <span>{teachers.length} Teachers</span>
+          <div className="header-stats">
+            <div className="stat-badge">
+              <Users size={16} />
+              <span>{teachers.length} Teachers</span>
+            </div>
+            <div className="stat-badge">
+              <BookOpen size={16} />
+              <span>All Subjects</span>
+            </div>
           </div>
         </div>
       </div>
@@ -134,122 +174,91 @@ const TeacherGrid = ({
           const stats = getTeacherReviewStats(teacher.id, teacher.name);
           const hasReviewed = hasReviewedTeacherInAnyYear(teacher.id);
           const canReview = canSubmitMoreReviews(teacher.id);
-          const ratingColor = getRatingColor(stats.overallAverage);
-          const ratingText = getRatingText(stats.overallAverage);
+          const avatarStyle = getAvatarColor(stats.overallAverage);
+          const hoverClass = getHoverColor(stats.overallAverage);
 
           return (
-            <div key={teacher.id} className={`teacher-card ${ratingColor}`} style={{ animationDelay: `${index * 0.1}s` }}>
-              <div className="card-background">
-                <div className="bg-pattern"></div>
-                <div className="bg-gradient"></div>
-              </div>
-              
+            <div 
+              key={teacher.id} 
+              className={`teacher-card ${hoverClass}`}
+              style={{ 
+                animationDelay: `${index * 0.1}s`
+              }}
+            >
               {hasReviewed && (
-                <div className="review-indicator">
+                <div className="reviewed-badge">
                   <Check size={14} />
-                  <span>Reviewed</span>
                 </div>
               )}
 
-              <div className="card-header">
-                <div className="teacher-avatar">
-                  <span className="avatar-text">{generateInitials(teacher.name)}</span>
-                  <div className="avatar-ring"></div>
-                </div>
-                <div className={`rating-badge rating-${ratingColor}`}>
-                  <div className="rating-score">{stats.overallAverage}</div>
-                  <div className="rating-label">{ratingText}</div>
-                  <div className="rating-decoration"></div>
-                </div>
-              </div>
-
-              <div className="card-body">
-                <h3 className="teacher-name">{teacher.name}</h3>
-                
-                {teacher.subjects && teacher.subjects.length > 0 && (
-                  <div className="teacher-subjects">
-                    {teacher.subjects.slice(0, 2).map((subject, idx) => (
-                      <span key={idx} className="subject-tag">
-                        <BookOpen size={12} />
-                        {subject.length > 18 ? `${subject.substring(0, 18)}...` : subject}
-                      </span>
-                    ))}
-                    {teacher.subjects.length > 2 && (
-                      <span className="subject-tag subject-more">
-                        +{teacher.subjects.length - 2} more
-                      </span>
-                    )}
+              <div className="card-content">
+                <div className="teacher-header">
+                  <div 
+                    className="teacher-avatar rating-avatar"
+                    style={{ 
+                      background: avatarStyle.background,
+                      boxShadow: avatarStyle.shadow
+                    }}
+                  >
+                    <span className="avatar-text">{generateInitials(teacher.name)}</span>
                   </div>
-                )}
+                  <div className="rating-display">
+                    <div className="rating-score">{stats.overallAverage}</div>
+                    {renderStars(stats.overallAverage)}
+                  </div>
+                </div>
 
-                {teacher.sections && teacher.sections.length > 0 && (
-                  <div className="teacher-sections">
-                    <div className="sections-header">
-                      <Users size={14} />
-                      <span>Sections</span>
-                    </div>
-                    <div className="sections-list">
-                      {teacher.sections.slice(0, 4).map((section, idx) => (
-                        <span key={idx} className="section-pill">{section}</span>
+                <div className="teacher-info">
+                  <h3 className="teacher-name">{teacher.name}</h3>
+                  
+                  {teacher.subjects && teacher.subjects.length > 0 && (
+                    <div className="subject-tags">
+                      {teacher.subjects.slice(0, 2).map((subject, idx) => (
+                        <span key={idx} className="subject-tag">
+                          {subject.length > 15 ? `${subject.substring(0, 15)}...` : subject}
+                        </span>
                       ))}
-                      {teacher.sections.length > 4 && (
-                        <span className="section-pill section-more">+{teacher.sections.length - 4}</span>
+                      {teacher.subjects.length > 2 && (
+                        <span className="subject-tag more-subjects">
+                          +{teacher.subjects.length - 2}
+                        </span>
                       )}
                     </div>
-                  </div>
-                )}
+                  )}
 
-                <div className="stats-container">
-                  <div className="stat-item">
-                    <div className="stat-icon">
-                      <Star size={16} />
+                  {teacher.sections && teacher.sections.length > 0 && (
+                    <div className="sections-info">
+                      <Users size={14} className="sections-icon" />
+                      <div className="sections-pills">
+                        {teacher.sections.slice(0, 4).map((section, idx) => (
+                          <span key={idx} className="section-pill">{section}</span>
+                        ))}
+                        {teacher.sections.length > 4 && (
+                          <span className="section-pill">+{teacher.sections.length - 4}</span>
+                        )}
+                      </div>
                     </div>
-                    <div className="stat-content">
-                      <span className="stat-value">{stats.totalReviews}</span>
-                      <span className="stat-label">Reviews</span>
-                    </div>
-                  </div>
-                  <div className="stat-divider"></div>
-                  <div className="stat-item">
-                    <div className="stat-icon">
-                      <Calendar size={16} />
-                    </div>
-                    <div className="stat-content">
-                      <span className="stat-value">{stats.crossSemesterCount}</span>
-                      <span className="stat-label">Semesters</span>
-                    </div>
-                  </div>
+                  )}
                 </div>
 
-                <div className="rating-stars">
-                  {renderStars(stats.overallAverage)}
-                  <span className="rating-text">({stats.totalReviews} reviews)</span>
+                <div className="card-actions">
+                  <button
+                    className="action-btn view-btn"
+                    onClick={() => openViewReviewsModal(teacher)}
+                  >
+                    <Eye size={16} />
+                    <span>View</span>
+                  </button>
+                  <button
+                    className={`action-btn review-btn ${!canReview ? 'disabled' : ''}`}
+                    onClick={() => canReview && openGiveReviewModal(teacher)}
+                    disabled={!canReview}
+                  >
+                    <Edit3 size={16} />
+                    <span>{hasReviewed ? 'Update' : 'Review'}</span>
+                  </button>
                 </div>
               </div>
-
-              <div className="card-actions">
-                <button
-                  className="action-btn view-btn"
-                  onClick={() => openViewReviewsModal(teacher)}
-                >
-                  <Eye size={16} />
-                  <span>View Reviews</span>
-                  <div className="btn-ripple"></div>
-                </button>
-
-                <button
-                  className={`action-btn review-btn ${!canReview ? 'disabled' : ''}`}
-                  onClick={() => canReview && openGiveReviewModal(teacher)}
-                  disabled={!canReview}
-                  title={!canReview ? 'Review limit reached for this teacher' : 'Give a review'}
-                >
-                  <Edit3 size={16} />
-                  <span>{hasReviewed ? 'Update Review' : 'Write Review'}</span>
-                  <div className="btn-ripple"></div>
-                </button>
-              </div>
-
-              <div className="card-hover-effect"></div>
             </div>
           );
         })}
