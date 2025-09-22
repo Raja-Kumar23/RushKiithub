@@ -1,0 +1,338 @@
+.year-tabs-container {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.05) 0%, rgba(165, 214, 167, 0.05) 100%);
+  border-radius: 20px;
+  padding: 32px;
+  margin-bottom: 32px;
+  border: 1px solid rgba(76, 175, 80, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+[data-theme="dark"] .year-tabs-container {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.08) 0%, rgba(165, 214, 167, 0.03) 100%);
+  border-color: rgba(76, 175, 80, 0.2);
+}
+
+.year-tabs-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.year-tabs-header h2 {
+  margin: 0 0 8px 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1b5e20;
+  letter-spacing: -0.5px;
+}
+
+[data-theme="dark"] .year-tabs-header h2 {
+  color: #4caf50;
+}
+
+.year-tabs-header p {
+  margin: 0;
+  font-size: 16px;
+  color: #666;
+  font-weight: 500;
+}
+
+[data-theme="dark"] .year-tabs-header p {
+  color: #b3b3b3;
+}
+
+.year-tabs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.year-tab {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 20px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 2px solid rgba(76, 175, 80, 0.2);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+[data-theme="dark"] .year-tab {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(76, 175, 80, 0.3);
+}
+
+.year-tab::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(76, 175, 80, 0.1), transparent);
+  transition: left 0.6s ease;
+}
+
+.year-tab:hover::before {
+  left: 100%;
+}
+
+.year-tab:hover {
+  background: rgba(76, 175, 80, 0.05);
+  border-color: rgba(76, 175, 80, 0.4);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(76, 175, 80, 0.15);
+}
+
+[data-theme="dark"] .year-tab:hover {
+  background: rgba(76, 175, 80, 0.1);
+  border-color: rgba(76, 175, 80, 0.5);
+}
+
+.year-tab.active {
+  background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+  border-color: #2e7d32;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(76, 175, 80, 0.3);
+}
+
+.year-tab.active::before {
+  display: none;
+}
+
+.tab-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.tab-year {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #2e7d32;
+  transition: color 0.3s ease;
+}
+
+[data-theme="dark"] .tab-year {
+  color: #4caf50;
+}
+
+.year-tab.active .tab-year {
+  color: white;
+}
+
+.tab-semester {
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: color 0.3s ease;
+}
+
+[data-theme="dark"] .tab-semester {
+  color: #b3b3b3;
+}
+
+.year-tab.active .tab-semester {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.tab-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+.year-tab.active .tab-indicator {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(255, 255, 255, 0.3) 100%);
+}
+
+.tabs-info {
+  display: flex;
+  justify-content: center;
+}
+
+.info-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  background: rgba(76, 175, 80, 0.08);
+  border: 1px solid rgba(76, 175, 80, 0.2);
+  border-radius: 16px;
+  max-width: 400px;
+}
+
+[data-theme="dark"] .info-card {
+  background: rgba(76, 175, 80, 0.1);
+  border-color: rgba(76, 175, 80, 0.3);
+}
+
+.info-icon {
+  width: 24px;
+  height: 24px;
+  color: #4caf50;
+  flex-shrink: 0;
+}
+
+.info-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.info-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.info-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #2e7d32;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+[data-theme="dark"] .info-title {
+  color: #4caf50;
+}
+
+.info-description {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+[data-theme="dark"] .info-description {
+  color: #b3b3b3;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .year-tabs-container {
+    padding: 24px 20px;
+    margin-bottom: 24px;
+  }
+  
+  .year-tabs-header h2 {
+    font-size: 24px;
+  }
+  
+  .year-tabs-header p {
+    font-size: 15px;
+  }
+  
+  .year-tabs {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .year-tab {
+    padding: 20px 16px;
+  }
+  
+  .tab-year {
+    font-size: 16px;
+  }
+  
+  .tab-semester {
+    font-size: 12px;
+  }
+  
+  .info-card {
+    padding: 16px 20px;
+  }
+  
+  .info-text {
+    gap: 2px;
+  }
+  
+  .info-title {
+    font-size: 12px;
+  }
+  
+  .info-description {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .year-tabs {
+    grid-template-columns: 1fr;
+  }
+  
+  .year-tabs-container {
+    padding: 20px 16px;
+  }
+  
+  .year-tabs-header h2 {
+    font-size: 22px;
+  }
+  
+  .info-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+}
+
+/* Animation keyframes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.year-tabs-container {
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.year-tab {
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.year-tab:nth-child(1) { animation-delay: 0.1s; }
+.year-tab:nth-child(2) { animation-delay: 0.2s; }
+.year-tab:nth-child(3) { animation-delay: 0.3s; }
+.year-tab:nth-child(4) { animation-delay: 0.4s; }
+
+/* Focus styles for accessibility */
+.year-tab:focus {
+  outline: 2px solid #4caf50;
+  outline-offset: 2px;
+}
+
+/* Pulse animation for active tab */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 8px 24px rgba(76, 175, 80, 0.3);
+  }
+  50% {
+    box-shadow: 0 8px 32px rgba(76, 175, 80, 0.4);
+  }
+  100% {
+    box-shadow: 0 8px 24px rgba(76, 175, 80, 0.3);
+  }
+}
+
+.year-tab.active {
+  animation: pulse 2s infinite;
+}
