@@ -17,7 +17,8 @@ const TeacherGrid = ({
   teacherFilter,
   setTeacherFilter,
   activeSection,
-  setActiveSection
+  setActiveSection,
+  reviewsLastUpdated // Add this prop to trigger re-renders
 }) => {
   const getRatingLevel = (rating) => {
     const score = parseFloat(rating);
@@ -89,6 +90,16 @@ const TeacherGrid = ({
     return name.split(' ').map(n => n.charAt(0)).join('').toUpperCase().slice(0, 2);
   };
 
+  const handleViewReviews = (teacher) => {
+    console.log('TeacherGrid - Opening reviews for:', teacher.name);
+    openViewReviewsModal(teacher);
+  };
+
+  const handleGiveReview = (teacher) => {
+    console.log('TeacherGrid - Opening give review for:', teacher.name);
+    openGiveReviewModal(teacher);
+  };
+
   if (isLoading) {
     return (
       <div className="teacher-grid-wrapper">
@@ -142,6 +153,8 @@ const TeacherGrid = ({
     );
   }
 
+  console.log('TeacherGrid - Rendering with reviewsLastUpdated:', reviewsLastUpdated);
+
   return (
     <div className="teacher-grid-wrapper">
       <div className="grid-header">
@@ -150,6 +163,12 @@ const TeacherGrid = ({
             <div className="title-wrapper">
               <Sparkles className="title-icon" size={28} />
               <h1 className="grid-title">Faculty Excellence</h1>
+              {reviewsLastUpdated && (
+                <div className="live-indicator">
+                  <div className="live-dot"></div>
+                  <span>Live</span>
+                </div>
+              )}
             </div>
             <div className="subtitle">
               <span>Discover {teachers.length} exceptional educators</span>
@@ -171,6 +190,7 @@ const TeacherGrid = ({
 
       <div className="teacher-grid">
         {teachers.map((teacher, index) => {
+          // Force fresh stats calculation on each render
           const stats = getTeacherReviewStats(teacher.id, teacher.name);
           const hasReviewed = hasReviewedTeacherInAnyYear(teacher.id);
           const canReview = canSubmitMoreReviews(teacher.id);
@@ -180,9 +200,16 @@ const TeacherGrid = ({
           // Use actual review count
           const actualReviewCount = stats.totalReviews || 0;
 
+          console.log(`TeacherGrid - Teacher ${teacher.name}:`, {
+            totalReviews: actualReviewCount,
+            overallAverage: stats.overallAverage,
+            hasReviewed,
+            canReview
+          });
+
           return (
             <div 
-              key={teacher.id} 
+              key={`${teacher.id}-${reviewsLastUpdated}`} // Include reviewsLastUpdated in key to force re-render
               className={`teacher-card ${hoverClass}`}
               style={{ 
                 animationDelay: `${index * 0.1}s`
@@ -248,14 +275,14 @@ const TeacherGrid = ({
                 <div className="card-actions">
                   <button
                     className="action-btn view-btn"
-                    onClick={() => openViewReviewsModal(teacher)}
+                    onClick={() => handleViewReviews(teacher)}
                   >
                     <Eye size={16} />
                     <span>View</span>
                   </button>
                   <button
                     className={`action-btn review-btn ${!canReview ? 'disabled' : ''}`}
-                    onClick={() => canReview && openGiveReviewModal(teacher)}
+                    onClick={() => canReview && handleGiveReview(teacher)}
                     disabled={!canReview}
                   >
                     <Edit3 size={16} />
@@ -263,10 +290,73 @@ const TeacherGrid = ({
                   </button>
                 </div>
               </div>
+
+              {/* Live update indicator for cards with recent activity */}
+              {actualReviewCount > 0 && (
+                <div className="card-live-indicator">
+                  <div className="live-pulse"></div>
+                </div>
+              )}
             </div>
           );
         })}
       </div>
+
+      <style jsx>{`
+        .live-indicator {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          background: rgba(16, 185, 129, 0.1);
+          border: 1px solid rgba(16, 185, 129, 0.3);
+          border-radius: 12px;
+          padding: 4px 8px;
+          font-size: 11px;
+          color: #10b981;
+          font-weight: 500;
+          margin-left: 12px;
+        }
+
+        .live-dot {
+          width: 6px;
+          height: 6px;
+          background: #10b981;
+          border-radius: 50%;
+          animation: pulse 2s infinite;
+        }
+
+        .card-live-indicator {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          width: 8px;
+          height: 8px;
+        }
+
+        .live-pulse {
+          width: 100%;
+          height: 100%;
+          background: #10b981;
+          border-radius: 50%;
+          animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+          0%, 100% { 
+            opacity: 1;
+            transform: scale(1);
+          }
+          50% { 
+            opacity: 0.5;
+            transform: scale(1.2);
+          }
+        }
+
+        .title-wrapper {
+          display: flex;
+          align-items: center;
+        }
+      `}</style>
     </div>
   );
 };

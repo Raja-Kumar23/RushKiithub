@@ -1,28 +1,27 @@
-"use client"
+"use client";
 
-import React, { useEffect, useState, useCallback } from "react"
-import { initializeApp } from "firebase/app"
-import { getAuth, onAuthStateChanged } from "firebase/auth"
-import { getDatabase, ref, onValue, set, push } from "firebase/database"
-import { getFirestore, doc, getDoc } from "firebase/firestore"
-
+import React, { useEffect, useState, useCallback } from "react";
+import { initializeApp } from "firebase/app";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getDatabase, ref, onValue, set, push, off } from "firebase/database";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 
 // Components
-import Header from "./components/Header/page"
-import Sidebar from "./components/Sidebar/page"
-import YearTabs from "./components/YearTabs/page"
-import TeacherGrid from "./components/TeacherGrid/page"
-import AllSectionsSection from "./components/AllSectionsSection/page"
-import SectionOverviewModal from "./components/SectionOverviewModal/page"
-import ViewReviewsModal from "./components/ViewReviewsModal/page"
-import GiveReviewModal from "./components/GiveReviewModal/page"
-import Footer from "./components/Footer/page"
-import BlockedUserModal from "./components/BlockedUserModal/page"
-import AIChat from "./components/AIChat/page"
-import PremiumAccessModal from "./components/PremiumAccessModal/page"
-import PaymentModal from "./components/PaymentModal/page"
-import SuccessModal from "./components/SuccessModal/page"
-import ErrorModal from "./components/ErrorModal/page"
+import Header from "./components/Header/page";
+import Sidebar from "./components/Sidebar/page";
+import YearTabs from "./components/YearTabs/page";
+import TeacherGrid from "./components/TeacherGrid/page";
+import AllSectionsSection from "./components/AllSectionsSection/page";
+import SectionOverviewModal from "./components/SectionOverviewModal/page";
+import ViewReviewsModal from "./components/ViewReviewsModal/page";
+import GiveReviewModal from "./components/GiveReviewModal/page";
+import Footer from "./components/Footer/page";
+import BlockedUserModal from "./components/BlockedUserModal/page";
+import AIChat from "./components/AIChat/page";
+import PremiumAccessModal from "./components/PremiumAccessModal/page";
+import PaymentModal from "./components/PaymentModal/page";
+import SuccessModal from "./components/SuccessModal/page";
+import ErrorModal from "./components/ErrorModal/page";
 
 // Firebase Configuration
 const firebaseConfig = {
@@ -32,220 +31,273 @@ const firebaseConfig = {
   storageBucket: "kiithub-1018.firebasestorage.app",
   messagingSenderId: "560339256269",
   appId: "1:560339256269:web:dcf89ac3b7d9e553fdfa84",
-}
+};
 
-export default function FacultyReviewPage() {
+export default function App() {
   // Core State
-  const [currentYear, setCurrentYear] = useState("2")
-  const [currentSemester, setCurrentSemester] = useState("2")
-  const [currentYearCode, setCurrentYearCode] = useState("2")
-  const [isLoading, setIsLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState("")
+  const [currentYear, setCurrentYear] = useState("2");
+  const [currentSemester, setCurrentSemester] = useState("2");
+  const [currentYearCode, setCurrentYearCode] = useState("2");
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Teacher Data
-  const [teachers, setTeachers] = useState([])
-  const [filteredTeachers, setFilteredTeachers] = useState([])
-  const [allTeachersData, setAllTeachersData] = useState([])
-  const [teacherMapping, setTeacherMapping] = useState({})
-  const [jsonCache, setJsonCache] = useState({})
+  const [teachers, setTeachers] = useState([]);
+  const [filteredTeachers, setFilteredTeachers] = useState([]);
+  const [allTeachersData, setAllTeachersData] = useState([]);
+  const [teacherMapping, setTeacherMapping] = useState({});
+  const [jsonCache, setJsonCache] = useState({});
 
-  // Review Data - Firebase real-time updates will handle these
-  const [reviews, setReviews] = useState([])
-  const [allReviews, setAllReviews] = useState({})
-  const [userReviews, setUserReviews] = useState([])
-  const [reviewsLastUpdated, setReviewsLastUpdated] = useState(Date.now()) // Force re-render trigger
+  // Review Data - Enhanced with better real-time handling
+  const [reviews, setReviews] = useState([]);
+  const [allReviews, setAllReviews] = useState({});
+  const [userReviews, setUserReviews] = useState([]);
+  const [reviewsLastUpdated, setReviewsLastUpdated] = useState(Date.now());
+  const [firebaseListeners, setFirebaseListeners] = useState(new Map());
 
   // User Data
-  const [currentUser, setCurrentUser] = useState(null)
-  const [userName, setUserName] = useState("")
-  const [currentUserRollNumber, setCurrentUserRollNumber] = useState("")
-  const [hasPremiumAccess, setHasPremiumAccess] = useState(false)
-  const [premiumLoading, setPremiumLoading] = useState(true)
+  const [currentUser, setCurrentUser] = useState(null);
+  const [userName, setUserName] = useState("");
+  const [currentUserRollNumber, setCurrentUserRollNumber] = useState("");
+  const [hasPremiumAccess, setHasPremiumAccess] = useState(false);
+  const [premiumLoading, setPremiumLoading] = useState(true);
 
   // Modal States
-  const [selectedTeacher, setSelectedTeacher] = useState(null)
-  const [selectedSection, setSelectedSection] = useState(null)
-  const [showViewReviewsModal, setShowViewReviewsModal] = useState(false)
-  const [showGiveReviewModal, setShowGiveReviewModal] = useState(false)
-  const [showSectionModal, setShowSectionModal] = useState(false)
-  const [showPremiumRestriction, setShowPremiumRestriction] = useState(false)
-  const [showBlockedUser, setShowBlockedUser] = useState(false)
-  const [showPaymentModal, setShowPaymentModal] = useState(false)
+  const [selectedTeacher, setSelectedTeacher] = useState(null);
+  const [selectedSection, setSelectedSection] = useState(null);
+  const [showViewReviewsModal, setShowViewReviewsModal] = useState(false);
+  const [showGiveReviewModal, setShowGiveReviewModal] = useState(false);
+  const [showSectionModal, setShowSectionModal] = useState(false);
+  const [showPremiumRestriction, setShowPremiumRestriction] = useState(false);
+  const [showBlockedUser, setShowBlockedUser] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   // Success/Error Modal States
-  const [successModal, setSuccessModal] = useState(null)
-  const [errorModal, setErrorModal] = useState(null)
+  const [successModal, setSuccessModal] = useState(null);
+  const [errorModal, setErrorModal] = useState(null);
 
   // UI States
-  const [currentView, setCurrentView] = useState("teachers")
-  const [teacherFilter, setTeacherFilter] = useState("all")
-  const [showAllSections, setShowAllSections] = useState(false)
-  const [activeSection, setActiveSection] = useState(null)
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [showAIChat, setShowAIChat] = useState(false)
-  const [isDarkMode, setIsDarkMode] = useState(false)
-  const [countdown, setCountdown] = useState(10)
+  const [currentView, setCurrentView] = useState("teachers");
+  const [teacherFilter, setTeacherFilter] = useState("all");
+  const [showAllSections, setShowAllSections] = useState(false);
+  const [activeSection, setActiveSection] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showAIChat, setShowAIChat] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [countdown, setCountdown] = useState(10);
 
   // Constants
-  const BASE_REVIEW_LIMIT = 1
-  const SPECIAL_ROLL_NUMBER = "23053769"
-  const UNLIMITED_ROLL_NUMBERS = ["23053769"]
+  const BASE_REVIEW_LIMIT = 1;
+  const SPECIAL_ROLL_NUMBER = "23053769";
+  const UNLIMITED_ROLL_NUMBERS = ["23053769"];
+
+  // Firebase database instance
+  const [database, setDatabase] = useState(null);
 
   // Payment Functions
   const handlePaymentSuccess = () => {
-    setShowPaymentModal(false)
-    setShowPremiumRestriction(false)
-    setHasPremiumAccess(true)
+    setShowPaymentModal(false);
+    setShowPremiumRestriction(false);
+    setHasPremiumAccess(true);
     showSuccessModal(
       "Payment Successful!",
       "Welcome to KIITHub Premium! Your access has been activated."
-    )
+    );
     setTimeout(() => {
-      window.location.reload()
-    }, 2000)
-  }
+      window.location.reload();
+    }, 2000);
+  };
 
   const handlePaymentFailure = (error) => {
-    showErrorModal("Payment Failed", error)
-  }
+    showErrorModal("Payment Failed", error);
+  };
 
   const openPaymentModal = () => {
-    setShowPaymentModal(true)
-    setShowPremiumRestriction(false)
-  }
+    setShowPaymentModal(true);
+    setShowPremiumRestriction(false);
+  };
 
   // Utility Functions
   const extractRollNumber = (email) => {
-    if (!email) return null
-    return email.split("@")[0]
-  }
+    if (!email) return null;
+    return email.split("@")[0];
+  };
 
   const getUserReviewLimit = () => {
     if (UNLIMITED_ROLL_NUMBERS.includes(currentUserRollNumber)) {
-      return 999
+      return 999;
     }
-    return BASE_REVIEW_LIMIT
-  }
+    return BASE_REVIEW_LIMIT;
+  };
+
+  // Helper Functions - Move findTeacherNameById here BEFORE it's used
+  const findTeacherNameById = useCallback((teacherId) => {
+    const teacher = teachers.find((t) => t.id === teacherId);
+    if (teacher) return teacher.name;
+
+    const allTeacher = allTeachersData.find((t) => t.id === teacherId);
+    if (allTeacher) return allTeacher.name;
+
+    for (const name in teacherMapping) {
+      const teacherInfo = teacherMapping[name];
+      for (const year in teacherInfo.ids) {
+        if (teacherInfo.ids[year] === teacherId) {
+          return name;
+        }
+      }
+    }
+
+    return null;
+  }, [teachers, allTeachersData, teacherMapping]);
 
   const getUserReviewCount = (teacherId) => {
-    const teacherName = findTeacherNameById(teacherId)
-    let reviewCount = 0
+    const teacherName = findTeacherNameById(teacherId);
+    let reviewCount = 0;
 
     if (teacherName && teacherMapping[teacherName]) {
-      const teacherInfo = teacherMapping[teacherName]
+      const teacherInfo = teacherMapping[teacherName];
       for (const year in teacherInfo.ids) {
-        const yearTeacherId = teacherInfo.ids[year]
-        const teacherReviews = userReviews.filter((reviewId) => reviewId.includes(yearTeacherId))
-        reviewCount += teacherReviews.length
+        const yearTeacherId = teacherInfo.ids[year];
+        const teacherReviews = userReviews.filter((reviewId) => reviewId.includes(yearTeacherId));
+        reviewCount += teacherReviews.length;
       }
     } else {
-      const teacherReviews = userReviews.filter((reviewId) => reviewId.includes(teacherId))
-      reviewCount = teacherReviews.length
+      const teacherReviews = userReviews.filter((reviewId) => reviewId.includes(teacherId));
+      reviewCount = teacherReviews.length;
     }
 
-    return reviewCount
-  }
+    return reviewCount;
+  };
 
   const canSubmitMoreReviews = (teacherId) => {
     if (UNLIMITED_ROLL_NUMBERS.includes(currentUserRollNumber)) {
-      return true
+      return true;
     }
-    const limit = getUserReviewLimit()
-    const currentCount = getUserReviewCount(teacherId)
-    return currentCount < limit
-  }
+    const limit = getUserReviewLimit();
+    const currentCount = getUserReviewCount(teacherId);
+    return currentCount < limit;
+  };
 
   const calculateAverage = (ratings) => {
-    const weights = { excellent: 4, good: 3, average: 2, poor: 1 }
-    let sum = 0
-    let count = 0
+    const weights = { excellent: 4, good: 3, average: 2, poor: 1 };
+    let sum = 0;
+    let count = 0;
 
     for (const [rating, num] of Object.entries(ratings)) {
       if (weights[rating] && typeof num === "number") {
-        sum += weights[rating] * num
-        count += num
+        sum += weights[rating] * num;
+        count += num;
       }
     }
 
-    return count > 0 ? (sum / count).toFixed(1) : "0.0"
-  }
+    return count > 0 ? (sum / count).toFixed(1) : "0.0";
+  };
 
   // Premium Access Check
   const checkPremiumAccess = async (currentUser) => {
     try {
-      setPremiumLoading(true)
-      const email = currentUser.email
-      const uid = currentUser.uid
-      const rollNumber = extractRollNumber(email)
+      setPremiumLoading(true);
+      const email = currentUser.email;
+      const uid = currentUser.uid;
+      const rollNumber = extractRollNumber(email);
 
       if (!email) {
-        throw new Error("User email not found")
+        throw new Error("User email not found");
       }
 
       if (UNLIMITED_ROLL_NUMBERS.includes(rollNumber)) {
-        setHasPremiumAccess(true)
-        return true
+        setHasPremiumAccess(true);
+        return true;
       }
 
-      const firestore = getFirestore()
-      const docRef = doc(firestore, "accesscontrol", "paiduser")
-      const docSnap = await getDoc(docRef)
+      const firestore = getFirestore();
+      const docRef = doc(firestore, "accesscontrol", "paiduser");
+      const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
-        const data = docSnap.data()
-        const hasEmailAccess = data[email] === true
-        const hasUidAccess = data[uid] === true
-        const hasRollAccess = rollNumber && data[rollNumber] === true
+        const data = docSnap.data();
+        const hasEmailAccess = data[email] === true;
+        const hasUidAccess = data[uid] === true;
+        const hasRollAccess = rollNumber && data[rollNumber] === true;
 
         if (hasEmailAccess || hasUidAccess || hasRollAccess) {
-          setHasPremiumAccess(true)
-          return true
+          setHasPremiumAccess(true);
+          return true;
         }
       }
 
       if (rollNumber.startsWith("23") || rollNumber.startsWith("25") || rollNumber.startsWith("22")) {
-        setHasPremiumAccess(false)
-        setShowBlockedUser(true)
-        return false
+        setHasPremiumAccess(false);
+        setShowBlockedUser(true);
+        return false;
       }
 
       if (rollNumber.startsWith("24")) {
-        setHasPremiumAccess(false)
-        setShowPremiumRestriction(true)
-        return false
+        setHasPremiumAccess(false);
+        setShowPremiumRestriction(true);
+        return false;
       }
 
-      setHasPremiumAccess(true)
-      return true
-
+      setHasPremiumAccess(true);
+      return true;
     } catch (error) {
-      console.error("Error checking premium access:", error)
-      setHasPremiumAccess(false)
-      return false
+      console.error("Error checking premium access:", error);
+      setHasPremiumAccess(false);
+      return false;
     } finally {
-      setPremiumLoading(false)
+      setPremiumLoading(false);
     }
-  }
+  };
 
-  // Teacher Review Stats - Now purely relies on Firebase real-time data
+  // Enhanced Firebase Real-time Listeners
+  const setupFirebaseListener = useCallback((path, callback, listenerKey) => {
+    if (!database) return;
+
+    // Remove existing listener if it exists
+    if (firebaseListeners.has(listenerKey)) {
+      const existingRef = firebaseListeners.get(listenerKey);
+      off(existingRef);
+    }
+
+    const dbRef = ref(database, path);
+    
+    const unsubscribe = onValue(dbRef, (snapshot) => {
+      try {
+        const data = snapshot.val() || {};
+        callback(data, path);
+        console.log(`Firebase listener updated: ${listenerKey}`, Object.keys(data).length, 'items');
+      } catch (error) {
+        console.error(`Error in Firebase listener ${listenerKey}:`, error);
+      }
+    }, (error) => {
+      console.error(`Firebase listener error for ${listenerKey}:`, error);
+    });
+
+    // Store the reference for cleanup
+    setFirebaseListeners(prev => new Map(prev).set(listenerKey, dbRef));
+    
+    return unsubscribe;
+  }, [database]);
+
+  // Teacher Review Stats - Enhanced with better dependency tracking
   const getTeacherReviewStats = useCallback(
     (teacherId, teacherName = null) => {
-      const name = teacherName || findTeacherNameById(teacherId)
-      let teacherReviews = []
+      const name = teacherName || findTeacherNameById(teacherId);
+      let teacherReviews = [];
 
       // Get reviews from current year
-      const currentYearReviews = reviews.filter((review) => review.teacherId === teacherId)
-      teacherReviews = [...currentYearReviews]
+      const currentYearReviews = reviews.filter((review) => review.teacherId === teacherId);
+      teacherReviews = [...currentYearReviews];
 
       // Get reviews from other years if teacher exists across multiple years
       if (name && teacherMapping[name]) {
-        const teacherInfo = teacherMapping[name]
+        const teacherInfo = teacherMapping[name];
         for (const yearCode of teacherInfo.years) {
           if (yearCode !== currentYearCode) {
-            const yearTeacherId = teacherInfo.ids[yearCode]
-            const yearReviews = allReviews[yearCode] || []
-            const teacherYearReviews = yearReviews.filter((review) => review.teacherId === yearTeacherId)
-            teacherReviews = [...teacherReviews, ...teacherYearReviews]
+            const yearTeacherId = teacherInfo.ids[yearCode];
+            const yearReviews = allReviews[yearCode] || [];
+            const teacherYearReviews = yearReviews.filter((review) => review.teacherId === yearTeacherId);
+            teacherReviews = [...teacherReviews, ...teacherYearReviews];
           }
         }
       }
@@ -253,54 +305,54 @@ export default function FacultyReviewPage() {
       // Remove duplicate reviews by userId
       const uniqueReviews = Array.from(
         new Map(teacherReviews.map((review) => [review.userId, review])).values()
-      )
+      );
 
-      const teachingStyleRatings = { excellent: 0, good: 0, average: 0, poor: 0 }
-      const markingStyleRatings = { excellent: 0, good: 0, average: 0, poor: 0 }
-      const studentFriendlinessRatings = { excellent: 0, good: 0, average: 0, poor: 0 }
-      const attendanceApproachRatings = { excellent: 0, good: 0, average: 0, poor: 0 }
+      const teachingStyleRatings = { excellent: 0, good: 0, average: 0, poor: 0 };
+      const markingStyleRatings = { excellent: 0, good: 0, average: 0, poor: 0 };
+      const studentFriendlinessRatings = { excellent: 0, good: 0, average: 0, poor: 0 };
+      const attendanceApproachRatings = { excellent: 0, good: 0, average: 0, poor: 0 };
 
       uniqueReviews.forEach((review) => {
-        if (!review) return
+        if (!review) return;
 
-        const teachingStyle = review.teachingStyle || review.teaching || "average"
-        const markingStyle = review.markingStyle || review.knowledge || "average"
-        const studentFriendliness = review.studentFriendliness || review.communication || "average"
-        const attendanceApproach = review.attendanceApproach || review.availability || "average"
+        const teachingStyle = review.teachingStyle || review.teaching || "average";
+        const markingStyle = review.markingStyle || review.knowledge || "average";
+        const studentFriendliness = review.studentFriendliness || review.communication || "average";
+        const attendanceApproach = review.attendanceApproach || review.availability || "average";
 
-        const validRatings = ["excellent", "good", "average", "poor"]
+        const validRatings = ["excellent", "good", "average", "poor"];
 
         if (validRatings.includes(teachingStyle)) {
-          teachingStyleRatings[teachingStyle]++
+          teachingStyleRatings[teachingStyle]++;
         } else {
-          teachingStyleRatings["average"]++
+          teachingStyleRatings["average"]++;
         }
 
         if (validRatings.includes(markingStyle)) {
-          markingStyleRatings[markingStyle]++
+          markingStyleRatings[markingStyle]++;
         } else {
-          markingStyleRatings["average"]++
+          markingStyleRatings["average"]++;
         }
 
         if (validRatings.includes(studentFriendliness)) {
-          studentFriendlinessRatings[studentFriendliness]++
+          studentFriendlinessRatings[studentFriendliness]++;
         } else {
-          studentFriendlinessRatings["average"]++
+          studentFriendlinessRatings["average"]++;
         }
 
         if (validRatings.includes(attendanceApproach)) {
-          attendanceApproachRatings[attendanceApproach]++
+          attendanceApproachRatings[attendanceApproach]++;
         } else {
-          attendanceApproachRatings["average"]++
+          attendanceApproachRatings["average"]++;
         }
-      })
+      });
 
-      const teachingStyleAvg = calculateAverage(teachingStyleRatings)
-      const markingStyleAvg = calculateAverage(markingStyleRatings)
-      const studentFriendlinessAvg = calculateAverage(studentFriendlinessRatings)
-      const attendanceApproachAvg = calculateAverage(attendanceApproachRatings)
+      const teachingStyleAvg = calculateAverage(teachingStyleRatings);
+      const markingStyleAvg = calculateAverage(markingStyleRatings);
+      const studentFriendlinessAvg = calculateAverage(studentFriendlinessRatings);
+      const attendanceApproachAvg = calculateAverage(attendanceApproachRatings);
 
-      const totalReviews = uniqueReviews.length
+      const totalReviews = uniqueReviews.length;
       const overallAverage =
         uniqueReviews.length > 0
           ? (
@@ -310,7 +362,7 @@ export default function FacultyReviewPage() {
                 Number(attendanceApproachAvg)) /
               4
             ).toFixed(1)
-          : "0.0"
+          : "0.0";
 
       return {
         totalReviews,
@@ -329,455 +381,433 @@ export default function FacultyReviewPage() {
           studentFriendliness: studentFriendlinessAvg,
           attendanceApproach: attendanceApproachAvg,
         },
-      }
+      };
     },
-    [reviews, allReviews, teacherMapping, currentYearCode, reviewsLastUpdated], // Added reviewsLastUpdated as dependency
-  )
+    [reviews, allReviews, teacherMapping, currentYearCode, findTeacherNameById]
+  );
 
   // Data Loading Functions
   const extractTeachersFromData = (data, fileCode) => {
-    if (!data) return []
+    if (!data) return [];
 
     if (data.teachers && Array.isArray(data.teachers)) {
-      return data.teachers
+      return data.teachers;
     }
 
     if (Array.isArray(data)) {
       if (data.length > 0 && data[0] && typeof data[0] === "object" && data[0].name) {
-        return data
+        return data;
       }
     }
 
     if (typeof data === "object" && !Array.isArray(data)) {
-      const commonArrayProps = ["faculty", "data", "items", "professors", "instructors", "results", "staff"]
+      const commonArrayProps = ["faculty", "data", "items", "professors", "instructors", "results", "staff"];
 
       for (const prop of commonArrayProps) {
         if (data[prop] && Array.isArray(data[prop]) && data[prop].length > 0) {
-          return data[prop]
+          return data[prop];
         }
       }
 
-      const objectValues = Object.values(data)
+      const objectValues = Object.values(data);
       const teacherObjects = objectValues.filter(
-        (val) => val && typeof val === "object" && val.name && (val.id || val.teacherId),
-      )
+        (val) => val && typeof val === "object" && val.name && (val.id || val.teacherId)
+      );
 
       if (teacherObjects.length > 0) {
-        return teacherObjects
+        return teacherObjects;
       }
     }
 
-    return []
-  }
+    return [];
+  };
 
   const loadTeacherMapping = async () => {
     try {
-      setIsLoading(true)
-      const jsonFiles = ["2", "21", "3", "31"]
-      const teacherData = {}
+      setIsLoading(true);
+      const jsonFiles = ["2", "21", "3", "31"];
+      const teacherData = {};
 
       for (const fileCode of jsonFiles) {
         try {
-          const response = await fetch(`/year${fileCode}.json`)
-          if (!response.ok) continue
+          const response = await fetch(`/year${fileCode}.json`);
+          if (!response.ok) continue;
 
-          const text = await response.text()
-          if (!text.trim()) continue
+          const text = await response.text();
+          if (!text.trim()) continue;
 
-          const data = JSON.parse(text)
-          const extractedTeachers = extractTeachersFromData(data, fileCode)
+          const data = JSON.parse(text);
+          const extractedTeachers = extractTeachersFromData(data, fileCode);
 
           if (extractedTeachers.length > 0) {
-            teacherData[fileCode] = extractedTeachers
+            teacherData[fileCode] = extractedTeachers;
             setJsonCache((prev) => ({
               ...prev,
               [fileCode]: extractedTeachers,
-            }))
+            }));
           }
         } catch (error) {
-          console.error(`Error loading year${fileCode}.json:`, error)
+          console.error(`Error loading year${fileCode}.json:`, error);
         }
       }
 
-      const mapping = {}
+      const mapping = {};
       for (const [fileCode, teachersList] of Object.entries(teacherData)) {
         teachersList.forEach((teacher) => {
-          if (!teacher || !teacher.name) return
+          if (!teacher || !teacher.name) return;
 
-          const teacherId = teacher.id || teacher.teacherId || `generated_${Math.random().toString(36).substring(2, 9)}`
-          const normalizedName = teacher.name.trim().toLowerCase()
+          const teacherId = teacher.id || teacher.teacherId || `generated_${Math.random().toString(36).substring(2, 9)}`;
+          const normalizedName = teacher.name.trim().toLowerCase();
 
-          let existingKey = null
+          let existingKey = null;
           for (const key in mapping) {
             if (key.toLowerCase() === normalizedName) {
-              existingKey = key
-              break
+              existingKey = key;
+              break;
             }
           }
 
           if (existingKey) {
             if (!mapping[existingKey].years.includes(fileCode)) {
-              mapping[existingKey].years.push(fileCode)
-              mapping[existingKey].ids[fileCode] = teacherId
+              mapping[existingKey].years.push(fileCode);
+              mapping[existingKey].ids[fileCode] = teacherId;
             }
           } else {
             mapping[teacher.name] = {
               years: [fileCode],
               ids: { [fileCode]: teacherId },
-            }
+            };
           }
-        })
+        });
       }
 
-      setTeacherMapping(mapping)
-      setCurrentYear("2")
-      await loadTeachers("2")
-
+      setTeacherMapping(mapping);
+      setCurrentYear("2");
+      await loadTeachers("2");
     } catch (error) {
-      console.error("Error loading teacher mapping:", error)
-      setIsLoading(false)
+      console.error("Error loading teacher mapping:", error);
+      setIsLoading(false);
     }
-  }
+  };
 
   const loadTeachers = useCallback(
     async (yearCode) => {
-      setIsLoading(true)
-      setCurrentYearCode(yearCode)
-      setActiveSection(null)
+      setIsLoading(true);
+      setCurrentYearCode(yearCode);
+      setActiveSection(null);
 
-      let semester = "3"
-      if (yearCode === "2") semester = "3"
-      else if (yearCode === "21") semester = "4"
-      else if (yearCode === "3") semester = "5"
-      else if (yearCode === "31") semester = "6"
+      let semester = "3";
+      if (yearCode === "2") semester = "3";
+      else if (yearCode === "21") semester = "4";
+      else if (yearCode === "3") semester = "5";
+      else if (yearCode === "31") semester = "6";
 
-      setCurrentSemester(semester)
+      setCurrentSemester(semester);
 
       try {
         if (jsonCache[yearCode] && jsonCache[yearCode].length > 0) {
-          processTeacherData(jsonCache[yearCode])
-          return
+          processTeacherData(jsonCache[yearCode]);
+          return;
         }
 
-        const response = await fetch(`/year${yearCode}.json`)
+        const response = await fetch(`/year${yearCode}.json`);
         if (!response.ok) {
-          throw new Error(`Failed to load teacher data for year${yearCode}.json`)
+          throw new Error(`Failed to load teacher data for year${yearCode}.json`);
         }
 
-        const text = await response.text()
+        const text = await response.text();
         if (!text.trim()) {
-          setTeachers([])
-          setFilteredTeachers([])
-          setAllTeachersData([])
-          setIsLoading(false)
-          return
+          setTeachers([]);
+          setFilteredTeachers([]);
+          setAllTeachersData([]);
+          setIsLoading(false);
+          return;
         }
 
-        const data = JSON.parse(text)
-        const extractedTeachers = extractTeachersFromData(data, yearCode)
+        const data = JSON.parse(text);
+        const extractedTeachers = extractTeachersFromData(data, yearCode);
 
         if (extractedTeachers.length === 0) {
-          setTeachers([])
-          setFilteredTeachers([])
-          setAllTeachersData([])
-          setIsLoading(false)
-          return
+          setTeachers([]);
+          setFilteredTeachers([]);
+          setAllTeachersData([]);
+          setIsLoading(false);
+          return;
         }
 
         setJsonCache((prev) => ({
           ...prev,
           [yearCode]: extractedTeachers,
-        }))
+        }));
 
-        processTeacherData(extractedTeachers)
-
+        processTeacherData(extractedTeachers);
       } catch (error) {
-        console.error("Error loading teachers:", error)
-        setTeachers([])
-        setFilteredTeachers([])
-        setAllTeachersData([])
-        setIsLoading(false)
+        console.error("Error loading teachers:", error);
+        setTeachers([]);
+        setFilteredTeachers([]);
+        setAllTeachersData([]);
+        setIsLoading(false);
       }
     },
-    [jsonCache],
-  )
+    [jsonCache]
+  );
 
   const processTeacherData = (teachersList) => {
     if (!teachersList || teachersList.length === 0) {
-      setTeachers([])
-      setFilteredTeachers([])
-      setAllTeachersData([])
-      setIsLoading(false)
-      return
+      setTeachers([]);
+      setFilteredTeachers([]);
+      setAllTeachersData([]);
+      setIsLoading(false);
+      return;
     }
 
     const normalizedTeachers = teachersList
       .map((teacher) => {
-        if (!teacher) return null
+        if (!teacher) return null;
 
         const normalized = {
           id: teacher.id || teacher.teacherId || `generated_${Math.random().toString(36).substring(2, 9)}`,
           name: teacher.name || "Unknown Teacher",
-        }
+        };
 
         if (Array.isArray(teacher.subjects)) {
-          normalized.subjects = teacher.subjects
+          normalized.subjects = teacher.subjects;
         } else if (teacher.subject) {
-          normalized.subjects = [teacher.subject]
+          normalized.subjects = [teacher.subject];
         } else {
-          normalized.subjects = ["No subject specified"]
+          normalized.subjects = ["No subject specified"];
         }
 
         if (Array.isArray(teacher.sections)) {
-          normalized.sections = teacher.sections
+          normalized.sections = teacher.sections;
         } else if (teacher.section) {
-          normalized.sections = [teacher.section]
+          normalized.sections = [teacher.section];
         }
 
-        return normalized
+        return normalized;
       })
-      .filter(Boolean)
+      .filter(Boolean);
 
-    setAllTeachersData(normalizedTeachers)
-    setTeachers(normalizedTeachers)
+    setAllTeachersData(normalizedTeachers);
+    setTeachers(normalizedTeachers);
 
     if (searchTerm) {
-      searchTeachers(searchTerm)
+      searchTeachers(searchTerm);
     } else {
-      setFilteredTeachers(normalizedTeachers)
+      setFilteredTeachers(normalizedTeachers);
     }
 
-    setIsLoading(false)
-  }
+    setIsLoading(false);
+  };
 
-  // Firebase Real-time Review Loading - Enhanced with update triggers
-  const loadReviews = (yearCode, db) => {
-    const reviewsRef = ref(db, `reviews/year${yearCode}`)
-
-    // This listener will trigger whenever reviews are added/updated/deleted in Firebase
-    onValue(reviewsRef, (snapshot) => {
-      const data = snapshot.val() || {}
+  // Enhanced Firebase Real-time Review Loading
+  const loadReviews = useCallback((yearCode) => {
+    if (!database) return;
+    
+    const reviewPath = `reviews/year${yearCode}`;
+    
+    setupFirebaseListener(reviewPath, (data) => {
       const reviewsList = Object.entries(data).map(([id, review]) => ({
         id,
         ...review,
-      }))
+      }));
       
-      console.log(`Loaded ${reviewsList.length} reviews for year ${yearCode}`)
-      setReviews(reviewsList)
-      setReviewsLastUpdated(Date.now()) // Trigger re-render
-    })
-  }
+      console.log(`Loaded ${reviewsList.length} reviews for year ${yearCode}`);
+      setReviews(reviewsList);
+      setReviewsLastUpdated(Date.now());
+    }, `reviews-${yearCode}`);
+  }, [database, setupFirebaseListener]);
 
   // Load all reviews with real-time listeners - Enhanced
-  const loadAllReviews = (db) => {
-    const yearCodes = ["2", "21", "3", "31"]
-    const reviewsData = {}
-
+  const loadAllReviews = useCallback(() => {
+    if (!database) return;
+    
+    const yearCodes = ["2", "21", "3", "31"];
+    
     yearCodes.forEach((yearCode) => {
-      const reviewsRef = ref(db, `reviews/year${yearCode}`)
-
-      // Real-time listener for each year
-      onValue(reviewsRef, (snapshot) => {
-        const data = snapshot.val() || {}
+      const reviewPath = `reviews/year${yearCode}`;
+      
+      setupFirebaseListener(reviewPath, (data) => {
         const reviewsList = Object.entries(data).map(([id, review]) => ({
           id,
           yearCode,
           ...review,
-        }))
+        }));
 
-        reviewsData[yearCode] = reviewsList
-        setAllReviews({ ...reviewsData })
-        setReviewsLastUpdated(Date.now()) // Trigger re-render
+        setAllReviews((prev) => ({
+          ...prev,
+          [yearCode]: reviewsList,
+        }));
 
         // Update current reviews if this is the active year
         if (yearCode === currentYearCode) {
-          setReviews(reviewsList)
+          setReviews(reviewsList);
+          setReviewsLastUpdated(Date.now());
         }
-      })
-    })
-  }
+      }, `all-reviews-${yearCode}`);
+    });
+  }, [database, setupFirebaseListener, currentYearCode]);
 
   // User reviews with real-time updates - Enhanced
-  const loadUserReviews = (uid, db) => {
-    const userReviewsRef = ref(db, `userReviews/${uid}`)
-
-    // Real-time listener for user's reviews
-    onValue(userReviewsRef, (snapshot) => {
-      const data = snapshot.val() || {}
-      const reviewKeys = Object.keys(data)
-      setUserReviews(reviewKeys)
-      setReviewsLastUpdated(Date.now()) // Trigger re-render
-    })
-  }
+  const loadUserReviews = useCallback((uid) => {
+    if (!database) return;
+    
+    const userReviewPath = `userReviews/${uid}`;
+    
+    setupFirebaseListener(userReviewPath, (data) => {
+      const reviewKeys = Object.keys(data);
+      setUserReviews(reviewKeys);
+    }, `user-reviews-${uid}`);
+  }, [database, setupFirebaseListener]);
 
   // Search and Filter Functions
   const searchTeachers = (searchTerm) => {
-    searchTerm = typeof searchTerm === "string" ? searchTerm.toLowerCase().trim() : ""
-    setSearchTerm(searchTerm)
+    searchTerm = typeof searchTerm === "string" ? searchTerm.toLowerCase().trim() : "";
+    setSearchTerm(searchTerm);
 
     if (!searchTerm) {
       if (activeSection) {
         const sectionTeachers = teachers.filter(
-          (teacher) => teacher.sections && teacher.sections.includes(activeSection),
-        )
-        setFilteredTeachers(sectionTeachers)
+          (teacher) => teacher.sections && teacher.sections.includes(activeSection)
+        );
+        setFilteredTeachers(sectionTeachers);
       } else {
-        setFilteredTeachers(teachers)
+        setFilteredTeachers(teachers);
       }
-      return
+      return;
     }
 
-    const isNumberSearch = /^\d+$/.test(searchTerm)
+    const isNumberSearch = /^\d+$/.test(searchTerm);
 
     if (isNumberSearch) {
       const filtered = teachers.filter((teacher) => {
-        if (!teacher || !teacher.sections) return false
+        if (!teacher || !teacher.sections) return false;
 
-        const sections = Array.isArray(teacher.sections) ? teacher.sections : [teacher.sections]
-        return sections.some((section) => String(section).trim() === searchTerm)
-      })
+        const sections = Array.isArray(teacher.sections) ? teacher.sections : [teacher.sections];
+        return sections.some((section) => String(section).trim() === searchTerm);
+      });
 
       if (activeSection) {
-        setFilteredTeachers(filtered.filter((teacher) => teacher.sections && teacher.sections.includes(activeSection)))
+        setFilteredTeachers(filtered.filter((teacher) => teacher.sections && teacher.sections.includes(activeSection)));
       } else {
-        setFilteredTeachers(filtered)
+        setFilteredTeachers(filtered);
       }
     } else {
       const filtered = teachers.filter((teacher) => {
-        if (!teacher || !teacher.name) return false
+        if (!teacher || !teacher.name) return false;
 
-        const nameMatch = teacher.name.toLowerCase().includes(searchTerm)
-        let subjectMatch = false
+        const nameMatch = teacher.name.toLowerCase().includes(searchTerm);
+        let subjectMatch = false;
 
         if (Array.isArray(teacher.subjects)) {
-          subjectMatch = teacher.subjects.some((subject) => subject && subject.toLowerCase().includes(searchTerm))
+          subjectMatch = teacher.subjects.some((subject) => subject && subject.toLowerCase().includes(searchTerm));
         } else if (teacher.subject) {
-          subjectMatch = teacher.subject.toLowerCase().includes(searchTerm)
+          subjectMatch = teacher.subject.toLowerCase().includes(searchTerm);
         }
 
-        return nameMatch || subjectMatch
-      })
+        return nameMatch || subjectMatch;
+      });
 
       if (activeSection) {
-        setFilteredTeachers(filtered.filter((teacher) => teacher.sections && teacher.sections.includes(activeSection)))
+        setFilteredTeachers(filtered.filter((teacher) => teacher.sections && teacher.sections.includes(activeSection)));
       } else {
-        setFilteredTeachers(filtered)
+        setFilteredTeachers(filtered);
       }
     }
-  }
-
-  // Helper Functions
-  const findTeacherNameById = (teacherId) => {
-    const teacher = teachers.find((t) => t.id === teacherId)
-    if (teacher) return teacher.name
-
-    const allTeacher = allTeachersData.find((t) => t.id === teacherId)
-    if (allTeacher) return allTeacher.name
-
-    for (const name in teacherMapping) {
-      const teacherInfo = teacherMapping[name]
-      for (const year in teacherInfo.ids) {
-        if (teacherInfo.ids[year] === teacherId) {
-          return name
-        }
-      }
-    }
-
-    return null
-  }
+  };
 
   const findTeacherInMapping = (teacherName) => {
     if (teacherMapping[teacherName]) {
-      return teacherMapping[teacherName]
+      return teacherMapping[teacherName];
     }
 
-    const normalizedName = teacherName.toLowerCase().trim()
+    const normalizedName = teacherName.toLowerCase().trim();
 
     for (const mappedName in teacherMapping) {
       if (mappedName.toLowerCase().trim() === normalizedName) {
-        return teacherMapping[mappedName]
+        return teacherMapping[mappedName];
       }
     }
 
-    return null
-  }
+    return null;
+  };
 
   const hasReviewedTeacherInAnyYear = (teacherId) => {
-    return !canSubmitMoreReviews(teacherId)
-  }
+    return !canSubmitMoreReviews(teacherId);
+  };
 
   // Modal Functions
   const openViewReviewsModal = (teacher) => {
-    setSelectedTeacher(teacher)
-    setShowViewReviewsModal(true)
-  }
+    setSelectedTeacher(teacher);
+    setShowViewReviewsModal(true);
+  };
 
   const openGiveReviewModal = (teacher) => {
-    setSelectedTeacher(teacher)
-    setShowViewReviewsModal(false)
-    setShowGiveReviewModal(true)
-  }
+    setSelectedTeacher(teacher);
+    setShowViewReviewsModal(false);
+    setShowGiveReviewModal(true);
+  };
 
   const openSectionModal = (section) => {
-    setSelectedSection(section)
-    setShowSectionModal(true)
-  }
+    setSelectedSection(section);
+    setShowSectionModal(true);
+  };
 
   const setActiveSectionFilter = (sectionId) => {
-    setActiveSection(sectionId)
-    setShowSectionModal(false)
-    setShowAllSections(false)
-  }
+    setActiveSection(sectionId);
+    setShowSectionModal(false);
+    setShowAllSections(false);
+  };
 
   // Modal Helper Functions
   const showSuccessModal = (title, message) => {
-    setSuccessModal({ title, message })
-  }
+    setSuccessModal({ title, message });
+  };
 
   const showErrorModal = (title, message) => {
-    setErrorModal({ title, message })
-  }
+    setErrorModal({ title, message });
+  };
 
   const closeSuccessModal = () => {
-    setSuccessModal(null)
-  }
+    setSuccessModal(null);
+  };
 
   const closeErrorModal = () => {
-    setErrorModal(null)
-  }
+    setErrorModal(null);
+  };
 
-  // Submit Review Function - Enhanced with immediate state updates
+  // Enhanced Submit Review Function with immediate state updates
   const submitReview = async (formData) => {
-    if (!selectedTeacher || !currentUser) {
-      console.error("Missing selectedTeacher or currentUser")
-      return
+    if (!selectedTeacher || !currentUser || !database) {
+      console.error("Missing selectedTeacher, currentUser, or database");
+      return;
     }
 
     if (!canSubmitMoreReviews(selectedTeacher.id)) {
-      const limit = getUserReviewLimit()
-      const currentCount = getUserReviewCount(selectedTeacher.id)
+      const limit = getUserReviewLimit();
+      const currentCount = getUserReviewCount(selectedTeacher.id);
       showErrorModal(
         "Review Limit Reached",
-        `You have submitted ${currentCount} out of ${limit} allowed reviews for this teacher.`,
-      )
-      return
+        `You have submitted ${currentCount} out of ${limit} allowed reviews for this teacher.`
+      );
+      return;
     }
 
     try {
-      const { teachingStyle, markingStyle, studentFriendliness, attendanceApproach, comment, anonymous } = formData
+      const { teachingStyle, markingStyle, studentFriendliness, attendanceApproach, comment, anonymous } = formData;
 
       if (!teachingStyle || !markingStyle || !studentFriendliness || !attendanceApproach) {
-        throw new Error("Please rate all categories before submitting.")
+        throw new Error("Please rate all categories before submitting.");
       }
 
-      const validRatings = ["excellent", "good", "average", "poor"]
+      const validRatings = ["excellent", "good", "average", "poor"];
       if (
         !validRatings.includes(teachingStyle) ||
         !validRatings.includes(markingStyle) ||
         !validRatings.includes(studentFriendliness) ||
         !validRatings.includes(attendanceApproach)
       ) {
-        throw new Error("Invalid rating values provided.")
+        throw new Error("Invalid rating values provided.");
       }
 
       const baseReview = {
@@ -792,179 +822,205 @@ export default function FacultyReviewPage() {
         timestamp: Date.now(),
         isPremium: true,
         teacherId: selectedTeacher.id,
-      }
+      };
 
-      const db = getDatabase()
-      
       // Use push() to generate unique keys and avoid conflicts
-      const reviewsRef = ref(db, `reviews/year${currentYearCode}`)
-      const newReviewRef = push(reviewsRef)
-      await set(newReviewRef, baseReview)
+      const reviewsRef = ref(database, `reviews/year${currentYearCode}`);
+      const newReviewRef = push(reviewsRef);
+      
+      await set(newReviewRef, baseReview);
 
       // Also save to user reviews
-      const userReviewRef = ref(db, `userReviews/${currentUser.uid}/${newReviewRef.key}`)
+      const userReviewRef = ref(database, `userReviews/${currentUser.uid}/${newReviewRef.key}`);
       await set(userReviewRef, {
         teacherName: selectedTeacher.name,
         timestamp: Date.now(),
         yearCode: currentYearCode,
-      })
+      });
 
-      console.log("Review submitted successfully to Firebase")
+      console.log("Review submitted successfully to Firebase with key:", newReviewRef.key);
+
+      // Immediately update local state to reflect the new review
+      const newReview = {
+        id: newReviewRef.key,
+        ...baseReview
+      };
+
+      setReviews(prevReviews => [...prevReviews, newReview]);
+      setAllReviews(prev => ({
+        ...prev,
+        [currentYearCode]: [...(prev[currentYearCode] || []), newReview]
+      }));
+      setUserReviews(prevUserReviews => [...prevUserReviews, newReviewRef.key]);
 
       // Close modal and show success immediately
-      setShowGiveReviewModal(false)
+      setShowGiveReviewModal(false);
 
       const remainingReviews = UNLIMITED_ROLL_NUMBERS.includes(currentUserRollNumber)
         ? "unlimited"
-        : getUserReviewLimit() - (getUserReviewCount(selectedTeacher.id) + 1)
+        : getUserReviewLimit() - (getUserReviewCount(selectedTeacher.id) + 1);
 
       const successMessage = UNLIMITED_ROLL_NUMBERS.includes(currentUserRollNumber)
         ? "Your review has been submitted and is now visible to all users in real-time!"
-        : `Your review has been submitted and is now visible to all users. You have ${remainingReviews} more reviews available for this teacher.`
+        : `Your review has been submitted and is now visible to all users. You have ${remainingReviews} more reviews available for this teacher.`;
 
-      showSuccessModal("Review Submitted Successfully!", successMessage)
+      showSuccessModal("Review Submitted Successfully!", successMessage);
 
       // Force immediate update to trigger re-renders
-      setReviewsLastUpdated(Date.now())
 
     } catch (error) {
-      console.error("Error submitting review:", error)
-      showErrorModal("Submission Failed", error.message || "Failed to submit review. Please try again.")
+      console.error("Error submitting review:", error);
+      showErrorModal("Submission Failed", error.message || "Failed to submit review. Please try again.");
     }
-  }
+  };
 
   const handleCountdownComplete = () => {
-    window.location.href = "/"
-  }
+    window.location.href = "/";
+  };
 
   const handleBlockedUserRedirect = () => {
-    window.location.href = "/"
-  }
+    window.location.href = "/";
+  };
+
+  // Cleanup Firebase listeners
+  const cleanupFirebaseListeners = useCallback(() => {
+    firebaseListeners.forEach((dbRef) => {
+      try {
+        off(dbRef);
+      } catch (error) {
+        console.warn("Error cleaning up Firebase listener:", error);
+      }
+    });
+    setFirebaseListeners(new Map());
+  }, []);
 
   // Effects
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme")
+    const savedTheme = localStorage.getItem("theme");
     if (savedTheme) {
-      setIsDarkMode(savedTheme === "dark")
+      setIsDarkMode(savedTheme === "dark");
     } else {
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
-      setIsDarkMode(prefersDark)
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      setIsDarkMode(prefersDark);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    localStorage.setItem("theme", isDarkMode ? "dark" : "light")
-    document.documentElement.setAttribute("data-theme", isDarkMode ? "dark" : "light")
-  }, [isDarkMode])
+    localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", isDarkMode ? "dark" : "light");
+  }, [isDarkMode]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (sidebarOpen && !event.target.closest(".sidebar") && !event.target.closest(".sidebar-toggle")) {
-        setSidebarOpen(false)
+        setSidebarOpen(false);
       }
-    }
+    };
 
     const handleEscapeKey = (event) => {
       if (event.key === "Escape" && sidebarOpen) {
-        setSidebarOpen(false)
+        setSidebarOpen(false);
       }
-    }
+    };
 
     if (sidebarOpen) {
-      document.addEventListener("mousedown", handleClickOutside)
-      document.addEventListener("keydown", handleEscapeKey)
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("keydown", handleEscapeKey);
       if (window.innerWidth <= 768) {
-        document.body.style.overflow = "hidden"
+        document.body.style.overflow = "hidden";
       }
     } else {
-      document.body.style.overflow = "unset"
+      document.body.style.overflow = "unset";
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-      document.removeEventListener("keydown", handleEscapeKey)
-      document.body.style.overflow = "unset"
-    }
-  }, [sidebarOpen])
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscapeKey);
+      document.body.style.overflow = "unset";
+    };
+  }, [sidebarOpen]);
 
   useEffect(() => {
     if (!teachers || teachers.length === 0) {
-      setFilteredTeachers([])
-      return
+      setFilteredTeachers([]);
+      return;
     }
 
-    let filtered = teachers
+    let filtered = teachers;
 
     if (teacherFilter && teacherFilter !== "all") {
       filtered = teachers.filter((teacher) => {
-        const stats = getTeacherReviewStats(teacher.id, teacher.name)
-        const rating = Number.parseFloat(stats.overallAverage)
-        const reviewCount = stats.totalReviews
+        const stats = getTeacherReviewStats(teacher.id, teacher.name);
+        const rating = Number.parseFloat(stats.overallAverage);
+        const reviewCount = stats.totalReviews;
 
         switch (teacherFilter) {
           case "highly-recommended":
-            return rating >= 3.5 && reviewCount >= 1
+            return rating >= 3.5 && reviewCount >= 1;
           case "medium":
-            return rating >= 2.5 && rating < 3.5 && reviewCount >= 1
+            return rating >= 2.5 && rating < 3.5 && reviewCount >= 1;
           case "not-recommended":
-            return rating < 2.5 && reviewCount >= 1
+            return rating < 2.5 && reviewCount >= 1;
           default:
-            return true
+            return true;
         }
-      })
+      });
     }
 
     if (activeSection) {
       filtered = filtered.filter((teacher) => {
-        return teacher.sections && teacher.sections.includes(activeSection)
-      })
+        return teacher.sections && teacher.sections.includes(activeSection);
+      });
     }
 
-    setFilteredTeachers(filtered)
-  }, [teachers, activeSection, teacherFilter, getTeacherReviewStats])
+    setFilteredTeachers(filtered);
+  }, [teachers, activeSection, teacherFilter, getTeacherReviewStats]);
 
   useEffect(() => {
     switch (currentView) {
       case "all-sections":
-        setShowAllSections(true)
-        setActiveSection(null)
-        break
+        setShowAllSections(true);
+        setActiveSection(null);
+        break;
       case "teachers":
-        setShowAllSections(false)
-        setActiveSection(null)
-        break
+        setShowAllSections(false);
+        setActiveSection(null);
+        break;
       case "best-sections":
-        setShowAllSections(true)
-        setActiveSection(null)
-        break
+        setShowAllSections(true);
+        setActiveSection(null);
+        break;
       default:
-        break
+        break;
     }
-  }, [currentView])
+  }, [currentView]);
 
   useEffect(() => {
-    let timer
+    let timer;
     if (showPremiumRestriction && countdown > 0) {
       timer = setTimeout(() => {
-        setCountdown(countdown - 1)
-      }, 1000)
+        setCountdown(countdown - 1);
+      }, 1000);
     } else if (showPremiumRestriction && countdown === 0) {
-      handleCountdownComplete()
+      handleCountdownComplete();
     }
 
     return () => {
-      if (timer) clearTimeout(timer)
-    }
-  }, [showPremiumRestriction, countdown])
+      if (timer) clearTimeout(timer);
+    };
+  }, [showPremiumRestriction, countdown]);
 
   // Main Firebase initialization effect
   useEffect(() => {
-    if (typeof window === "undefined") return
+    if (typeof window === "undefined") return;
+
+    let cleanup = () => {};
 
     try {
-      const app = initializeApp(firebaseConfig)
-      const auth = getAuth(app)
-      const db = getDatabase(app)
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getDatabase(app);
+      setDatabase(db);
 
       const unsubscribe = onAuthStateChanged(auth, async (user) => {
         if (user && user.email) {
@@ -972,67 +1028,77 @@ export default function FacultyReviewPage() {
             auth
               .signOut()
               .then(() => {
-                window.location.href = "/"
+                window.location.href = "/";
               })
               .catch(() => {
-                window.location.href = "/"
-              })
-            return
+                window.location.href = "/";
+              });
+            return;
           }
 
-          setCurrentUser(user)
-          const email = user.email
-          const rollNumber = email.split("@")[0]
-          setCurrentUserRollNumber(rollNumber)
+          setCurrentUser(user);
+          const email = user.email;
+          const rollNumber = email.split("@")[0];
+          setCurrentUserRollNumber(rollNumber);
 
-          const hasAccess = await checkPremiumAccess(user)
+          const hasAccess = await checkPremiumAccess(user);
 
           if (!hasAccess && !showBlockedUser) {
-            setShowPremiumRestriction(true)
-            return
+            setShowPremiumRestriction(true);
+            return;
           }
 
           if (user.displayName) {
-            setUserName(user.displayName)
+            setUserName(user.displayName);
           } else {
-            const emailParts = email.split("@")[0].split(".")
+            const emailParts = email.split("@")[0].split(".");
             if (emailParts.length > 1) {
-              const firstName = emailParts[0].charAt(0).toUpperCase() + emailParts[0].slice(1)
-              const lastName = emailParts[1].charAt(0).toUpperCase() + emailParts[1].slice(1)
-              setUserName(`${firstName} ${lastName}`)
+              const firstName = emailParts[0].charAt(0).toUpperCase() + emailParts[0].slice(1);
+              const lastName = emailParts[1].charAt(0).toUpperCase() + emailParts[1].slice(1);
+              setUserName(`${firstName} ${lastName}`);
             } else {
-              setUserName(emailParts[0])
+              setUserName(emailParts[0]);
             }
           }
 
           if (hasAccess) {
-            // Set up all real-time listeners
-            loadUserReviews(user.uid, db)
-            loadAllReviews(db)
-            loadReviews(currentYearCode, db)
-            loadTeacherMapping()
+            // Set up all real-time listeners with the database instance
+            loadUserReviews(user.uid);
+            loadAllReviews();
+            loadReviews(currentYearCode);
+            loadTeacherMapping();
           }
         } else {
-          window.location.href = "/"
+          window.location.href = "/";
         }
-      })
+      });
 
-      return () => {
-        unsubscribe()
-      }
+      cleanup = () => {
+        unsubscribe();
+        cleanupFirebaseListeners();
+      };
+
     } catch (error) {
-      console.error("Firebase initialization error:", error)
-      setIsLoading(false)
+      console.error("Firebase initialization error:", error);
+      setIsLoading(false);
     }
-  }, [showBlockedUser, currentYearCode])
+
+    return cleanup;
+  }, [showBlockedUser]);
 
   // Update reviews listener when year changes
   useEffect(() => {
-    if (currentUser && hasPremiumAccess) {
-      const db = getDatabase()
-      loadReviews(currentYearCode, db)
+    if (currentUser && hasPremiumAccess && database) {
+      loadReviews(currentYearCode);
     }
-  }, [currentYearCode, currentUser, hasPremiumAccess])
+  }, [currentYearCode, currentUser, hasPremiumAccess, database, loadReviews]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      cleanupFirebaseListeners();
+    };
+  }, [cleanupFirebaseListeners]);
 
   // Render Logic
   if (showBlockedUser) {
@@ -1040,7 +1106,7 @@ export default function FacultyReviewPage() {
       <div className="app">
         <BlockedUserModal onRedirect={handleBlockedUserRedirect} userRollNumber={currentUserRollNumber} />
       </div>
-    )
+    );
   }
 
   if (showPremiumRestriction) {
@@ -1055,7 +1121,7 @@ export default function FacultyReviewPage() {
           isDarkMode={isDarkMode}
         />
       </div>
-    )
+    );
   }
 
   if (premiumLoading) {
@@ -1066,7 +1132,7 @@ export default function FacultyReviewPage() {
           <p>Checking access permissions...</p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -1169,6 +1235,7 @@ export default function FacultyReviewPage() {
             setTeacherFilter={setTeacherFilter}
             activeSection={activeSection}
             setActiveSection={setActiveSection}
+            reviewsLastUpdated={reviewsLastUpdated}
           />
         </div>
       </main>
@@ -1203,7 +1270,8 @@ export default function FacultyReviewPage() {
           setShowViewReviewsModal={setShowViewReviewsModal}
           getTeacherReviewStats={getTeacherReviewStats}
           calculateAverage={calculateAverage}
-          key={`${selectedTeacher.id}-${reviewsLastUpdated}`} // Force re-render when reviews update
+          reviewsLastUpdated={reviewsLastUpdated}
+          key={`${selectedTeacher.id}-${reviewsLastUpdated}`}
         />
       )}
 
@@ -1237,5 +1305,5 @@ export default function FacultyReviewPage() {
 
       {errorModal && <ErrorModal title={errorModal.title} message={errorModal.message} onClose={closeErrorModal} />}
     </div>
-  )
+  );
 }

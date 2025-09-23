@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './styles.css';
+
 const GiveReviewModal = ({ 
   selectedTeacher, 
   setShowGiveReviewModal, 
@@ -97,11 +98,22 @@ const GiveReviewModal = ({
     setIsSubmitting(true);
     
     try {
-      console.log('Submitting review with data:', formData);
+      console.log('GiveReviewModal - Submitting review with data:', formData);
       await submitReview(formData);
-      console.log('Review submitted successfully');
+      console.log('GiveReviewModal - Review submitted successfully');
+      
+      // Reset form after successful submission
+      setFormData({
+        teachingStyle: '',
+        markingStyle: '',
+        studentFriendliness: '',
+        attendanceApproach: '',
+        comment: '',
+        anonymous: false
+      });
+      
     } catch (error) {
-      console.error('Error submitting review:', error);
+      console.error('GiveReviewModal - Error submitting review:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -248,6 +260,7 @@ const GiveReviewModal = ({
                 type="button"
                 className="cancel-btn"
                 onClick={() => setShowGiveReviewModal(false)}
+                disabled={isSubmitting}
               >
                 Cancel
               </button>
@@ -273,9 +286,72 @@ const GiveReviewModal = ({
                 )}
               </button>
             </div>
+
+            {/* Real-time feedback indicator */}
+            <div className="realtime-notice">
+              <div className="notice-icon">
+                <div className="pulse-dot"></div>
+              </div>
+              <span>Your review will appear instantly to other students</span>
+            </div>
           </form>
         </div>
       </div>
+
+      <style jsx>{`
+        .realtime-notice {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          margin-top: 16px;
+          padding: 12px;
+          background: rgba(16, 185, 129, 0.05);
+          border: 1px solid rgba(16, 185, 129, 0.2);
+          border-radius: 8px;
+          font-size: 14px;
+          color: #065f46;
+        }
+
+        .notice-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .pulse-dot {
+          width: 8px;
+          height: 8px;
+          background: #10b981;
+          border-radius: 50%;
+          animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+          0%, 100% { 
+            opacity: 1;
+            transform: scale(1);
+          }
+          50% { 
+            opacity: 0.6;
+            transform: scale(1.2);
+          }
+        }
+
+        .loading-spinner {
+          width: 16px;
+          height: 16px;
+          border: 2px solid rgba(255, 255, 255, 0.3);
+          border-radius: 50%;
+          border-top-color: white;
+          animation: spin 1s linear infinite;
+          margin-right: 8px;
+        }
+
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 };

@@ -1,19 +1,32 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import './styles.css';
 
 const ViewReviewsModal = ({ 
   selectedTeacher, 
   setShowViewReviewsModal, 
   getTeacherReviewStats, 
-  calculateAverage 
+  calculateAverage,
+  reviewsLastUpdated
 }) => {
-  // Use useMemo to ensure stats are recalculated when dependencies change
+  const [forceUpdate, setForceUpdate] = useState(0);
+
+  // Force component to re-render when reviewsLastUpdated changes
+  useEffect(() => {
+    setForceUpdate(prev => prev + 1);
+  }, [reviewsLastUpdated]);
+
+  // Use useMemo with forceUpdate to ensure stats are recalculated
   const stats = useMemo(() => {
     console.log('ViewReviewsModal - Recalculating stats for:', selectedTeacher.name);
     const calculatedStats = getTeacherReviewStats(selectedTeacher.id, selectedTeacher.name);
-    console.log('ViewReviewsModal - New stats:', calculatedStats);
+    console.log('ViewReviewsModal - New stats:', {
+      teacherName: selectedTeacher.name,
+      totalReviews: calculatedStats.totalReviews,
+      overallAverage: calculatedStats.overallAverage,
+      reviewsCount: calculatedStats.teacherReviews?.length || 0
+    });
     return calculatedStats;
-  }, [selectedTeacher.id, selectedTeacher.name, getTeacherReviewStats]);
+  }, [selectedTeacher.id, selectedTeacher.name, getTeacherReviewStats, forceUpdate, reviewsLastUpdated]);
   
   const getRatingColor = (rating) => {
     const score = parseFloat(rating);
@@ -93,7 +106,9 @@ const ViewReviewsModal = ({
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
     });
   };
 
@@ -113,7 +128,8 @@ const ViewReviewsModal = ({
     teacherName: selectedTeacher.name,
     totalReviews: actualTotalReviews,
     reviewsWithComments: reviewsWithComments.length,
-    overallAverage: stats.overallAverage
+    overallAverage: stats.overallAverage,
+    forceUpdate
   });
 
   return (
@@ -224,7 +240,7 @@ const ViewReviewsModal = ({
                 reviewsWithComments
                   .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)) // Sort by newest first
                   .map((review, index) => (
-                    <div key={review.id || `review-${index}`} className="comment-card">
+                    <div key={review.id || `review-${index}-${review.timestamp}`} className="comment-card">
                       <div className="comment-text">
                         <p>"{review.comment}"</p>
                       </div>
@@ -277,6 +293,13 @@ const ViewReviewsModal = ({
           </div>
         </div>
 
+        {/* Live update indicator */}
+        <div className="live-update-indicator">
+          <div className="live-dot"></div>
+          <span>Live Updates</span>
+          <small>Last updated: {new Date(reviewsLastUpdated).toLocaleTimeString()}</small>
+        </div>
+
         {/* Debug info in development */}
         {process.env.NODE_ENV === 'development' && (
           <div style={{ 
@@ -294,10 +317,46 @@ const ViewReviewsModal = ({
             <div>Total Reviews: {actualTotalReviews}</div>
             <div>Comments: {reviewsWithComments.length}</div>
             <div>Overall: {stats.overallAverage}</div>
-            <div>Last Updated: {new Date().toLocaleTimeString()}</div>
+            <div>Force Update: {forceUpdate}</div>
+            <div>Last Updated: {new Date(reviewsLastUpdated).toLocaleTimeString()}</div>
           </div>
         )}
       </div>
+
+      <style jsx>{`
+        .live-update-indicator {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          background: rgba(16, 185, 129, 0.1);
+          border: 1px solid rgba(16, 185, 129, 0.3);
+          border-radius: 20px;
+          padding: 6px 12px;
+          font-size: 12px;
+          color: #10b981;
+        }
+
+        .live-dot {
+          width: 8px;
+          height: 8px;
+          background: #10b981;
+          border-radius: 50%;
+          animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+
+        .live-update-indicator small {
+          color: #6b7280;
+          margin-left: 8px;
+        }
+      `}</style>
     </div>
   );
 };
