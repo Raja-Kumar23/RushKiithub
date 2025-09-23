@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import './styles.css';
 
 const ViewReviewsModal = ({ 
@@ -7,7 +7,13 @@ const ViewReviewsModal = ({
   getTeacherReviewStats, 
   calculateAverage 
 }) => {
-  const stats = getTeacherReviewStats(selectedTeacher.id, selectedTeacher.name);
+  // Use useMemo to ensure stats are recalculated when dependencies change
+  const stats = useMemo(() => {
+    console.log('ViewReviewsModal - Recalculating stats for:', selectedTeacher.name);
+    const calculatedStats = getTeacherReviewStats(selectedTeacher.id, selectedTeacher.name);
+    console.log('ViewReviewsModal - New stats:', calculatedStats);
+    return calculatedStats;
+  }, [selectedTeacher.id, selectedTeacher.name, getTeacherReviewStats]);
   
   const getRatingColor = (rating) => {
     const score = parseFloat(rating);
@@ -91,16 +97,24 @@ const ViewReviewsModal = ({
     });
   };
 
-  // Count only reviews with actual comments
-  const reviewsWithComments = stats.teacherReviews ? 
-    stats.teacherReviews.filter(review => review.comment && review.comment.trim()) : [];
+  // Filter reviews with actual comments - using useMemo for performance
+  const reviewsWithComments = useMemo(() => {
+    const filtered = stats.teacherReviews ? 
+      stats.teacherReviews.filter(review => review.comment && review.comment.trim()) : [];
+    
+    console.log('ViewReviewsModal - Reviews with comments:', filtered.length, 'out of', stats.teacherReviews?.length || 0);
+    return filtered;
+  }, [stats.teacherReviews]);
   
-  // Get actual total reviews count - use the real count from teacherReviews array
-  const actualTotalReviews = stats.teacherReviews ? stats.teacherReviews.length : 0;
-  
-  // Use the display total from stats if it's reasonable, otherwise use actual count
-  const displayTotalReviews = (stats.totalReviews && stats.totalReviews <= actualTotalReviews * 10) ? 
-    stats.totalReviews : actualTotalReviews;
+  // Use actual total reviews count
+  const actualTotalReviews = stats.totalReviews || 0;
+
+  console.log('ViewReviewsModal - Rendering with:', {
+    teacherName: selectedTeacher.name,
+    totalReviews: actualTotalReviews,
+    reviewsWithComments: reviewsWithComments.length,
+    overallAverage: stats.overallAverage
+  });
 
   return (
     <div className="view-reviews-modal-overlay" onClick={() => setShowViewReviewsModal(false)}>
@@ -146,7 +160,7 @@ const ViewReviewsModal = ({
                 {renderStars(parseFloat(stats.overallAverage))}
               </div>
               <span className="rating-text">{getRatingText(stats.overallAverage)}</span>
-              <span className="review-count">{displayTotalReviews} reviews</span>
+              <span className="review-count">{actualTotalReviews} reviews</span>
             </div>
           </div>
           
@@ -168,7 +182,7 @@ const ViewReviewsModal = ({
               <h3>Rating Breakdown</h3>
               <div className="ratings-stats-summary">
                 <div className="stat-item">
-                  <span className="stat-number">{displayTotalReviews}</span>
+                  <span className="stat-number">{actualTotalReviews}</span>
                   <span className="stat-label">Total Reviews</span>
                 </div>
                 <div className="stat-item">
@@ -197,36 +211,48 @@ const ViewReviewsModal = ({
               <h3>Student Comments</h3>
               <div className="comments-stats">
                 <span className="comments-count">{reviewsWithComments.length} comments</span>
+                {actualTotalReviews > 0 && (
+                  <span className="comments-percentage">
+                    ({Math.round((reviewsWithComments.length / actualTotalReviews) * 100)}% with comments)
+                  </span>
+                )}
               </div>
             </div>
             
             <div className="comments-list">
               {reviewsWithComments.length > 0 ? (
-                reviewsWithComments.map((review, index) => (
-                  <div key={index} className="comment-card">
-                    <div className="comment-text">
-                      <p>"{review.comment}"</p>
-                    </div>
-                    <div className="comment-meta">
-                      <span className="comment-date">{formatDate(review.timestamp)}</span>
-                      <div className="comment-ratings">
-                        <span className={`rating-badge ${review.teachingStyle || 'average'}`}>
-                          T: {(review.teachingStyle || 'avg').charAt(0).toUpperCase()}
-                        </span>
-                        <span className={`rating-badge ${review.markingStyle || 'average'}`}>
-                          M: {(review.markingStyle || 'avg').charAt(0).toUpperCase()}
-                        </span>
-                        <span className={`rating-badge ${review.studentFriendliness || 'average'}`}>
-                          F: {(review.studentFriendliness || 'avg').charAt(0).toUpperCase()}
-                        </span>
-                        <span className={`rating-badge ${review.attendanceApproach || 'average'}`}>
-                          A: {(review.attendanceApproach || 'avg').charAt(0).toUpperCase()}
-                        </span>
+                reviewsWithComments
+                  .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)) // Sort by newest first
+                  .map((review, index) => (
+                    <div key={review.id || `review-${index}`} className="comment-card">
+                      <div className="comment-text">
+                        <p>"{review.comment}"</p>
                       </div>
+                      <div className="comment-meta">
+                        <span className="comment-date">{formatDate(review.timestamp)}</span>
+                        <div className="comment-ratings">
+                          <span className={`rating-badge ${review.teachingStyle || 'average'}`}>
+                            T: {(review.teachingStyle || 'avg').charAt(0).toUpperCase()}
+                          </span>
+                          <span className={`rating-badge ${review.markingStyle || 'average'}`}>
+                            M: {(review.markingStyle || 'avg').charAt(0).toUpperCase()}
+                          </span>
+                          <span className={`rating-badge ${review.studentFriendliness || 'average'}`}>
+                            F: {(review.studentFriendliness || 'avg').charAt(0).toUpperCase()}
+                          </span>
+                          <span className={`rating-badge ${review.attendanceApproach || 'average'}`}>
+                            A: {(review.attendanceApproach || 'avg').charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+                      </div>
+                      {!review.anonymous && review.studentName && (
+                        <div className="comment-author">
+                          <span className="author-name">- {review.studentName}</span>
+                        </div>
+                      )}
                     </div>
-                  </div>
-                ))
-              ) : (
+                  ))
+              ) : actualTotalReviews > 0 ? (
                 <div className="no-comments">
                   <div className="no-comments-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -234,12 +260,43 @@ const ViewReviewsModal = ({
                     </svg>
                   </div>
                   <h4>No Comments Yet</h4>
-                  <p>Students haven't left any written feedback for {selectedTeacher.name} yet.</p>
+                  <p>Students have rated {selectedTeacher.name} but haven't left written comments yet. Be the first to share your thoughts!</p>
+                </div>
+              ) : (
+                <div className="no-comments">
+                  <div className="no-comments-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                  </div>
+                  <h4>No Reviews Yet</h4>
+                  <p>Be the first to review {selectedTeacher.name} and help other students!</p>
                 </div>
               )}
             </div>
           </div>
         </div>
+
+        {/* Debug info in development */}
+        {process.env.NODE_ENV === 'development' && (
+          <div style={{ 
+            position: 'fixed', 
+            bottom: '10px', 
+            right: '10px', 
+            background: 'rgba(0,0,0,0.8)', 
+            color: 'white', 
+            padding: '10px', 
+            fontSize: '12px',
+            borderRadius: '4px',
+            zIndex: 9999
+          }}>
+            <div>Teacher: {selectedTeacher.name}</div>
+            <div>Total Reviews: {actualTotalReviews}</div>
+            <div>Comments: {reviewsWithComments.length}</div>
+            <div>Overall: {stats.overallAverage}</div>
+            <div>Last Updated: {new Date().toLocaleTimeString()}</div>
+          </div>
+        )}
       </div>
     </div>
   );

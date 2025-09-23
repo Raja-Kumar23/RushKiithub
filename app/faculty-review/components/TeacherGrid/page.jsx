@@ -176,6 +176,9 @@ const TeacherGrid = ({
           const canReview = canSubmitMoreReviews(teacher.id);
           const avatarStyle = getAvatarColor(stats.overallAverage);
           const hoverClass = getHoverColor(stats.overallAverage);
+          
+          // Use actual review count
+          const actualReviewCount = stats.totalReviews || 0;
 
           return (
             <div 
@@ -205,6 +208,7 @@ const TeacherGrid = ({
                   <div className="rating-display">
                     <div className="rating-score">{stats.overallAverage}</div>
                     {renderStars(stats.overallAverage)}
+                    <div className="review-count-small">{actualReviewCount} reviews</div>
                   </div>
                 </div>
 

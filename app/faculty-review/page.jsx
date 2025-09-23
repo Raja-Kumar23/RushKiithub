@@ -1,11 +1,11 @@
-
 "use client"
 
 import React, { useEffect, useState, useCallback } from "react"
 import { initializeApp } from "firebase/app"
 import { getAuth, onAuthStateChanged } from "firebase/auth"
-import { getDatabase, ref, onValue, set } from "firebase/database"
+import { getDatabase, ref, onValue, set, push } from "firebase/database"
 import { getFirestore, doc, getDoc } from "firebase/firestore"
+
 
 // Components
 import Header from "./components/Header/page"
@@ -49,10 +49,11 @@ export default function FacultyReviewPage() {
   const [teacherMapping, setTeacherMapping] = useState({})
   const [jsonCache, setJsonCache] = useState({})
 
-  // Review Data
+  // Review Data - Firebase real-time updates will handle these
   const [reviews, setReviews] = useState([])
   const [allReviews, setAllReviews] = useState({})
   const [userReviews, setUserReviews] = useState([])
+  const [reviewsLastUpdated, setReviewsLastUpdated] = useState(Date.now()) // Force re-render trigger
 
   // User Data
   const [currentUser, setCurrentUser] = useState(null)
@@ -86,7 +87,6 @@ export default function FacultyReviewPage() {
   const [countdown, setCountdown] = useState(10)
 
   // Constants
-  const PREMIUM_REVIEW_MULTIPLIER = 10
   const BASE_REVIEW_LIMIT = 1
   const SPECIAL_ROLL_NUMBER = "23053769"
   const UNLIMITED_ROLL_NUMBERS = ["23053769"]
@@ -100,7 +100,6 @@ export default function FacultyReviewPage() {
       "Payment Successful!",
       "Welcome to KIITHub Premium! Your access has been activated."
     )
-    // Refresh to update premium status
     setTimeout(() => {
       window.location.reload()
     }, 2000)
@@ -228,16 +227,21 @@ export default function FacultyReviewPage() {
     }
   }
 
-  // Teacher Review Stats
+  // Teacher Review Stats - Now purely relies on Firebase real-time data
   const getTeacherReviewStats = useCallback(
     (teacherId, teacherName = null) => {
       const name = teacherName || findTeacherNameById(teacherId)
       let teacherReviews = []
 
-      if (name) {
-        const teacherInfo = findTeacherInMapping(name)
-        if (teacherInfo && teacherInfo.years.length > 0) {
-          for (const yearCode of teacherInfo.years) {
+      // Get reviews from current year
+      const currentYearReviews = reviews.filter((review) => review.teacherId === teacherId)
+      teacherReviews = [...currentYearReviews]
+
+      // Get reviews from other years if teacher exists across multiple years
+      if (name && teacherMapping[name]) {
+        const teacherInfo = teacherMapping[name]
+        for (const yearCode of teacherInfo.years) {
+          if (yearCode !== currentYearCode) {
             const yearTeacherId = teacherInfo.ids[yearCode]
             const yearReviews = allReviews[yearCode] || []
             const teacherYearReviews = yearReviews.filter((review) => review.teacherId === yearTeacherId)
@@ -246,11 +250,10 @@ export default function FacultyReviewPage() {
         }
       }
 
-      if (teacherReviews.length === 0) {
-        teacherReviews = reviews.filter((review) => review.teacherId === teacherId)
-      }
-
-      const uniqueReviews = Array.from(new Map(teacherReviews.map((review) => [review.userId, review])).values())
+      // Remove duplicate reviews by userId
+      const uniqueReviews = Array.from(
+        new Map(teacherReviews.map((review) => [review.userId, review])).values()
+      )
 
       const teachingStyleRatings = { excellent: 0, good: 0, average: 0, poor: 0 }
       const markingStyleRatings = { excellent: 0, good: 0, average: 0, poor: 0 }
@@ -297,19 +300,7 @@ export default function FacultyReviewPage() {
       const studentFriendlinessAvg = calculateAverage(studentFriendlinessRatings)
       const attendanceApproachAvg = calculateAverage(attendanceApproachRatings)
 
-      const multipliedTeachingStyleRatings = {}
-      const multipliedMarkingStyleRatings = {}
-      const multipliedStudentFriendlinessRatings = {}
-      const multipliedAttendanceApproachRatings = {}
-
-      Object.keys(teachingStyleRatings).forEach((key) => {
-        multipliedTeachingStyleRatings[key] = teachingStyleRatings[key] * 7
-        multipliedMarkingStyleRatings[key] = markingStyleRatings[key] * 7
-        multipliedStudentFriendlinessRatings[key] = studentFriendlinessRatings[key] * 7
-        multipliedAttendanceApproachRatings[key] = attendanceApproachRatings[key] * 7
-      })
-
-      const totalReviews = uniqueReviews.length * 7
+      const totalReviews = uniqueReviews.length
       const overallAverage =
         uniqueReviews.length > 0
           ? (
@@ -327,10 +318,10 @@ export default function FacultyReviewPage() {
         teacherReviews: uniqueReviews,
         crossSemesterCount: name && teacherMapping[name] ? teacherMapping[name].years.length : 1,
         ratings: {
-          teachingStyle: multipliedTeachingStyleRatings,
-          markingStyle: multipliedMarkingStyleRatings,
-          studentFriendliness: multipliedStudentFriendlinessRatings,
-          attendanceApproach: multipliedAttendanceApproachRatings,
+          teachingStyle: teachingStyleRatings,
+          markingStyle: markingStyleRatings,
+          studentFriendliness: studentFriendlinessRatings,
+          attendanceApproach: attendanceApproachRatings,
         },
         averages: {
           teachingStyle: teachingStyleAvg,
@@ -340,7 +331,7 @@ export default function FacultyReviewPage() {
         },
       }
     },
-    [reviews, allReviews, teacherMapping],
+    [reviews, allReviews, teacherMapping, currentYearCode, reviewsLastUpdated], // Added reviewsLastUpdated as dependency
   )
 
   // Data Loading Functions
@@ -465,7 +456,6 @@ export default function FacultyReviewPage() {
       try {
         if (jsonCache[yearCode] && jsonCache[yearCode].length > 0) {
           processTeacherData(jsonCache[yearCode])
-          loadReviews(yearCode)
           return
         }
 
@@ -500,7 +490,6 @@ export default function FacultyReviewPage() {
         }))
 
         processTeacherData(extractedTeachers)
-        loadReviews(yearCode)
 
       } catch (error) {
         console.error("Error loading teachers:", error)
@@ -561,20 +550,25 @@ export default function FacultyReviewPage() {
     setIsLoading(false)
   }
 
-  const loadReviews = (yearCode) => {
-    const db = getDatabase()
+  // Firebase Real-time Review Loading - Enhanced with update triggers
+  const loadReviews = (yearCode, db) => {
     const reviewsRef = ref(db, `reviews/year${yearCode}`)
 
+    // This listener will trigger whenever reviews are added/updated/deleted in Firebase
     onValue(reviewsRef, (snapshot) => {
       const data = snapshot.val() || {}
       const reviewsList = Object.entries(data).map(([id, review]) => ({
         id,
         ...review,
       }))
+      
+      console.log(`Loaded ${reviewsList.length} reviews for year ${yearCode}`)
       setReviews(reviewsList)
+      setReviewsLastUpdated(Date.now()) // Trigger re-render
     })
   }
 
+  // Load all reviews with real-time listeners - Enhanced
   const loadAllReviews = (db) => {
     const yearCodes = ["2", "21", "3", "31"]
     const reviewsData = {}
@@ -582,6 +576,7 @@ export default function FacultyReviewPage() {
     yearCodes.forEach((yearCode) => {
       const reviewsRef = ref(db, `reviews/year${yearCode}`)
 
+      // Real-time listener for each year
       onValue(reviewsRef, (snapshot) => {
         const data = snapshot.val() || {}
         const reviewsList = Object.entries(data).map(([id, review]) => ({
@@ -592,7 +587,9 @@ export default function FacultyReviewPage() {
 
         reviewsData[yearCode] = reviewsList
         setAllReviews({ ...reviewsData })
+        setReviewsLastUpdated(Date.now()) // Trigger re-render
 
+        // Update current reviews if this is the active year
         if (yearCode === currentYearCode) {
           setReviews(reviewsList)
         }
@@ -600,13 +597,16 @@ export default function FacultyReviewPage() {
     })
   }
 
+  // User reviews with real-time updates - Enhanced
   const loadUserReviews = (uid, db) => {
     const userReviewsRef = ref(db, `userReviews/${uid}`)
 
+    // Real-time listener for user's reviews
     onValue(userReviewsRef, (snapshot) => {
       const data = snapshot.val() || {}
       const reviewKeys = Object.keys(data)
       setUserReviews(reviewKeys)
+      setReviewsLastUpdated(Date.now()) // Trigger re-render
     })
   }
 
@@ -746,7 +746,7 @@ export default function FacultyReviewPage() {
     setErrorModal(null)
   }
 
-  // Submit Review Function
+  // Submit Review Function - Enhanced with immediate state updates
   const submitReview = async (formData) => {
     if (!selectedTeacher || !currentUser) {
       console.error("Missing selectedTeacher or currentUser")
@@ -795,21 +795,23 @@ export default function FacultyReviewPage() {
       }
 
       const db = getDatabase()
-      const reviewId = `${selectedTeacher.id}_${currentUser.uid}_${Date.now()}`
+      
+      // Use push() to generate unique keys and avoid conflicts
+      const reviewsRef = ref(db, `reviews/year${currentYearCode}`)
+      const newReviewRef = push(reviewsRef)
+      await set(newReviewRef, baseReview)
 
-      const reviewsRef = ref(db, `reviews/year${currentYearCode}/${reviewId}`)
-      await set(reviewsRef, baseReview)
-
-      const userReviewRef = ref(db, `userReviews/${currentUser.uid}/${reviewId}`)
+      // Also save to user reviews
+      const userReviewRef = ref(db, `userReviews/${currentUser.uid}/${newReviewRef.key}`)
       await set(userReviewRef, {
         teacherName: selectedTeacher.name,
         timestamp: Date.now(),
         yearCode: currentYearCode,
       })
 
-      setUserReviews((prev) => [...prev, reviewId])
-      setReviews((prev) => [...prev, { id: reviewId, ...baseReview }])
+      console.log("Review submitted successfully to Firebase")
 
+      // Close modal and show success immediately
       setShowGiveReviewModal(false)
 
       const remainingReviews = UNLIMITED_ROLL_NUMBERS.includes(currentUserRollNumber)
@@ -817,10 +819,13 @@ export default function FacultyReviewPage() {
         : getUserReviewLimit() - (getUserReviewCount(selectedTeacher.id) + 1)
 
       const successMessage = UNLIMITED_ROLL_NUMBERS.includes(currentUserRollNumber)
-        ? "Your review has been submitted and is now visible. You have unlimited reviews available!"
-        : `Your review has been submitted and is now visible. You have ${remainingReviews} more reviews available for this teacher.`
+        ? "Your review has been submitted and is now visible to all users in real-time!"
+        : `Your review has been submitted and is now visible to all users. You have ${remainingReviews} more reviews available for this teacher.`
 
       showSuccessModal("Review Submitted Successfully!", successMessage)
+
+      // Force immediate update to trigger re-renders
+      setReviewsLastUpdated(Date.now())
 
     } catch (error) {
       console.error("Error submitting review:", error)
@@ -898,11 +903,11 @@ export default function FacultyReviewPage() {
 
         switch (teacherFilter) {
           case "highly-recommended":
-            return rating >= 3.5 && reviewCount >= 5
+            return rating >= 3.5 && reviewCount >= 1
           case "medium":
-            return rating >= 2.5 && rating < 3.5 && reviewCount >= 3
+            return rating >= 2.5 && rating < 3.5 && reviewCount >= 1
           case "not-recommended":
-            return rating < 2.5 && reviewCount >= 2
+            return rating < 2.5 && reviewCount >= 1
           default:
             return true
         }
@@ -952,6 +957,7 @@ export default function FacultyReviewPage() {
     }
   }, [showPremiumRestriction, countdown])
 
+  // Main Firebase initialization effect
   useEffect(() => {
     if (typeof window === "undefined") return
 
@@ -1000,9 +1006,11 @@ export default function FacultyReviewPage() {
           }
 
           if (hasAccess) {
+            // Set up all real-time listeners
             loadUserReviews(user.uid, db)
-            loadTeacherMapping()
             loadAllReviews(db)
+            loadReviews(currentYearCode, db)
+            loadTeacherMapping()
           }
         } else {
           window.location.href = "/"
@@ -1016,7 +1024,15 @@ export default function FacultyReviewPage() {
       console.error("Firebase initialization error:", error)
       setIsLoading(false)
     }
-  }, [showBlockedUser])
+  }, [showBlockedUser, currentYearCode])
+
+  // Update reviews listener when year changes
+  useEffect(() => {
+    if (currentUser && hasPremiumAccess) {
+      const db = getDatabase()
+      loadReviews(currentYearCode, db)
+    }
+  }, [currentYearCode, currentUser, hasPremiumAccess])
 
   // Render Logic
   if (showBlockedUser) {
@@ -1187,6 +1203,7 @@ export default function FacultyReviewPage() {
           setShowViewReviewsModal={setShowViewReviewsModal}
           getTeacherReviewStats={getTeacherReviewStats}
           calculateAverage={calculateAverage}
+          key={`${selectedTeacher.id}-${reviewsLastUpdated}`} // Force re-render when reviews update
         />
       )}
 

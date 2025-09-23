@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import './styles.css';
-
 const GiveReviewModal = ({ 
   selectedTeacher, 
   setShowGiveReviewModal, 
@@ -98,7 +97,9 @@ const GiveReviewModal = ({
     setIsSubmitting(true);
     
     try {
+      console.log('Submitting review with data:', formData);
       await submitReview(formData);
+      console.log('Review submitted successfully');
     } catch (error) {
       console.error('Error submitting review:', error);
     } finally {
@@ -121,6 +122,11 @@ const GiveReviewModal = ({
             <div className="teacher-details">
               <h2>Review {selectedTeacher.name}</h2>
               <p>Share your experience to help other students</p>
+              {!canSubmit && (
+                <div className="review-status-warning">
+                  Review limit reached: {currentCount}/{reviewLimit}
+                </div>
+              )}
             </div>
           </div>
           
