@@ -91,9 +91,20 @@ const ViewReviewsModal = ({
     });
   };
 
+  // Count only reviews with actual comments
+  const reviewsWithComments = stats.teacherReviews ? 
+    stats.teacherReviews.filter(review => review.comment && review.comment.trim()) : [];
+  
+  // Get actual total reviews count - use the real count from teacherReviews array
+  const actualTotalReviews = stats.teacherReviews ? stats.teacherReviews.length : 0;
+  
+  // Use the display total from stats if it's reasonable, otherwise use actual count
+  const displayTotalReviews = (stats.totalReviews && stats.totalReviews <= actualTotalReviews * 10) ? 
+    stats.totalReviews : actualTotalReviews;
+
   return (
     <div className="view-reviews-modal-overlay" onClick={() => setShowViewReviewsModal(false)}>
-      <div className="view-reviews-modal" onClick={(e) => e.stopPropagation()}>
+      <div className="view-reviews-modal large" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div className="teacher-header">
             <div className="teacher-avatar-large">
@@ -135,7 +146,7 @@ const ViewReviewsModal = ({
                 {renderStars(parseFloat(stats.overallAverage))}
               </div>
               <span className="rating-text">{getRatingText(stats.overallAverage)}</span>
-              <span className="review-count">{stats.totalReviews} reviews</span>
+              <span className="review-count">{displayTotalReviews} reviews</span>
             </div>
           </div>
           
@@ -150,90 +161,80 @@ const ViewReviewsModal = ({
           </button>
         </div>
 
-        <div className="modal-body">
-          <div className="ratings-overview">
-            <h3>Rating Breakdown</h3>
-            <div className="ratings-grid">
-              {renderRatingBar('Teaching Style', stats.averages.teachingStyle, stats.ratings.teachingStyle)}
-              {renderRatingBar('Marking Style', stats.averages.markingStyle, stats.ratings.markingStyle)}
-              {renderRatingBar('Student Friendliness', stats.averages.studentFriendliness, stats.ratings.studentFriendliness)}
-              {renderRatingBar('Attendance Approach', stats.averages.attendanceApproach, stats.ratings.attendanceApproach)}
+        <div className="modal-body split-layout">
+          {/* Left Side - Ratings Overview */}
+          <div className="ratings-section">
+            <div className="ratings-overview">
+              <h3>Rating Breakdown</h3>
+              <div className="ratings-stats-summary">
+                <div className="stat-item">
+                  <span className="stat-number">{displayTotalReviews}</span>
+                  <span className="stat-label">Total Reviews</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-number">{reviewsWithComments.length}</span>
+                  <span className="stat-label">With Comments</span>
+                </div>
+                {stats.crossSemesterCount > 1 && (
+                  <div className="stat-item">
+                    <span className="stat-number">{stats.crossSemesterCount}</span>
+                    <span className="stat-label">Semesters</span>
+                  </div>
+                )}
+              </div>
+              <div className="ratings-grid">
+                {renderRatingBar('Teaching Style', stats.averages.teachingStyle, stats.ratings.teachingStyle)}
+                {renderRatingBar('Marking Style', stats.averages.markingStyle, stats.ratings.markingStyle)}
+                {renderRatingBar('Student Friendliness', stats.averages.studentFriendliness, stats.ratings.studentFriendliness)}
+                {renderRatingBar('Attendance Approach', stats.averages.attendanceApproach, stats.ratings.attendanceApproach)}
+              </div>
             </div>
           </div>
 
-          <div className="reviews-section">
-            <div className="reviews-header">
-              <h3>Student Reviews</h3>
-              <div className="reviews-stats">
-                <span className="total-reviews">{stats.totalReviews} total reviews</span>
-                {stats.crossSemesterCount > 1 && (
-                  <span className="cross-semester">Across {stats.crossSemesterCount} semesters</span>
-                )}
+          {/* Right Side - Comments */}
+          <div className="comments-section">
+            <div className="comments-header">
+              <h3>Student Comments</h3>
+              <div className="comments-stats">
+                <span className="comments-count">{reviewsWithComments.length} comments</span>
               </div>
             </div>
             
-            <div className="reviews-list">
-              {stats.teacherReviews && stats.teacherReviews.length > 0 ? (
-                stats.teacherReviews.map((review, index) => (
-                  <div key={index} className="review-card">
-                    <div className="review-header">
-                      <div className="reviewer-info">
-                        <div className="reviewer-avatar">
-                          {review.anonymous ? '?' : (review.studentName?.charAt(0)?.toUpperCase() || 'A')}
-                        </div>
-                        <div className="reviewer-details">
-                          <span className="reviewer-name">
-                            {review.anonymous ? 'Anonymous Student' : (review.studentName || 'Anonymous')}
-                          </span>
-                          <span className="review-date">{formatDate(review.timestamp)}</span>
-                        </div>
-                      </div>
-                      
-                      <div className="review-ratings">
-                        <div className="rating-item">
-                          <span className="rating-label">Teaching</span>
-                          <span className={`rating-value ${review.teachingStyle || 'average'}`}>
-                            {(review.teachingStyle || 'average').charAt(0).toUpperCase() + (review.teachingStyle || 'average').slice(1)}
-                          </span>
-                        </div>
-                        <div className="rating-item">
-                          <span className="rating-label">Marking</span>
-                          <span className={`rating-value ${review.markingStyle || 'average'}`}>
-                            {(review.markingStyle || 'average').charAt(0).toUpperCase() + (review.markingStyle || 'average').slice(1)}
-                          </span>
-                        </div>
-                        <div className="rating-item">
-                          <span className="rating-label">Friendly</span>
-                          <span className={`rating-value ${review.studentFriendliness || 'average'}`}>
-                            {(review.studentFriendliness || 'average').charAt(0).toUpperCase() + (review.studentFriendliness || 'average').slice(1)}
-                          </span>
-                        </div>
-                        <div className="rating-item">
-                          <span className="rating-label">Attendance</span>
-                          <span className={`rating-value ${review.attendanceApproach || 'average'}`}>
-                            {(review.attendanceApproach || 'average').charAt(0).toUpperCase() + (review.attendanceApproach || 'average').slice(1)}
-                          </span>
-                        </div>
+            <div className="comments-list">
+              {reviewsWithComments.length > 0 ? (
+                reviewsWithComments.map((review, index) => (
+                  <div key={index} className="comment-card">
+                    <div className="comment-text">
+                      <p>"{review.comment}"</p>
+                    </div>
+                    <div className="comment-meta">
+                      <span className="comment-date">{formatDate(review.timestamp)}</span>
+                      <div className="comment-ratings">
+                        <span className={`rating-badge ${review.teachingStyle || 'average'}`}>
+                          T: {(review.teachingStyle || 'avg').charAt(0).toUpperCase()}
+                        </span>
+                        <span className={`rating-badge ${review.markingStyle || 'average'}`}>
+                          M: {(review.markingStyle || 'avg').charAt(0).toUpperCase()}
+                        </span>
+                        <span className={`rating-badge ${review.studentFriendliness || 'average'}`}>
+                          F: {(review.studentFriendliness || 'avg').charAt(0).toUpperCase()}
+                        </span>
+                        <span className={`rating-badge ${review.attendanceApproach || 'average'}`}>
+                          A: {(review.attendanceApproach || 'avg').charAt(0).toUpperCase()}
+                        </span>
                       </div>
                     </div>
-                    
-                    {review.comment && (
-                      <div className="review-comment">
-                        <p>"{review.comment}"</p>
-                      </div>
-                    )}
                   </div>
                 ))
               ) : (
-                <div className="no-reviews">
-                  <div className="no-reviews-icon">
+                <div className="no-comments">
+                  <div className="no-comments-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                     </svg>
                   </div>
-                  <h4>No Reviews Yet</h4>
-                  <p>Be the first to review {selectedTeacher.name}!</p>
+                  <h4>No Comments Yet</h4>
+                  <p>Students haven't left any written feedback for {selectedTeacher.name} yet.</p>
                 </div>
               )}
             </div>
