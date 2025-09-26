@@ -1,28 +1,35 @@
+"use client";
+
 import React from 'react';
 import './styles.css';
 
 const SectionOverviewModal = ({ 
   section, 
-  teachers, 
+  teachers = [], 
   getTeacherReviewStats, 
   onClose, 
   openViewReviewsModal, 
   setActiveSectionFilter 
 }) => {
+  // Early return if required props are not available
+  if (!section || !teachers || !getTeacherReviewStats) {
+    return null;
+  }
+
   const getSectionTeachers = () => {
     return teachers
-      .filter(teacher => teacher.sections && teacher.sections.includes(section))
+      .filter(teacher => teacher?.sections && teacher.sections.includes(section))
       .map(teacher => ({
         ...teacher,
         stats: getTeacherReviewStats(teacher.id, teacher.name)
       }))
-      .sort((a, b) => parseFloat(b.stats.overallAverage) - parseFloat(a.stats.overallAverage));
+      .sort((a, b) => parseFloat(b.stats?.overallAverage || 0) - parseFloat(a.stats?.overallAverage || 0));
   };
 
   const sectionTeachers = getSectionTeachers();
   
   const getRatingColor = (rating) => {
-    const score = parseFloat(rating);
+    const score = parseFloat(rating || 0);
     if (score >= 3.5) return 'excellent';
     if (score >= 2.5) return 'good';
     if (score >= 1.5) return 'average';
@@ -30,7 +37,7 @@ const SectionOverviewModal = ({
   };
 
   const getRatingText = (rating) => {
-    const score = parseFloat(rating);
+    const score = parseFloat(rating || 0);
     if (score >= 3.5) return 'Excellent';
     if (score >= 2.5) return 'Good';
     if (score >= 1.5) return 'Average';
@@ -38,7 +45,7 @@ const SectionOverviewModal = ({
   };
 
   const renderStars = (rating) => {
-    const score = parseFloat(rating);
+    const score = parseFloat(rating || 0);
     const fullStars = Math.floor(score);
     const hasHalfStar = score % 1 >= 0.5;
     const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
@@ -60,10 +67,10 @@ const SectionOverviewModal = ({
     if (sectionTeachers.length === 0) return { avgRating: 0, totalReviews: 0 };
     
     const totalRating = sectionTeachers.reduce((sum, teacher) => 
-      sum + parseFloat(teacher.stats.overallAverage), 0
+      sum + parseFloat(teacher.stats?.overallAverage || 0), 0
     );
     const totalReviews = sectionTeachers.reduce((sum, teacher) => 
-      sum + teacher.stats.totalReviews, 0
+      sum + (teacher.stats?.totalReviews || 0), 0
     );
     
     return {
@@ -132,8 +139,8 @@ const SectionOverviewModal = ({
               <button 
                 className="filter-section-btn"
                 onClick={() => {
-                  setActiveSectionFilter(section);
-                  onClose();
+                  setActiveSectionFilter?.(section);
+                  onClose?.();
                 }}
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -145,18 +152,19 @@ const SectionOverviewModal = ({
             
             <div className="teachers-list">
               {sectionTeachers.map(teacher => {
-                const ratingColor = getRatingColor(teacher.stats.overallAverage);
-                const ratingText = getRatingText(teacher.stats.overallAverage);
+                const ratingColor = getRatingColor(teacher.stats?.overallAverage);
+                const ratingText = getRatingText(teacher.stats?.overallAverage);
+                const teacherName = teacher.name || 'Unknown Teacher';
                 
                 return (
                   <div key={teacher.id} className={`teacher-row ${ratingColor}`}>
                     <div className="teacher-info">
                       <div className="teacher-avatar">
-                        {teacher.name.split(' ').map(n => n.charAt(0)).join('').toUpperCase()}
+                        {teacherName.split(' ').map(n => n.charAt(0)).join('').toUpperCase()}
                       </div>
                       
                       <div className="teacher-details">
-                        <h4 className="teacher-name">{teacher.name}</h4>
+                        <h4 className="teacher-name">{teacherName}</h4>
                         
                         <div className="teacher-subjects">
                           {teacher.subjects && teacher.subjects.slice(0, 2).map((subject, index) => (
@@ -167,9 +175,9 @@ const SectionOverviewModal = ({
                         </div>
                         
                         <div className="teacher-rating-info">
-                          {renderStars(parseFloat(teacher.stats.overallAverage))}
+                          {renderStars(parseFloat(teacher.stats?.overallAverage || 0))}
                           <span className="rating-details">
-                            {teacher.stats.overallAverage} ({teacher.stats.totalReviews} reviews)
+                            {teacher.stats?.overallAverage || '0.0'} ({teacher.stats?.totalReviews || 0} reviews)
                           </span>
                         </div>
                       </div>
@@ -177,15 +185,15 @@ const SectionOverviewModal = ({
                     
                     <div className="teacher-actions">
                       <div className="rating-badge">
-                        <span className="rating-score">{teacher.stats.overallAverage}</span>
+                        <span className="rating-score">{teacher.stats?.overallAverage || '0.0'}</span>
                         <span className="rating-label">{ratingText}</span>
                       </div>
                       
                       <button 
                         className="view-reviews-btn"
                         onClick={() => {
-                          openViewReviewsModal(teacher);
-                          onClose();
+                          openViewReviewsModal?.(teacher);
+                          onClose?.();
                         }}
                       >
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

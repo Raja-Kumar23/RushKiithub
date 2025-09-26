@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import { X, CreditCard, Shield, Check, AlertCircle, Star, Zap } from 'lucide-react';
 import './styles.css';

@@ -1,138 +1,155 @@
-import React, { useState } from 'react';
-import './styles.css';
+"use client"
 
-const GiveReviewModal = ({ 
-  selectedTeacher, 
-  setShowGiveReviewModal, 
-  submitReview, 
-  hasPremiumAccess, 
-  canSubmitMoreReviews, 
-  getUserReviewLimit, 
-  getUserReviewCount 
+import { useState } from "react"
+import "./styles.css"
+
+const GiveReviewModal = ({
+  selectedTeacher,
+  setShowGiveReviewModal,
+  submitReview,
+  hasPremiumAccess,
+  canSubmitMoreReviews,
+  getUserReviewLimit,
+  getUserReviewCount,
 }) => {
   const [formData, setFormData] = useState({
-    teachingStyle: '',
-    markingStyle: '',
-    studentFriendliness: '',
-    attendanceApproach: '',
-    comment: '',
-    anonymous: false
-  });
+    teachingStyle: "",
+    markingStyle: "",
+    studentFriendliness: "",
+    attendanceApproach: "",
+    comment: "",
+    anonymous: false,
+  })
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [errors, setErrors] = useState({})
 
   const ratingOptions = [
-    { value: 'excellent', label: 'Excellent', color: '#4caf50', icon: '😍' },
-    { value: 'good', label: 'Good', color: '#8bc34a', icon: '😊' },
-    { value: 'average', label: 'Average', color: '#ff9800', icon: '😐' },
-    { value: 'poor', label: 'Poor', color: '#f44336', icon: '😞' }
-  ];
+    { value: "excellent", label: "Excellent", color: "#4caf50", icon: "😍" },
+    { value: "good", label: "Good", color: "#8bc34a", icon: "😊" },
+    { value: "average", label: "Average", color: "#ff9800", icon: "😐" },
+    { value: "poor", label: "Poor", color: "#f44336", icon: "😞" },
+  ]
 
   const categories = [
     {
-      key: 'teachingStyle',
-      label: 'Teaching Style',
-      description: 'How well does the teacher explain concepts and engage students?',
-      icon: '👨‍🏫'
+      key: "teachingStyle",
+      label: "Teaching Style",
+      description: "How well does the teacher explain concepts and engage students?",
+      icon: "👨‍🏫",
     },
     {
-      key: 'markingStyle',
-      label: 'Marking Style',
-      description: 'How fair and consistent is the teacher\'s grading?',
-      icon: '📝'
+      key: "markingStyle",
+      label: "Marking Style",
+      description: "How fair and consistent is the teacher's grading?",
+      icon: "📝",
     },
     {
-      key: 'studentFriendliness',
-      label: 'Student Friendliness',
-      description: 'How approachable and helpful is the teacher?',
-      icon: '🤝'
+      key: "studentFriendliness",
+      label: "Student Friendliness",
+      description: "How approachable and helpful is the teacher?",
+      icon: "🤝",
     },
     {
-      key: 'attendanceApproach',
-      label: 'Attendance Approach',
-      description: 'How does the teacher handle attendance and punctuality?',
-      icon: '📅'
-    }
-  ];
+      key: "attendanceApproach",
+      label: "Attendance Approach",
+      description: "How does the teacher handle attendance and punctuality?",
+      icon: "📅",
+    },
+  ]
+
+  // Early return if selectedTeacher is not available
+  if (!selectedTeacher) {
+    return null
+  }
 
   const handleRatingChange = (category, value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [category]: value
-    }));
-    
+      [category]: value,
+    }))
+
     // Clear error for this category
     if (errors[category]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [category]: ''
-      }));
+        [category]: "",
+      }))
     }
-  };
+  }
 
   const validateForm = () => {
-    const newErrors = {};
-    
-    categories.forEach(category => {
-      if (!formData[category.key]) {
-        newErrors[category.key] = `Please rate ${category.label}`;
-      }
-    });
+    const newErrors = {}
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    categories.forEach((category) => {
+      if (!formData[category.key]) {
+        newErrors[category.key] = `Please rate ${category.label}`
+      }
+    })
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    
+    e.preventDefault()
+
     if (!validateForm()) {
-      return;
+      return
     }
 
-    if (!canSubmitMoreReviews(selectedTeacher.id)) {
-      return;
+    // Check if we can submit more reviews and selectedTeacher exists
+    if (!selectedTeacher?.id || !canSubmitMoreReviews?.(selectedTeacher.id)) {
+      return
     }
 
-    setIsSubmitting(true);
-    
+    setIsSubmitting(true)
+
     try {
-      console.log('GiveReviewModal - Submitting review with data:', formData);
-      await submitReview(formData);
-      console.log('GiveReviewModal - Review submitted successfully');
-      
+      console.log("GiveReviewModal - Submitting review with data:", formData)
+      await submitReview(formData)
+      console.log("GiveReviewModal - Review submitted successfully")
+
       // Reset form after successful submission
       setFormData({
-        teachingStyle: '',
-        markingStyle: '',
-        studentFriendliness: '',
-        attendanceApproach: '',
-        comment: '',
-        anonymous: false
-      });
-      
+        teachingStyle: "",
+        markingStyle: "",
+        studentFriendliness: "",
+        attendanceApproach: "",
+        comment: "",
+        anonymous: false,
+      })
     } catch (error) {
-      console.error('GiveReviewModal - Error submitting review:', error);
+      console.error("GiveReviewModal - Error submitting review:", error)
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
-  const canSubmit = canSubmitMoreReviews(selectedTeacher.id);
-  const reviewLimit = getUserReviewLimit();
-  const currentCount = getUserReviewCount(selectedTeacher.id);
+  // Safe checks for all dependent values
+  const canSubmit = selectedTeacher?.id && canSubmitMoreReviews?.(selectedTeacher.id)
+  const reviewLimit = getUserReviewLimit?.() || 0
+  const currentCount = selectedTeacher?.id ? getUserReviewCount?.(selectedTeacher.id) || 0 : 0
+
+  // Safe teacher name handling
+  const teacherInitials = selectedTeacher?.name
+    ? selectedTeacher.name
+        .split(" ")
+        .map((n) => n.charAt(0))
+        .join("")
+        .toUpperCase()
+    : "?"
 
   return (
-    <div className="give-review-modal-overlay" onClick={() => setShowGiveReviewModal(false)}>
+    <div className="give-review-modal-overlay" onClick={() => setShowGiveReviewModal?.(false)}>
       <div className="give-review-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div className="teacher-info">
             <div className="teacher-avatar">
-              {selectedTeacher.name.split(' ').map(n => n.charAt(0)).join('').toUpperCase()}
+              <span className="avatar-inner">{teacherInitials}</span>
             </div>
             <div className="teacher-details">
-              <h2>Review {selectedTeacher.name}</h2>
+              <h2>Review {selectedTeacher?.name || "Teacher"}</h2>
               <p>Share your experience to help other students</p>
               {!canSubmit && (
                 <div className="review-status-warning">
@@ -141,11 +158,8 @@ const GiveReviewModal = ({
               )}
             </div>
           </div>
-          
-          <button 
-            className="close-btn"
-            onClick={() => setShowGiveReviewModal(false)}
-          >
+
+          <button className="close-btn" onClick={() => setShowGiveReviewModal?.(false)}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
@@ -168,7 +182,7 @@ const GiveReviewModal = ({
 
           <form onSubmit={handleSubmit} className="review-form">
             <div className="form-sections">
-              {categories.map(category => (
+              {categories.map((category) => (
                 <div key={category.key} className="rating-section">
                   <div className="section-header">
                     <div className="section-title">
@@ -179,13 +193,12 @@ const GiveReviewModal = ({
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="rating-options">
-                    {ratingOptions.map(option => (
-                      <label 
-                        key={option.value} 
-                        className={`rating-option ${formData[category.key] === option.value ? 'selected' : ''}`}
-                        style={{ '--option-color': option.color }}
+                    {ratingOptions.map((option) => (
+                      <label
+                        key={option.value}
+                        className={`rating-option ${formData[category.key] === option.value ? "selected" : ""}`}
                       >
                         <input
                           type="radio"
@@ -203,12 +216,8 @@ const GiveReviewModal = ({
                       </label>
                     ))}
                   </div>
-                  
-                  {errors[category.key] && (
-                    <div className="error-message">
-                      {errors[category.key]}
-                    </div>
-                  )}
+
+                  {errors[category.key] && <div className="error-message">{errors[category.key]}</div>}
                 </div>
               ))}
             </div>
@@ -223,20 +232,18 @@ const GiveReviewModal = ({
                   </div>
                 </div>
               </div>
-              
+
               <textarea
                 className="comment-textarea"
                 placeholder="Write your detailed review here... (optional)"
                 value={formData.comment}
-                onChange={(e) => setFormData(prev => ({ ...prev, comment: e.target.value }))}
+                onChange={(e) => setFormData((prev) => ({ ...prev, comment: e.target.value }))}
                 rows={4}
                 maxLength={500}
                 disabled={!canSubmit}
               />
-              
-              <div className="character-count">
-                {formData.comment.length}/500 characters
-              </div>
+
+              <div className="character-count">{formData.comment.length}/500 characters</div>
             </div>
 
             <div className="privacy-section">
@@ -244,7 +251,7 @@ const GiveReviewModal = ({
                 <input
                   type="checkbox"
                   checked={formData.anonymous}
-                  onChange={(e) => setFormData(prev => ({ ...prev, anonymous: e.target.checked }))}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, anonymous: e.target.checked }))}
                   disabled={!canSubmit}
                 />
                 <div className="checkbox-custom"></div>
@@ -259,15 +266,15 @@ const GiveReviewModal = ({
               <button
                 type="button"
                 className="cancel-btn"
-                onClick={() => setShowGiveReviewModal(false)}
+                onClick={() => setShowGiveReviewModal?.(false)}
                 disabled={isSubmitting}
               >
                 Cancel
               </button>
-              
+
               <button
                 type="submit"
-                className={`submit-btn ${!canSubmit ? 'disabled' : ''}`}
+                className={`submit-btn ${!canSubmit ? "disabled" : ""}`}
                 disabled={!canSubmit || isSubmitting}
               >
                 {isSubmitting ? (
@@ -297,63 +304,8 @@ const GiveReviewModal = ({
           </form>
         </div>
       </div>
-
-      <style jsx>{`
-        .realtime-notice {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-          margin-top: 16px;
-          padding: 12px;
-          background: rgba(16, 185, 129, 0.05);
-          border: 1px solid rgba(16, 185, 129, 0.2);
-          border-radius: 8px;
-          font-size: 14px;
-          color: #065f46;
-        }
-
-        .notice-icon {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .pulse-dot {
-          width: 8px;
-          height: 8px;
-          background: #10b981;
-          border-radius: 50%;
-          animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-          0%, 100% { 
-            opacity: 1;
-            transform: scale(1);
-          }
-          50% { 
-            opacity: 0.6;
-            transform: scale(1.2);
-          }
-        }
-
-        .loading-spinner {
-          width: 16px;
-          height: 16px;
-          border: 2px solid rgba(255, 255, 255, 0.3);
-          border-radius: 50%;
-          border-top-color: white;
-          animation: spin 1s linear infinite;
-          margin-right: 8px;
-        }
-
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
     </div>
-  );
-};
+  )
+}
 
-export default GiveReviewModal;
+export default GiveReviewModal

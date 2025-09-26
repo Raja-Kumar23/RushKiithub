@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from 'react';
 import { Crown, Star, Shield, Zap, Users, MessageCircle, X } from 'lucide-react';
 import PaymentModal from '../PaymentModal/page';
