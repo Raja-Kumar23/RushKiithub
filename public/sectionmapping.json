@@ -1,0 +1,38 @@
+{
+  "23053769": {
+    "sections": 1,
+    "year": "2",
+    "semester": "3",
+    "branch": "CSE"
+  },
+  "23051234": {
+    "section": 2,
+    "year": "2", 
+    "semester": "3",
+    "branch": "CSE"
+  },
+  "23051235": {
+    "section": 1,
+    "year": "2",
+    "semester": "3", 
+    "branch": "CSE"
+  },
+  "22051001": {
+    "section": 15,
+    "year": "3",
+    "semester": "5",
+    "branch": "CSE"
+  },
+  "24051001": {
+    "section": 8,
+    "year": "21", 
+    "semester": "4",
+    "branch": "CSE"
+  },
+  "25051001": {
+    "section": 3,
+    "year": "31",
+    "semester": "6", 
+    "branch": "CSE"
+  }
+}

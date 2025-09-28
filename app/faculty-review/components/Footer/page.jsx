@@ -10,10 +10,15 @@ const Footer = () => {
     {
       title: 'Platform',
       links: [
-        { name: 'About', href: '#', icon: <Info size={16} /> },
-        { name: 'How it Works', href: '#', icon: <HelpCircle size={16} /> },
-        { name: 'Guidelines', href: '#', icon: <BookOpen size={16} /> },
-        { name: 'Privacy Policy', href: '#', icon: <Info size={16} /> },
+        { name: 'About', href: 'https://kiithub.in/legal/about/', icon: <Info size={16} /> },
+        { name: 'How it Works', href: 'https://kiithub.in/faculty-review-workflow/', icon: <HelpCircle size={16} /> },
+        { name: 'Terms & Conditions', href: 'https://kiithub.in/legal/terms/', icon: <BookOpen size={16} /> },
+       { 
+  name: 'Privacy Policy', 
+  href: 'https://kiithub.in/legal/privacy/', 
+  icon: <Info size={16} /> 
+}
+
       ],
     },
     {
@@ -22,16 +27,16 @@ const Footer = () => {
         { name: 'Help Center', href: '#', icon: <HelpCircle size={16} /> },
         { name: 'Contact Us', href: '#', icon: <Mail size={16} /> },
         { name: 'Report Issue', href: '#', icon: <Bug size={16} /> },
-        { name: 'Feedback', href: '#', icon: <MessageCircle size={16} /> },
+        { name: 'Feedback', href: 'https://kiithub.in/feedback/', icon: <MessageCircle size={16} /> },
       ],
     },
     {
       title: 'Community',
       links: [
-        { name: 'Student Forum', href: '#', icon: <Users size={16} /> },
-        { name: 'Study Groups', href: '#', icon: <UserPlus size={16} /> },
-        { name: 'Events', href: '#', icon: <Calendar size={16} /> },
-        { name: 'Announcements', href: '#', icon: <Megaphone size={16} /> },
+        { name: 'Whatsapp Group', href: 'https://chat.whatsapp.com/L49NFqYQ1aWCRObYUBpZax', icon: <Users size={16} /> },
+       
+        { name: 'Github', href: 'https://github.com/Raja-Kumar23', icon: <Calendar size={16} /> },
+        { name: 'Linkedin', href: 'https://www.linkedin.com/in/raja-kumar-sah-136288331/', icon: <Megaphone size={16} /> },
       ],
     },
   ];

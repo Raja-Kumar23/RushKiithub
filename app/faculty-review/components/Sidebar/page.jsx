@@ -1,6 +1,7 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import './styles.css';
 
 const Sidebar = ({
   isOpen = false,
@@ -26,16 +27,17 @@ const Sidebar = ({
   setShowAllSections = () => {},
   hasPremiumAccess = false
 }) => {
+  const [hoveredItem, setHoveredItem] = useState(null);
+  const [expandedSections, setExpandedSections] = useState({});
+
   const getSectionStats = () => {
     const sectionMap = new Map();
     
-    // Add null check for teachers array
     if (!teachers || !Array.isArray(teachers)) {
       return [];
     }
     
     teachers.forEach(teacher => {
-      // Add null checks for teacher and teacher.sections
       if (teacher && teacher.sections && Array.isArray(teacher.sections)) {
         teacher.sections.forEach(section => {
           if (!sectionMap.has(section)) {
@@ -56,7 +58,6 @@ const Sidebar = ({
       }
     });
 
-    // Calculate average ratings for sections
     sectionMap.forEach((sectionData) => {
       const totalRating = sectionData.teachers.reduce((sum, teacher) => 
         sum + parseFloat(teacher.stats.overallAverage || '0'), 0
@@ -72,7 +73,6 @@ const Sidebar = ({
   };
 
   const getTopTeachers = () => {
-    // Add null check for teachers array
     if (!teachers || !Array.isArray(teachers)) {
       return [];
     }
@@ -84,26 +84,44 @@ const Sidebar = ({
       }))
       .filter(teacher => teacher.stats && teacher.stats.totalReviews > 0)
       .sort((a, b) => parseFloat(b.stats.overallAverage || '0') - parseFloat(a.stats.overallAverage || '0'))
-      .slice(0, 10);
+      .slice(0, 8);
   };
 
   const menuItems = [
-    { id: 'teachers', label: 'All Teachers', icon: 'users' },
-    { id: 'all-sections', label: 'Sections', icon: 'grid' },
-    { id: 'top-rated', label: 'Top Rated', icon: 'star' }
+    { 
+      id: 'teachers', 
+      label: 'All Teachers', 
+      icon: 'users',
+      description: 'Browse all faculty members',
+      count: teachers.length || 0
+    },
+    { 
+      id: 'all-sections', 
+      label: 'Departments', 
+      icon: 'grid',
+      description: 'Explore by department',
+      count: getSectionStats().length
+    },
+    { 
+      id: 'top-rated', 
+      label: 'Top Rated', 
+      icon: 'star',
+      description: 'Highest rated faculty',
+      count: getTopTeachers().length
+    }
   ];
 
   const filterOptions = [
-    { id: 'all', label: 'All Teachers' },
-    { id: 'highly-recommended', label: 'Highly Recommended' },
-    { id: 'medium', label: 'Average' },
-    { id: 'not-recommended', label: 'Not Recommended' }
+    { id: 'all', label: 'All Teachers', description: 'View all faculty members' },
+    { id: 'highly-recommended', label: 'Excellent', description: '4.5+ rating' },
+    { id: 'medium', label: 'Good', description: '3.0-4.4 rating' },
+    { id: 'not-recommended', label: 'Below Average', description: 'Below 3.0 rating' }
   ];
 
-  const renderIcon = (iconName) => {
+  const renderIcon = (iconName, className = '') => {
     const icons = {
       users: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
           <circle cx="9" cy="7" r="4" />
           <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
@@ -111,7 +129,7 @@ const Sidebar = ({
         </svg>
       ),
       grid: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <rect x="3" y="3" width="7" height="7" />
           <rect x="14" y="3" width="7" height="7" />
           <rect x="14" y="14" width="7" height="7" />
@@ -119,375 +137,293 @@ const Sidebar = ({
         </svg>
       ),
       star: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
+        </svg>
+      ),
+      trending: (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <polyline points="23,6 13.5,15.5 8.5,10.5 1,18" />
+          <polyline points="17,6 23,6 23,12" />
+        </svg>
+      ),
+      award: (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="12" cy="8" r="7" />
+          <polyline points="8.21,13.89 7,23 12,20 17,23 15.79,13.88" />
         </svg>
       )
     };
     return icons[iconName] || null;
   };
 
-  const sidebarStyle = {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    height: '100vh',
-    width: '320px',
-    backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
-    boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
-    transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
-    transition: 'transform 0.3s ease-in-out',
-    zIndex: 50,
-    display: 'flex',
-    flexDirection: 'column',
-    color: isDarkMode ? '#ffffff' : '#000000'
-  };
-
-  const headerStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '24px',
-    borderBottom: `1px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`
-  };
-
-  const contentStyle = {
-    flex: 1,
-    overflowY: 'auto',
-    padding: '0'
-  };
-
-  const sectionStyle = {
-    padding: '24px',
-    borderBottom: `1px solid ${isDarkMode ? '#374151' : '#f3f4f6'}`
-  };
-
-  const sectionTitleStyle = {
-    fontSize: '12px',
-    fontWeight: '600',
-    color: isDarkMode ? '#9ca3af' : '#6b7280',
-    textTransform: 'uppercase',
-    letterSpacing: '0.05em',
-    marginBottom: '12px'
-  };
-
-  const menuItemStyle = (isActive) => ({
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    padding: '12px',
-    fontSize: '14px',
-    fontWeight: '500',
-    borderRadius: '8px',
-    border: 'none',
-    backgroundColor: isActive 
-      ? (isDarkMode ? '#1e40af' : '#dbeafe') 
-      : 'transparent',
-    color: isActive 
-      ? (isDarkMode ? '#bfdbfe' : '#1e40af') 
-      : (isDarkMode ? '#d1d5db' : '#374151'),
-    cursor: 'pointer',
-    transition: 'all 0.2s',
-    marginBottom: '4px'
-  });
-
-  const iconStyle = {
-    marginRight: '12px',
-    height: '20px',
-    width: '20px'
-  };
-
-  const filterOptionStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: '8px',
-    cursor: 'pointer'
-  };
-
-  const radioStyle = {
-    height: '16px',
-    width: '16px',
-    marginRight: '12px'
-  };
-
-  const teacherItemStyle = {
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    padding: '12px',
-    fontSize: '14px',
-    borderRadius: '8px',
-    border: 'none',
-    backgroundColor: 'transparent',
-    color: isDarkMode ? '#d1d5db' : '#374151',
-    cursor: 'pointer',
-    transition: 'all 0.2s',
-    marginBottom: '8px'
-  };
-
-  const avatarStyle = {
-    height: '32px',
-    width: '32px',
-    backgroundColor: '#3b82f6',
-    borderRadius: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: '#ffffff',
-    fontSize: '12px',
-    fontWeight: '500',
-    marginRight: '12px',
-    flexShrink: 0
-  };
-
-  const userSectionStyle = {
-    marginTop: 'auto',
-    padding: '24px',
-    borderTop: `1px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`
-  };
-
-  const userProfileStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: '16px'
-  };
-
-  const userAvatarStyle = {
-    height: '40px',
-    width: '40px',
-    backgroundColor: '#6b7280',
-    borderRadius: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: '#ffffff',
-    fontWeight: '500',
-    marginRight: '12px',
-    flexShrink: 0
-  };
-
-  const themeToggleStyle = {
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    padding: '12px',
-    fontSize: '14px',
-    borderRadius: '8px',
-    border: 'none',
-    backgroundColor: 'transparent',
-    color: isDarkMode ? '#d1d5db' : '#374151',
-    cursor: 'pointer',
-    transition: 'all 0.2s'
-  };
-
   return (
-    <div style={sidebarStyle}>
-      <div style={headerStyle}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <h2 style={{ fontSize: '20px', fontWeight: '600', margin: 0 }}>Menu</h2>
-        </div>
-        <button 
-          style={{
-            padding: '8px',
-            borderRadius: '6px',
-            border: 'none',
-            backgroundColor: 'transparent',
-            color: isDarkMode ? '#9ca3af' : '#6b7280',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
+    <>
+      {/* Backdrop */}
+      {isOpen && (
+        <div 
+          className="sidebar-backdrop"
           onClick={onClose}
-        >
-          <svg style={{ height: '24px', width: '24px' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        </button>
-      </div>
+        />
+      )}
 
-      <div style={contentStyle}>
-        {/* Navigation Menu */}
-        <div style={sectionStyle}>
-          <h3 style={sectionTitleStyle}>Navigation</h3>
-          <nav>
-            {menuItems.map(item => (
-              <button
-                key={item.id}
-                style={menuItemStyle(currentView === item.id)}
-                onClick={() => {
-                  setCurrentView(item.id);
-                  if (item.id === 'all-sections') {
-                    setShowAllSections(true);
-                  } else {
-                    setShowAllSections(false);
-                  }
-                }}
-                onMouseEnter={(e) => {
-                  if (currentView !== item.id) {
-                    e.target.style.backgroundColor = isDarkMode ? '#374151' : '#f9fafb';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (currentView !== item.id) {
-                    e.target.style.backgroundColor = 'transparent';
-                  }
-                }}
-              >
-                <div style={iconStyle}>
-                  {renderIcon(item.icon)}
-                </div>
-                <span>{item.label}</span>
-              </button>
-            ))}
-          </nav>
-        </div>
-
-        {/* Filter Section */}
-        <div style={sectionStyle}>
-          <h3 style={sectionTitleStyle}>Filter Teachers</h3>
-          <div>
-            {filterOptions.map(option => (
-              <label key={option.id} style={filterOptionStyle}>
-                <input
-                  type="radio"
-                  name="teacherFilter"
-                  value={option.id}
-                  checked={teacherFilter === option.id}
-                  onChange={(e) => setTeacherFilter(e.target.value)}
-                  style={radioStyle}
-                />
-                <span style={{ fontSize: '14px' }}>{option.label}</span>
-              </label>
-            ))}
-          </div>
-        </div>
-
-        {/* Top Sections */}
-        <div style={sectionStyle}>
-          <h3 style={sectionTitleStyle}>Top Sections</h3>
-          <div>
-            {getSectionStats().slice(0, 5).map(({ section, averageRating, teachers: sectionTeachers }) => (
-              <button
-                key={section}
-                style={{
-                  ...teacherItemStyle,
-                  backgroundColor: activeSection === section 
-                    ? (isDarkMode ? '#065f46' : '#d1fae5') 
-                    : 'transparent',
-                  color: activeSection === section 
-                    ? (isDarkMode ? '#a7f3d0' : '#065f46') 
-                    : (isDarkMode ? '#d1d5db' : '#374151')
-                }}
-                onClick={() => setActiveSectionFilter(section)}
-                onMouseEnter={(e) => {
-                  if (activeSection !== section) {
-                    e.target.style.backgroundColor = isDarkMode ? '#374151' : '#f9fafb';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (activeSection !== section) {
-                    e.target.style.backgroundColor = 'transparent';
-                  }
-                }}
-              >
-                <div style={{ flex: 1, textAlign: 'left' }}>
-                  <div style={{ fontWeight: '500' }}>Section {section}</div>
-                  <div style={{ fontSize: '12px', color: isDarkMode ? '#9ca3af' : '#6b7280' }}>
-                    {sectionTeachers.length} teachers • ★ {averageRating}
-                  </div>
-                </div>
-                <svg style={{ height: '16px', width: '16px' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <polyline points="9,18 15,12 9,6" />
-                </svg>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Top Teachers */}
-        <div style={sectionStyle}>
-          <h3 style={sectionTitleStyle}>Top Teachers</h3>
-          <div>
-            {getTopTeachers().slice(0, 5).map(teacher => (
-              <button
-                key={teacher.id}
-                style={teacherItemStyle}
-                onClick={() => openViewReviewsModal(teacher)}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = isDarkMode ? '#374151' : '#f9fafb';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = 'transparent';
-                }}
-              >
-                <div style={avatarStyle}>
-                  {teacher.name.charAt(0).toUpperCase()}
-                </div>
-                <div style={{ flex: 1, textAlign: 'left' }}>
-                  <div style={{ fontWeight: '500', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {teacher.name}
-                  </div>
-                  <div style={{ fontSize: '12px', color: isDarkMode ? '#9ca3af' : '#6b7280' }}>
-                    ★ {teacher.stats.overallAverage} ({teacher.stats.totalReviews} reviews)
-                  </div>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* User Info */}
-        <div style={userSectionStyle}>
-          <div style={userProfileStyle}>
-            <div style={userAvatarStyle}>
-              {userName?.charAt(0)?.toUpperCase() || 'U'}
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: '14px', fontWeight: '500', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {userName}
+      {/* Sidebar */}
+      <aside className={`modern-sidebar ${isOpen ? 'open' : ''} ${isDarkMode ? 'dark' : ''}`}>
+        <div className="sidebar-glass-overlay"></div>
+        
+        {/* Header */}
+        <header className="sidebar-header">
+          <div className="sidebar-title-section">
+            <div className="sidebar-logo">
+              <div className="logo-icon">
+                {renderIcon('grid', 'logo-svg')}
               </div>
-              {hasPremiumAccess && (
-                <div style={{ fontSize: '12px', color: '#3b82f6' }}>Premium User</div>
-              )}
+              <div className="logo-text">
+                <h2>Dashboard</h2>
+                <span>Faculty Reviews</span>
+              </div>
             </div>
           </div>
           
-          <button
-            style={themeToggleStyle}
-            onClick={() => setIsDarkMode(!isDarkMode)}
-            onMouseEnter={(e) => {
-              e.target.style.backgroundColor = isDarkMode ? '#374151' : '#f9fafb';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = 'transparent';
-            }}
+          <button 
+            className="sidebar-close-btn"
+            onClick={onClose}
+            aria-label="Close sidebar"
           >
-            <div style={iconStyle}>
-              {isDarkMode ? (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </header>
+
+        {/* Content */}
+        <div className="sidebar-content">
+          {/* Navigation Section */}
+          <section className="sidebar-section">
+            <div className="section-header">
+              <h3 className="section-title">
+                {renderIcon('trending', 'section-icon')}
+                Navigation
+              </h3>
+            </div>
+            
+            <nav className="nav-menu">
+              {menuItems.map(item => (
+                <button
+                  key={item.id}
+                  className={`nav-item ${currentView === item.id ? 'active' : ''}`}
+                  onClick={() => {
+                    setCurrentView(item.id);
+                    if (item.id === 'all-sections') {
+                      setShowAllSections(true);
+                    } else {
+                      setShowAllSections(false);
+                    }
+                  }}
+                  onMouseEnter={() => setHoveredItem(item.id)}
+                  onMouseLeave={() => setHoveredItem(null)}
+                >
+                  <div className="nav-item-icon">
+                    {renderIcon(item.icon)}
+                  </div>
+                  <div className="nav-item-content">
+                    <span className="nav-item-label">{item.label}</span>
+                    <span className="nav-item-description">{item.description}</span>
+                  </div>
+                  <div className="nav-item-badge">
+                    <span>{item.count}</span>
+                  </div>
+                  <div className="nav-item-arrow">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <polyline points="9,18 15,12 9,6" />
+                    </svg>
+                  </div>
+                </button>
+              ))}
+            </nav>
+          </section>
+
+          {/* Filter Section */}
+          <section className="sidebar-section">
+            <div className="section-header">
+              <h3 className="section-title">
+                {renderIcon('star', 'section-icon')}
+                Rating Filter
+              </h3>
+            </div>
+            
+            <div className="filter-grid">
+              {filterOptions.map(option => (
+                <label 
+                  key={option.id} 
+                  className={`filter-card ${teacherFilter === option.id ? 'selected' : ''}`}
+                >
+                  <input
+                    type="radio"
+                    name="teacherFilter"
+                    value={option.id}
+                    checked={teacherFilter === option.id}
+                    onChange={(e) => setTeacherFilter(e.target.value)}
+                  />
+                  <div className="filter-card-content">
+                    <div className="filter-indicator"></div>
+                    <div className="filter-info">
+                      <span className="filter-label">{option.label}</span>
+                      <span className="filter-description">{option.description}</span>
+                    </div>
+                  </div>
+                </label>
+              ))}
+            </div>
+          </section>
+
+          {/* Top Departments */}
+          <section className="sidebar-section">
+            <div className="section-header">
+              <h3 className="section-title">
+                {renderIcon('award', 'section-icon')}
+                Top Departments
+              </h3>
+              <button className="section-expand">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="5" />
-                  <line x1="12" y1="1" x2="12" y2="3" />
-                  <line x1="12" y1="21" x2="12" y2="23" />
-                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-                  <line x1="1" y1="12" x2="3" y2="12" />
-                  <line x1="21" y1="12" x2="23" y2="12" />
-                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                  <polyline points="6,9 12,15 18,9" />
                 </svg>
-              ) : (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-                </svg>
+              </button>
+            </div>
+            
+            <div className="items-grid">
+              {getSectionStats().slice(0, 4).map(({ section, averageRating, teachers: sectionTeachers }, index) => (
+                <button
+                  key={section}
+                  className={`item-card department-card ${activeSection === section ? 'active' : ''}`}
+                  onClick={() => setActiveSectionFilter(section)}
+                >
+                  <div className="item-rank">#{index + 1}</div>
+                  <div className="item-content">
+                    <div className="item-title">Section {section}</div>
+                    <div className="item-stats">
+                      <span className="stat-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
+                        </svg>
+                        {averageRating}
+                      </span>
+                      <span className="stat-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                          <circle cx="9" cy="7" r="4" />
+                        </svg>
+                        {sectionTeachers.length}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="item-arrow">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <polyline points="9,18 15,12 9,6" />
+                    </svg>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {/* Top Teachers */}
+          <section className="sidebar-section">
+            <div className="section-header">
+              <h3 className="section-title">
+                {renderIcon('users', 'section-icon')}
+                Top Faculty
+              </h3>
+            </div>
+            
+            <div className="teachers-list">
+              {getTopTeachers().slice(0, 5).map((teacher, index) => (
+                <button
+                  key={teacher.id}
+                  className="teacher-card"
+                  onClick={() => openViewReviewsModal(teacher)}
+                >
+                  <div className="teacher-rank">#{index + 1}</div>
+                  <div className="teacher-avatar">
+                    <div className="avatar-image">
+                      {teacher.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="avatar-status"></div>
+                  </div>
+                  <div className="teacher-info">
+                    <span className="teacher-name">{teacher.name}</span>
+                    <div className="teacher-stats">
+                      <span className="rating-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
+                        </svg>
+                        {teacher.stats.overallAverage}
+                      </span>
+                      <span className="reviews-count">
+                        {teacher.stats.totalReviews} reviews
+                      </span>
+                    </div>
+                  </div>
+                  <div className="teacher-arrow">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <polyline points="9,18 15,12 9,6" />
+                    </svg>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </section>
+        </div>
+
+        {/* User Footer */}
+        <footer className="sidebar-footer">
+          <div className="user-card">
+            <div className="user-avatar-section">
+              <div className="user-avatar-large">
+                <div className="avatar-bg">
+                  {userName?.charAt(0)?.toUpperCase() || 'U'}
+                </div>
+                {hasPremiumAccess && <div className="premium-crown">👑</div>}
+              </div>
+            </div>
+            
+            <div className="user-info-section">
+              <div className="user-name">{userName}</div>
+              {hasPremiumAccess && (
+                <div className="premium-status">Premium Member</div>
               )}
             </div>
-            <span>{isDarkMode ? 'Light Mode' : 'Dark Mode'}</span>
-          </button>
-        </div>
-      </div>
-    </div>
+            
+            <div className="user-actions">
+              <button
+                className="theme-toggle-btn"
+                onClick={() => setIsDarkMode(!isDarkMode)}
+                aria-label="Toggle theme"
+              >
+                {isDarkMode ? (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="12" cy="12" r="5" />
+                    <line x1="12" y1="1" x2="12" y2="3" />
+                    <line x1="12" y1="21" x2="12" y2="23" />
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                    <line x1="1" y1="12" x2="3" y2="12" />
+                    <line x1="21" y1="12" x2="23" y2="12" />
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                  </svg>
+                )}
+              </button>
+            </div>
+          </div>
+        </footer>
+      </aside>
+    </>
   );
 };
 

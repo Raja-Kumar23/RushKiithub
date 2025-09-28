@@ -4,22 +4,16 @@ import { useEffect, useState, useCallback } from "react"
 import { initializeApp } from "firebase/app"
 import { getAuth, onAuthStateChanged } from "firebase/auth"
 import { getDatabase, ref, onValue, set, push, off } from "firebase/database"
-import { getFirestore, doc, getDoc } from "firebase/firestore"
 
 // Components
 import Header from "./components/Header/page"
 import Sidebar from "./components/Sidebar/page"
 import YearTabs from "./components/YearTabs/page"
 import TeacherGrid from "./components/TeacherGrid/page"
-import AllSectionsSection from "./components/AllSectionsSection/page"
-import SectionOverviewModal from "./components/SectionOverviewModal/page"
+
 import ViewReviewsModal from "./components/ViewReviewsModal/page"
 import GiveReviewModal from "./components/GiveReviewModal/page"
 import Footer from "./components/Footer/page"
-import BlockedUserModal from "./components/BlockedUserModal/page"
-import AIChat from "./components/AIChat/page"
-import PremiumAccessModal from "./components/PremiumAccessModal/page"
-import PaymentModal from "./components/PaymentModal/page"
 import SuccessModal from "./components/SuccessModal/page"
 import ErrorModal from "./components/ErrorModal/page"
 
@@ -48,7 +42,7 @@ export default function App() {
   const [teacherMapping, setTeacherMapping] = useState({})
   const [jsonCache, setJsonCache] = useState({})
 
-  // Review Data - Enhanced with better real-time handling
+  // Review Data
   const [reviews, setReviews] = useState([])
   const [allReviews, setAllReviews] = useState({})
   const [userReviews, setUserReviews] = useState([])
@@ -59,8 +53,6 @@ export default function App() {
   const [currentUser, setCurrentUser] = useState(null)
   const [userName, setUserName] = useState("")
   const [currentUserRollNumber, setCurrentUserRollNumber] = useState("")
-  const [hasPremiumAccess, setHasPremiumAccess] = useState(false)
-  const [premiumLoading, setPremiumLoading] = useState(true)
 
   // Modal States
   const [selectedTeacher, setSelectedTeacher] = useState(null)
@@ -68,9 +60,6 @@ export default function App() {
   const [showViewReviewsModal, setShowViewReviewsModal] = useState(false)
   const [showGiveReviewModal, setShowGiveReviewModal] = useState(false)
   const [showSectionModal, setShowSectionModal] = useState(false)
-  const [showPremiumRestriction, setShowPremiumRestriction] = useState(false)
-  const [showBlockedUser, setShowBlockedUser] = useState(false)
-  const [showPaymentModal, setShowPaymentModal] = useState(false)
 
   // Success/Error Modal States
   const [successModal, setSuccessModal] = useState(null)
@@ -79,12 +68,9 @@ export default function App() {
   // UI States
   const [currentView, setCurrentView] = useState("teachers")
   const [teacherFilter, setTeacherFilter] = useState("all")
-  const [showAllSections, setShowAllSections] = useState(false)
   const [activeSection, setActiveSection] = useState(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [showAIChat, setShowAIChat] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(false)
-  const [countdown, setCountdown] = useState(10)
 
   // Constants
   const BASE_REVIEW_LIMIT = 1
@@ -93,26 +79,6 @@ export default function App() {
 
   // Firebase database instance
   const [database, setDatabase] = useState(null)
-
-  // Payment Functions
-  const handlePaymentSuccess = () => {
-    setShowPaymentModal(false)
-    setShowPremiumRestriction(false)
-    setHasPremiumAccess(true)
-    showSuccessModal("Payment Successful!", "Welcome to KIITHub Premium! Your access has been activated.")
-    setTimeout(() => {
-      window.location.reload()
-    }, 2000)
-  }
-
-  const handlePaymentFailure = (error) => {
-    showErrorModal("Payment Failed", error)
-  }
-
-  const openPaymentModal = () => {
-    setShowPaymentModal(true)
-    setShowPremiumRestriction(false)
-  }
 
   // Utility Functions
   const extractRollNumber = (email) => {
@@ -127,7 +93,7 @@ export default function App() {
     return BASE_REVIEW_LIMIT
   }
 
-  // Helper Functions - Move findTeacherNameById here BEFORE it's used
+  // Helper Functions
   const findTeacherNameById = useCallback(
     (teacherId) => {
       const teacher = teachers.find((t) => t.id === teacherId)
@@ -193,62 +159,6 @@ export default function App() {
     return count > 0 ? (sum / count).toFixed(1) : "0.0"
   }
 
-  // Premium Access Check
-  const checkPremiumAccess = async (currentUser) => {
-    try {
-      setPremiumLoading(true)
-      const email = currentUser.email
-      const uid = currentUser.uid
-      const rollNumber = extractRollNumber(email)
-
-      if (!email) {
-        throw new Error("User email not found")
-      }
-
-      if (UNLIMITED_ROLL_NUMBERS.includes(rollNumber)) {
-        setHasPremiumAccess(true)
-        return true
-      }
-
-      const firestore = getFirestore()
-      const docRef = doc(firestore, "accesscontrol", "paiduser")
-      const docSnap = await getDoc(docRef)
-
-      if (docSnap.exists()) {
-        const data = docSnap.data()
-        const hasEmailAccess = data[email] === true
-        const hasUidAccess = data[uid] === true
-        const hasRollAccess = rollNumber && data[rollNumber] === true
-
-        if (hasEmailAccess || hasUidAccess || hasRollAccess) {
-          setHasPremiumAccess(true)
-          return true
-        }
-      }
-
-      if (rollNumber.startsWith("23") || rollNumber.startsWith("25") || rollNumber.startsWith("22")) {
-        setHasPremiumAccess(false)
-        setShowBlockedUser(true)
-        return false
-      }
-
-      if (rollNumber.startsWith("24")) {
-        setHasPremiumAccess(false)
-        setShowPremiumRestriction(true)
-        return false
-      }
-
-      setHasPremiumAccess(true)
-      return true
-    } catch (error) {
-      console.error("Error checking premium access:", error)
-      setHasPremiumAccess(false)
-      return false
-    } finally {
-      setPremiumLoading(false)
-    }
-  }
-
   // Enhanced Firebase Real-time Listeners
   const setupFirebaseListener = useCallback(
     (path, callback, listenerKey) => {
@@ -268,7 +178,6 @@ export default function App() {
           try {
             const data = snapshot.val() || {}
             callback(data, path)
-            console.log(`Firebase listener updated: ${listenerKey}`, Object.keys(data).length, "items")
           } catch (error) {
             console.error(`Error in Firebase listener ${listenerKey}:`, error)
           }
@@ -289,37 +198,18 @@ export default function App() {
   const loadReviews = useCallback(
     (yearCode) => {
       if (!database) {
-        console.log("[v0] loadReviews - No database connection")
         return
       }
 
-      console.log("[v0] loadReviews - Setting up listener for year:", yearCode)
       const reviewPath = `reviews/year${yearCode}`
 
       setupFirebaseListener(
         reviewPath,
         (data) => {
-          console.log("[v0] loadReviews - Firebase data received:", {
-            yearCode,
-            dataKeys: Object.keys(data),
-            dataCount: Object.keys(data).length,
-          })
-
           const reviewsList = Object.entries(data).map(([id, review]) => ({
             id,
             ...review,
           }))
-
-          console.log("[v0] loadReviews - Processed reviews:", {
-            yearCode,
-            reviewsCount: reviewsList.length,
-            reviews: reviewsList.map((r) => ({
-              id: r.id,
-              teacherId: r.teacherId,
-              hasComment: !!(r.comment && r.comment.trim()),
-              timestamp: r.timestamp,
-            })),
-          })
 
           setReviews(reviewsList)
           setReviewsLastUpdated(Date.now())
@@ -330,14 +220,12 @@ export default function App() {
     [database, setupFirebaseListener],
   )
 
-  // Load all reviews with real-time listeners - Enhanced
+  // Load all reviews with real-time listeners
   const loadAllReviews = useCallback(() => {
     if (!database) {
-      console.log("[v0] loadAllReviews - No database connection")
       return
     }
 
-    console.log("[v0] loadAllReviews - Setting up listeners for all years")
     const yearCodes = ["2", "21", "3", "31"]
 
     yearCodes.forEach((yearCode) => {
@@ -346,11 +234,6 @@ export default function App() {
       setupFirebaseListener(
         reviewPath,
         (data) => {
-          console.log("[v0] loadAllReviews - Data received for year:", {
-            yearCode,
-            dataCount: Object.keys(data).length,
-          })
-
           const reviewsList = Object.entries(data).map(([id, review]) => ({
             id,
             yearCode,
@@ -362,16 +245,10 @@ export default function App() {
               ...prev,
               [yearCode]: reviewsList,
             }
-            console.log("[v0] loadAllReviews - Updated allReviews:", {
-              yearCode,
-              reviewsCount: reviewsList.length,
-              totalYears: Object.keys(updated).length,
-            })
             return updated
           })
 
           if (yearCode === currentYearCode) {
-            console.log("[v0] loadAllReviews - Updating current reviews for active year:", yearCode)
             setReviews(reviewsList)
             setReviewsLastUpdated(Date.now())
           }
@@ -381,7 +258,7 @@ export default function App() {
     })
   }, [database, setupFirebaseListener, currentYearCode])
 
-  // User reviews with real-time updates - Enhanced
+  // User reviews with real-time updates
   const loadUserReviews = useCallback(
     (uid) => {
       if (!database) return
@@ -402,30 +279,15 @@ export default function App() {
 
   const getTeacherReviewStats = useCallback(
     (teacherId, teacherName = null) => {
-      console.log("[v0] getTeacherReviewStats - Called with:", {
-        teacherId,
-        teacherName,
-        currentReviewsCount: reviews.length,
-        allReviewsKeys: Object.keys(allReviews),
-      })
-
       const name = teacherName || findTeacherNameById(teacherId)
       let teacherReviews = []
 
-      // Get reviews from current year - more thorough filtering
+      // Get reviews from current year
       const currentYearReviews = reviews.filter((review) => {
         if (!review || !review.teacherId) return false
 
         const matches = review.teacherId === teacherId || review.teacherId.toString() === teacherId.toString()
 
-        if (matches) {
-          console.log("[v0] Found current year review:", {
-            reviewId: review.id,
-            teacherId: review.teacherId,
-            hasComment: !!(review.comment && review.comment.trim()),
-            timestamp: review.timestamp,
-          })
-        }
         return matches
       })
 
@@ -443,11 +305,6 @@ export default function App() {
               return review.teacherId === yearTeacherId || review.teacherId.toString() === yearTeacherId.toString()
             })
 
-            console.log("[v0] Found cross-year reviews:", {
-              yearCode,
-              yearTeacherId,
-              reviewsCount: teacherYearReviews.length,
-            })
             teacherReviews = [...teacherReviews, ...teacherYearReviews]
           }
         }
@@ -459,7 +316,6 @@ export default function App() {
       teacherReviews.forEach((review) => {
         if (!review) return
 
-        // Create unique key from userId and timestamp, fallback to review id
         const uniqueKey = review.userId
           ? `${review.userId}-${review.timestamp || review.id}`
           : review.id || `${review.timestamp}-${Math.random()}`
@@ -468,15 +324,6 @@ export default function App() {
           seenReviews.add(uniqueKey)
           uniqueReviews.push(review)
         }
-      })
-
-      console.log("[v0] getTeacherReviewStats - Final results:", {
-        teacherId,
-        teacherName: name,
-        totalReviews: uniqueReviews.length,
-        reviewsWithComments: uniqueReviews.filter((r) => r.comment && r.comment.trim()).length,
-        allReviewIds: uniqueReviews.map((r) => r.id),
-        duplicatesRemoved: teacherReviews.length - uniqueReviews.length,
       })
 
       // Initialize rating counters
@@ -488,7 +335,6 @@ export default function App() {
       uniqueReviews.forEach((review) => {
         if (!review) return
 
-        // Handle different possible field names and provide better defaults
         const teachingStyle = review.teachingStyle || review.teaching || review.teachingQuality || "average"
         const markingStyle = review.markingStyle || review.knowledge || review.marking || review.grading || "average"
         const studentFriendliness =
@@ -502,7 +348,6 @@ export default function App() {
 
         const validRatings = ["excellent", "good", "average", "poor"]
 
-        // More robust rating validation and counting
         const normalizeRating = (rating) => {
           if (typeof rating === "string") {
             const normalized = rating.toLowerCase().trim()
@@ -559,7 +404,6 @@ export default function App() {
         },
       }
 
-      console.log("[v0] getTeacherReviewStats - Returning result:", result)
       return result
     },
     [reviews, allReviews, teacherMapping, currentYearCode, findTeacherNameById],
@@ -875,7 +719,6 @@ export default function App() {
   const setActiveSectionFilter = (sectionId) => {
     setActiveSection(sectionId)
     setShowSectionModal(false)
-    setShowAllSections(false)
   }
 
   // Modal Helper Functions
@@ -897,7 +740,7 @@ export default function App() {
 
   const submitReview = async (formData) => {
     if (!selectedTeacher || !currentUser || !database) {
-      console.error("[v0] submitReview - Missing required data:", {
+      console.error("submitReview - Missing required data:", {
         hasSelectedTeacher: !!selectedTeacher,
         hasCurrentUser: !!currentUser,
         hasDatabase: !!database,
@@ -946,13 +789,6 @@ export default function App() {
         teacherId: selectedTeacher.id,
       }
 
-      console.log("[v0] submitReview - Submitting review:", {
-        teacherId: selectedTeacher.id,
-        teacherName: selectedTeacher.name,
-        hasComment: !!(comment && comment.trim()),
-        yearCode: currentYearCode,
-      })
-
       // Use push() to generate unique keys and avoid conflicts
       const reviewsRef = ref(database, `reviews/year${currentYearCode}`)
       const newReviewRef = push(reviewsRef)
@@ -967,12 +803,6 @@ export default function App() {
         yearCode: currentYearCode,
       })
 
-      console.log("[v0] submitReview - Review submitted successfully:", {
-        reviewKey: newReviewRef.key,
-        teacherId: selectedTeacher.id,
-        hasComment: !!(comment && comment.trim()),
-      })
-
       const newReview = {
         id: newReviewRef.key,
         ...baseReview,
@@ -980,11 +810,6 @@ export default function App() {
 
       setReviews((prevReviews) => {
         const updated = [...prevReviews, newReview]
-        console.log("[v0] submitReview - Updated local reviews:", {
-          previousCount: prevReviews.length,
-          newCount: updated.length,
-          newReviewId: newReview.id,
-        })
         return updated
       })
 
@@ -997,7 +822,6 @@ export default function App() {
 
       const newTimestamp = Date.now()
       setReviewsLastUpdated(newTimestamp)
-      console.log("[v0] submitReview - Updated reviewsLastUpdated:", newTimestamp)
 
       // Close modal and show success immediately
       setShowGiveReviewModal(false)
@@ -1012,17 +836,9 @@ export default function App() {
 
       showSuccessModal("Review Submitted Successfully!", successMessage)
     } catch (error) {
-      console.error("[v0] submitReview - Error:", error)
+      console.error("submitReview - Error:", error)
       showErrorModal("Submission Failed", error.message || "Failed to submit review. Please try again.")
     }
-  }
-
-  const handleCountdownComplete = () => {
-    window.location.href = "/"
-  }
-
-  const handleBlockedUserRedirect = () => {
-    window.location.href = "/"
   }
 
   // Cleanup Firebase listeners
@@ -1119,40 +935,6 @@ export default function App() {
     setFilteredTeachers(filtered)
   }, [teachers, activeSection, teacherFilter, getTeacherReviewStats])
 
-  useEffect(() => {
-    switch (currentView) {
-      case "all-sections":
-        setShowAllSections(true)
-        setActiveSection(null)
-        break
-      case "teachers":
-        setShowAllSections(false)
-        setActiveSection(null)
-        break
-      case "best-sections":
-        setShowAllSections(true)
-        setActiveSection(null)
-        break
-      default:
-        break
-    }
-  }, [currentView])
-
-  useEffect(() => {
-    let timer
-    if (showPremiumRestriction && countdown > 0) {
-      timer = setTimeout(() => {
-        setCountdown(countdown - 1)
-      }, 1000)
-    } else if (showPremiumRestriction && countdown === 0) {
-      handleCountdownComplete()
-    }
-
-    return () => {
-      if (timer) clearTimeout(timer)
-    }
-  }, [showPremiumRestriction, countdown])
-
   // Main Firebase initialization effect
   useEffect(() => {
     if (typeof window === "undefined") return
@@ -1184,13 +966,6 @@ export default function App() {
           const rollNumber = email.split("@")[0]
           setCurrentUserRollNumber(rollNumber)
 
-          const hasAccess = await checkPremiumAccess(user)
-
-          if (!hasAccess && !showBlockedUser) {
-            setShowPremiumRestriction(true)
-            return
-          }
-
           if (user.displayName) {
             setUserName(user.displayName)
           } else {
@@ -1204,13 +979,11 @@ export default function App() {
             }
           }
 
-          if (hasAccess) {
-            // Set up all real-time listeners with the database instance
-            loadUserReviews(user.uid)
-            loadAllReviews()
-            loadReviews(currentYearCode)
-            loadTeacherMapping()
-          }
+          // Set up all real-time listeners with the database instance
+          loadUserReviews(user.uid)
+          loadAllReviews()
+          loadReviews(currentYearCode)
+          loadTeacherMapping()
         } else {
           window.location.href = "/"
         }
@@ -1226,14 +999,14 @@ export default function App() {
     }
 
     return cleanup
-  }, [showBlockedUser])
+  }, [])
 
   // Update reviews listener when year changes
   useEffect(() => {
-    if (currentUser && hasPremiumAccess && database) {
+    if (currentUser && database) {
       loadReviews(currentYearCode)
     }
-  }, [currentYearCode, currentUser, hasPremiumAccess, database, loadReviews])
+  }, [currentYearCode, currentUser, database, loadReviews])
 
   // Cleanup on unmount
   useEffect(() => {
@@ -1243,35 +1016,12 @@ export default function App() {
   }, [cleanupFirebaseListeners])
 
   // Render Logic
-  if (showBlockedUser) {
-    return (
-      <div className="app">
-        <BlockedUserModal onRedirect={handleBlockedUserRedirect} userRollNumber={currentUserRollNumber} />
-      </div>
-    )
-  }
-
-  if (showPremiumRestriction) {
-    return (
-      <div className="app">
-        <PremiumAccessModal
-          countdown={countdown}
-          onCountdownComplete={handleCountdownComplete}
-          userRollNumber={currentUserRollNumber}
-          userEmail={currentUser?.email || ""}
-          onPaymentSuccess={handlePaymentSuccess}
-          isDarkMode={isDarkMode}
-        />
-      </div>
-    )
-  }
-
-  if (premiumLoading) {
+  if (isLoading) {
     return (
       <div className="app">
         <div className="loading-screen">
           <div className="spinner"></div>
-          <p>Checking access permissions...</p>
+          <p>Loading teacher reviews...</p>
         </div>
       </div>
     )
@@ -1282,12 +1032,9 @@ export default function App() {
       <Header
         searchTeachers={searchTeachers}
         setSidebarOpen={setSidebarOpen}
-        setShowAIChat={setShowAIChat}
-        showAIChat={showAIChat}
         isDarkMode={isDarkMode}
         setIsDarkMode={setIsDarkMode}
         userName={userName}
-        hasPremiumAccess={hasPremiumAccess}
       />
 
       <Sidebar
@@ -1310,9 +1057,6 @@ export default function App() {
         setIsDarkMode={setIsDarkMode}
         activeSection={activeSection}
         setActiveSection={setActiveSection}
-        showAllSections={showAllSections}
-        setShowAllSections={setShowAllSections}
-        hasPremiumAccess={hasPremiumAccess}
       />
 
       {sidebarOpen && (
@@ -1340,16 +1084,6 @@ export default function App() {
             userRollNumber={currentUserRollNumber}
           />
 
-          {showAllSections && teachers.length > 0 && (
-            <AllSectionsSection
-              teachers={teachers}
-              getTeacherReviewStats={getTeacherReviewStats}
-              openViewReviewsModal={openViewReviewsModal}
-              openSectionModal={openSectionModal}
-              onClose={() => setShowAllSections(false)}
-            />
-          )}
-
           {activeSection && (
             <div className="active-section-filter">
               <div className="filter-badge">
@@ -1369,7 +1103,6 @@ export default function App() {
             openGiveReviewModal={openGiveReviewModal}
             hasReviewedTeacherInAnyYear={hasReviewedTeacherInAnyYear}
             getTeacherReviewStats={getTeacherReviewStats}
-            hasPremiumAccess={hasPremiumAccess}
             canSubmitMoreReviews={canSubmitMoreReviews}
             getUserReviewLimit={getUserReviewLimit}
             getUserReviewCount={getUserReviewCount}
@@ -1383,17 +1116,6 @@ export default function App() {
       </main>
 
       <Footer />
-
-      {showAIChat && (
-        <AIChat
-          onClose={() => setShowAIChat(false)}
-          isDarkMode={isDarkMode}
-          teachers={teachers}
-          allReviews={allReviews}
-          getTeacherReviewStats={getTeacherReviewStats}
-          teacherMapping={teacherMapping}
-        />
-      )}
 
       {showSectionModal && selectedSection && (
         <SectionOverviewModal
@@ -1422,22 +1144,9 @@ export default function App() {
           selectedTeacher={selectedTeacher}
           setShowGiveReviewModal={setShowGiveReviewModal}
           submitReview={submitReview}
-          hasPremiumAccess={hasPremiumAccess}
           canSubmitMoreReviews={canSubmitMoreReviews}
           getUserReviewLimit={getUserReviewLimit}
           getUserReviewCount={getUserReviewCount}
-        />
-      )}
-
-      {showPaymentModal && (
-        <PaymentModal
-          isOpen={showPaymentModal}
-          onClose={() => setShowPaymentModal(false)}
-          userEmail={currentUser?.email || ""}
-          userRollNumber={currentUserRollNumber}
-          onPaymentSuccess={handlePaymentSuccess}
-          onPaymentFailure={handlePaymentFailure}
-          isDarkMode={isDarkMode}
         />
       )}
 
