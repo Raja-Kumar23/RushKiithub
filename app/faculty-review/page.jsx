@@ -76,6 +76,7 @@ export default function App() {
   const BASE_REVIEW_LIMIT = 1
   const SPECIAL_ROLL_NUMBER = "23053769"
   const UNLIMITED_ROLL_NUMBERS = ["23053769"]
+  const REVIEW_DISPLAY_MULTIPLIER = 7 // New constant for display multiplier
 
   // Firebase database instance
   const [database, setDatabase] = useState(null)
@@ -373,7 +374,9 @@ export default function App() {
       const studentFriendlinessAvg = calculateAverage(studentFriendlinessRatings)
       const attendanceApproachAvg = calculateAverage(attendanceApproachRatings)
 
-      const totalReviews = uniqueReviews.length
+      const actualTotalReviews = uniqueReviews.length
+      const displayTotalReviews = actualTotalReviews * REVIEW_DISPLAY_MULTIPLIER // Multiply by 7 for display
+      
       const overallAverage =
         uniqueReviews.length > 0
           ? (
@@ -386,7 +389,8 @@ export default function App() {
           : "0.0"
 
       const result = {
-        totalReviews,
+        totalReviews: displayTotalReviews, // This is now multiplied by 7 for display
+        actualReviewCount: actualTotalReviews, // Keep actual count for internal logic
         overallAverage,
         teacherReviews: uniqueReviews,
         crossSemesterCount: name && teacherMapping[name] ? teacherMapping[name].years.length : 1,
@@ -911,7 +915,7 @@ export default function App() {
       filtered = teachers.filter((teacher) => {
         const stats = getTeacherReviewStats(teacher.id, teacher.name)
         const rating = Number.parseFloat(stats.overallAverage)
-        const reviewCount = stats.totalReviews
+        const reviewCount = stats.actualReviewCount || 0 // Use actual review count for filtering logic
 
         switch (teacherFilter) {
           case "highly-recommended":

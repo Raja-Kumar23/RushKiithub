@@ -1,8 +1,7 @@
+
 "use client"
-
 import { useState } from "react"
-import "./styles.css"
-
+import './styles.css';
 const GiveReviewModal = ({
   selectedTeacher,
   setShowGiveReviewModal,
@@ -54,7 +53,6 @@ const GiveReviewModal = ({
     },
   ]
 
-  // Early return if selectedTeacher is not available
   if (!selectedTeacher) {
     return null
   }
@@ -65,7 +63,6 @@ const GiveReviewModal = ({
       [category]: value,
     }))
 
-    // Clear error for this category
     if (errors[category]) {
       setErrors((prev) => ({
         ...prev,
@@ -94,7 +91,6 @@ const GiveReviewModal = ({
       return
     }
 
-    // Check if we can submit more reviews and selectedTeacher exists
     if (!selectedTeacher?.id || !canSubmitMoreReviews?.(selectedTeacher.id)) {
       return
     }
@@ -106,7 +102,6 @@ const GiveReviewModal = ({
       await submitReview(formData)
       console.log("GiveReviewModal - Review submitted successfully")
 
-      // Reset form after successful submission
       setFormData({
         teachingStyle: "",
         markingStyle: "",
@@ -122,12 +117,10 @@ const GiveReviewModal = ({
     }
   }
 
-  // Safe checks for all dependent values
   const canSubmit = selectedTeacher?.id && canSubmitMoreReviews?.(selectedTeacher.id)
   const reviewLimit = getUserReviewLimit?.() || 0
   const currentCount = selectedTeacher?.id ? getUserReviewCount?.(selectedTeacher.id) || 0 : 0
 
-  // Safe teacher name handling
   const teacherInitials = selectedTeacher?.name
     ? selectedTeacher.name
         .split(" ")
@@ -137,51 +130,60 @@ const GiveReviewModal = ({
     : "?"
 
   return (
-    <div className="give-review-modal-overlay" onClick={() => setShowGiveReviewModal?.(false)}>
-      <div className="give-review-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <div className="teacher-info">
-            <div className="teacher-avatar">
+    <div className="dark-modal-overlay" onClick={() => setShowGiveReviewModal?.(false)}>
+      <div className="dark-modal" onClick={(e) => e.stopPropagation()}>
+        {/* Header */}
+        <div className="dark-modal-header">
+          <div className="dark-teacher-info">
+            <div className="dark-teacher-avatar">
               <span>{teacherInitials}</span>
             </div>
-            <div className="teacher-details">
-              <h3>Review {selectedTeacher?.name || "Teacher"}</h3>
-              <p>Rate your experience</p>
+            <div className="dark-teacher-details">
+              <h2>Review {selectedTeacher?.name || "Teacher"}</h2>
+              <p>Rate your experience across different categories</p>
             </div>
           </div>
-          <button className="close-btn" onClick={() => setShowGiveReviewModal?.(false)}>
+          <button 
+            className="dark-close-btn" 
+            onClick={() => setShowGiveReviewModal?.(false)}
+            aria-label="Close modal"
+          >
             ×
           </button>
         </div>
 
-        <div className="modal-body">
+        {/* Body */}
+        <div className="dark-modal-body">
           {!canSubmit && (
-            <div className="review-limit-warning">
-              <span>⚠️</span>
-              <div>
+            <div className="dark-warning">
+              <div className="dark-warning-icon">⚠️</div>
+              <div className="dark-warning-content">
                 <strong>Review limit reached</strong>
                 <p>You've submitted {currentCount}/{reviewLimit} reviews for this teacher.</p>
               </div>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="review-form">
-            <div className="form-sections">
+          <form onSubmit={handleSubmit} className="dark-review-form">
+            {/* Rating Grid */}
+            <div className="dark-ratings-grid">
               {categories.map((category) => (
-                <div key={category.key} className="rating-section">
-                  <div className="section-header">
-                    <span className="section-icon">{category.icon}</span>
-                    <h4>{category.label}</h4>
+                <div key={category.key} className="dark-rating-section">
+                  <div className="dark-section-header">
+                    <span className="dark-section-icon">{category.icon}</span>
+                    <h3>{category.label}</h3>
                   </div>
-
-                  <div className="rating-options">
+                  
+                  <div className="dark-rating-options">
                     {ratingOptions.map((option) => (
                       <label
                         key={option.value}
-                        className={`rating-option ${formData[category.key] === option.value ? "selected" : ""}`}
+                        className={`dark-rating-option ${
+                          formData[category.key] === option.value ? 'selected' : ''
+                        }`}
                         style={formData[category.key] === option.value ? { 
                           borderColor: option.color, 
-                          backgroundColor: `${option.color}15`,
+                          backgroundColor: `${option.color}20`,
                           color: option.color
                         } : {}}
                       >
@@ -193,68 +195,71 @@ const GiveReviewModal = ({
                           onChange={(e) => handleRatingChange(category.key, e.target.value)}
                           disabled={!canSubmit}
                         />
-                        <span className="option-emoji">{option.icon}</span>
-                        <span className="option-label">{option.label}</span>
+                        <span className="dark-option-emoji">{option.icon}</span>
+                        <span className="dark-option-label">{option.label}</span>
                       </label>
                     ))}
                   </div>
-
-                  {errors[category.key] && <div className="error-message">{errors[category.key]}</div>}
+                  
+                  {errors[category.key] && (
+                    <div className="dark-error-message">{errors[category.key]}</div>
+                  )}
                 </div>
               ))}
             </div>
 
-            <div className="comment-section">
-              <div className="section-header">
-                <span className="section-icon">💬</span>
-                <h4>Additional Comments <span className="optional">(optional)</span></h4>
-              </div>
-
-              <textarea
-                className="comment-textarea"
-                placeholder="Share your experience..."
-                value={formData.comment}
-                onChange={(e) => setFormData((prev) => ({ ...prev, comment: e.target.value }))}
-                rows={3}
-                maxLength={300}
-                disabled={!canSubmit}
-              />
-
-              <div className="character-count">{formData.comment.length}/300</div>
-            </div>
-
-            <div className="privacy-section">
-              <label className="privacy-option">
-                <input
-                  type="checkbox"
-                  checked={formData.anonymous}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, anonymous: e.target.checked }))}
+            {/* Comment and Privacy Section */}
+            <div className="dark-bottom-section">
+              <div className="dark-comment-section">
+                <div className="dark-section-header">
+                  <span className="dark-section-icon">💬</span>
+                  <h3>Additional Comments <span className="dark-optional">(optional)</span></h3>
+                </div>
+                <textarea
+                  className="dark-comment-textarea"
+                  placeholder="Share your detailed experience with this teacher..."
+                  value={formData.comment}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, comment: e.target.value }))}
+                  rows={4}
+                  maxLength={500}
                   disabled={!canSubmit}
                 />
-                <span className="checkmark"></span>
-                <span>Submit anonymously</span>
-              </label>
+                <div className="dark-character-count">{formData.comment.length}/500</div>
+              </div>
+
+              <div className="dark-privacy-section">
+                <label className="dark-privacy-option">
+                  <input
+                    type="checkbox"
+                    checked={formData.anonymous}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, anonymous: e.target.checked }))}
+                    disabled={!canSubmit}
+                  />
+                  <span className="dark-checkmark"></span>
+                  <span className="dark-privacy-text">Submit anonymously</span>
+                </label>
+              </div>
             </div>
 
-            <div className="form-actions">
+            {/* Actions */}
+            <div className="dark-form-actions">
               <button
                 type="button"
-                className="cancel-btn"
+                className="dark-cancel-btn"
                 onClick={() => setShowGiveReviewModal?.(false)}
                 disabled={isSubmitting}
               >
                 Cancel
               </button>
-
               <button
                 type="submit"
-                className={`submit-btn ${!canSubmit ? "disabled" : ""}`}
+                className={`dark-submit-btn ${!canSubmit ? 'disabled' : ''}`}
                 disabled={!canSubmit || isSubmitting}
               >
                 {isSubmitting ? (
                   <>
-                    <div className="loading-spinner"></div>
-                    Submitting...
+                    <div className="dark-loading-spinner"></div>
+                    Submitting Review...
                   </>
                 ) : (
                   "Submit Review"
