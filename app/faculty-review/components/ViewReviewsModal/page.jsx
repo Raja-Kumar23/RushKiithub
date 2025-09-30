@@ -27,6 +27,7 @@ const ViewReviewsModal = ({
 }) => {
   const [teacherId, setTeacherId] = useState(null)
   const [teacherName, setTeacherName] = useState(null)
+  const [activeTab, setActiveTab] = useState("reviews") // "reviews" or "comments"
 
   // Match the multiplier from main page
   const REVIEW_DISPLAY_MULTIPLIER = 7
@@ -164,6 +165,12 @@ const ViewReviewsModal = ({
     }
   }
 
+  const handleTabClick = (tab, e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setActiveTab(tab)
+  }
+
   if (!teacherId || !teacherName) {
     return (
       <div className="modal-overlay" onClick={handleOverlayClick}>
@@ -186,7 +193,7 @@ const ViewReviewsModal = ({
 
   const getRatingColor = (rating) => {
     const score = parseFloat(rating)
-    if (score >= 3.8) return "legendary"  // New tier for exceptional teachers (out of 4)
+    if (score >= 3.8) return "legendary"
     if (score >= 3.5) return "excellent"
     if (score >= 3.0) return "very-good" 
     if (score >= 2.5) return "good"
@@ -273,9 +280,9 @@ const ViewReviewsModal = ({
   return (
     <div className="modal-overlay" onClick={handleOverlayClick}>
       <div className={`modal-container rating-${overallRatingClass}`} onClick={(e) => e.stopPropagation()}>
-        {/* Enhanced Header */}
+        {/* Enhanced Header with Better Teacher Name Positioning */}
         <div className="modal-header">
-          <div className="teacher-info">
+          <div className="teacher-info-left">
             <div className={`teacher-avatar rating-${overallRatingClass}`}>
               {selectedTeacher.name
                 .split(" ")
@@ -285,19 +292,19 @@ const ViewReviewsModal = ({
             </div>
             
             <div className="teacher-details">
-              <h2>{selectedTeacher.name}</h2>
+              <h2 className="teacher-name">{selectedTeacher.name}</h2>
               
               <div className="teacher-meta">
                 {selectedTeacher.subjects && (
                   <div className="subjects-list">
-                    {selectedTeacher.subjects.slice(0, 3).map((subject, index) => (
+                    {selectedTeacher.subjects.slice(0, 2).map((subject, index) => (
                       <span key={index} className="subject-pill">
-                        {subject.length > 15 ? `${subject.substring(0, 15)}...` : subject}
+                        {subject.length > 12 ? `${subject.substring(0, 12)}...` : subject}
                       </span>
                     ))}
-                    {selectedTeacher.subjects.length > 3 && (
+                    {selectedTeacher.subjects.length > 2 && (
                       <span className="subject-pill more">
-                        +{selectedTeacher.subjects.length - 3} more
+                        +{selectedTeacher.subjects.length - 2}
                       </span>
                     )}
                   </div>
@@ -306,11 +313,11 @@ const ViewReviewsModal = ({
                 {selectedTeacher.sections && (
                   <div className="sections-info">
                     <div className="sections-list">
-                      {selectedTeacher.sections.slice(0, 6).map((section, index) => (
+                      {selectedTeacher.sections.slice(0, 4).map((section, index) => (
                         <span key={index} className="section-badge">{section}</span>
                       ))}
-                      {selectedTeacher.sections.length > 6 && (
-                        <span className="section-badge more">+{selectedTeacher.sections.length - 6}</span>
+                      {selectedTeacher.sections.length > 4 && (
+                        <span className="section-badge more">+{selectedTeacher.sections.length - 4}</span>
                       )}
                     </div>
                   </div>
@@ -338,25 +345,44 @@ const ViewReviewsModal = ({
           </button>
         </div>
 
-        {/* Body Content */}
+        {/* Mobile Tab Switch */}
+        <div className="mobile-tab-switch">
+          <button 
+            className={`tab-btn ${activeTab === 'reviews' ? 'active' : ''}`}
+            onClick={(e) => handleTabClick('reviews', e)}
+            type="button"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M9 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-4"/>
+              <path d="M9 7V3a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4"/>
+            </svg>
+            Reviews
+          </button>
+          <button 
+            className={`tab-btn ${activeTab === 'comments' ? 'active' : ''}`}
+            onClick={(e) => handleTabClick('comments', e)}
+            type="button"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              <path d="M8 10h.01M12 10h.01M16 10h.01"/>
+            </svg>
+            Comments ({reviewsWithComments.length})
+          </button>
+        </div>
+
+        {/* Modal Body */}
         <div className="modal-body">
-          <div className="content-grid">
+          {/* Desktop Layout */}
+          <div className="desktop-layout">
             {/* Ratings Section */}
             <div className="ratings-section">
-              <div className="section-content">
-                <h3>Rating Breakdown</h3>
-                
-                <div className="stats-summary">
-                  <div className="stat-item">
-                    <span className="stat-number">{stats.totalReviews}</span>
-                    <span className="stat-label">Total Reviews</span>
-                  </div>
-                  <div className="stat-item">
-                    <span className="stat-number">{reviewsWithComments.length}</span>
-                    <span className="stat-label">Comments</span>
-                  </div>
+                <div className="section-header">
+                  <h3>Rating Breakdown</h3>
+                  
                 </div>
 
+              <div className="section-content">
                 <div className="ratings-grid">
                   {renderRatingCategory("Teaching Style", stats.averages.teachingStyle, stats.ratings.teachingStyle)}
                   {renderRatingCategory("Marking Approach", stats.averages.markingStyle, stats.ratings.markingStyle)}
@@ -368,14 +394,16 @@ const ViewReviewsModal = ({
 
             {/* Comments Section */}
             <div className="comments-section">
-              <div className="section-content">
+              <div className="section-header">
                 <div className="comments-header">
                   <h3>Student Comments</h3>
                   <div className="comments-count">
                     {reviewsWithComments.length} comment{reviewsWithComments.length !== 1 ? 's' : ''}
                   </div>
                 </div>
+              </div>
 
+              <div className="section-content">
                 <div className="comments-list">
                   {reviewsWithComments.length > 0 ? (
                     reviewsWithComments.map((review, index) => (
@@ -406,6 +434,96 @@ const ViewReviewsModal = ({
                   )}
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Mobile Layout */}
+          <div className="mobile-layout">
+            {/* Conditional Rating Breakdown - Only show on reviews tab */}
+            {activeTab === 'reviews' && (
+              <div className="mobile-ratings-top">
+                <div className="stats-summary-mobile">
+                  <div className="stat-item">
+                    <span className="stat-number">{stats.totalReviews}</span>
+                    <span className="stat-label">Reviews</span>
+                  </div>
+                  <div className="stat-item">
+                    <span className="stat-number">{reviewsWithComments.length}</span>
+                    <span className="stat-label">Comments</span>
+                  </div>
+                </div>
+
+                <div className="ratings-grid-mobile">
+                  {renderRatingCategory("Teaching", stats.averages.teachingStyle, stats.ratings.teachingStyle)}
+                  {renderRatingCategory("Marking", stats.averages.markingStyle, stats.ratings.markingStyle)}
+                  {renderRatingCategory("Friendliness", stats.averages.studentFriendliness, stats.ratings.studentFriendliness)}
+                  {renderRatingCategory("Attendance", stats.averages.attendanceApproach, stats.ratings.attendanceApproach)}
+                </div>
+              </div>
+            )}
+
+            {/* Comments-only header when on comments tab */}
+            {activeTab === 'comments' && (
+              <div className="comments-only-header">
+                <div className="comments-header-info">
+                  <h3>Student Comments</h3>
+                  <div className="comments-count">
+                    {reviewsWithComments.length} comment{reviewsWithComments.length !== 1 ? 's' : ''}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Tabbed Content */}
+            <div className="mobile-tab-content">
+              {activeTab === 'reviews' && (
+                <div className="mobile-reviews-content">
+                  <div className="reviews-placeholder">
+                    <div className="placeholder-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M9 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-4"/>
+                        <path d="M9 7V3a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4"/>
+                      </svg>
+                    </div>
+                    <h4>Detailed Reviews</h4>
+                    <p>Individual review breakdowns and detailed feedback would appear here in the full application.</p>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'comments' && (
+                <div className="mobile-comments-content">
+                  <div className="comments-list">
+                    {reviewsWithComments.length > 0 ? (
+                      reviewsWithComments.map((review, index) => (
+                        <div key={`${review.id || index}-${review.timestamp}`} className="comment-card">
+                          <div className="comment-text">
+                            <p>"{review.comment}"</p>
+                          </div>
+                          
+                          <div className="comment-meta">
+                            <span className="comment-date">{formatDate(review.timestamp)}</span>
+                            {!review.anonymous && review.studentName && (
+                              <span className="comment-author">— {review.studentName}</span>
+                            )}
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="no-comments">
+                        <div className="no-comments-icon">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                            <path d="M8 10h.01M12 10h.01M16 10h.01" />
+                          </svg>
+                        </div>
+                        <h4>No Comments Yet</h4>
+                        <p>Be the first to leave a detailed comment about {selectedTeacher.name}!</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
