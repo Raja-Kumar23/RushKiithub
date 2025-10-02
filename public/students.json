@@ -1,0 +1,14 @@
+{
+  "students": [
+    { "rollNumber": "23053769", "year": "2" },
+    { "rollNumber": "2201002", "year": "2" },
+    { "rollNumber": "2201003", "year": "2" },
+    { "rollNumber": "2201004", "year": "2" },
+    { "rollNumber": "2201005", "year": "2" },
+    { "rollNumber": "2201006", "year": "2" },
+    { "rollNumber": "2201007", "year": "2" },
+    { "rollNumber": "2201008", "year": "2" },
+    { "rollNumber": "2201009", "year": "2" },
+    { "rollNumber": "2201010", "year": "2" }
+  ]
+}

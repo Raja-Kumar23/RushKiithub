@@ -15,6 +15,7 @@ import GiveReviewModal from "./components/GiveReviewModal/page"
 import Footer from "./components/Footer/page"
 import SuccessModal from "./components/SuccessModal/page"
 import ErrorModal from "./components/ErrorModal/page"
+import AuthPopup from "./components/AuthPopup/page"
 
 export default function App() {
   // Core State
@@ -23,6 +24,10 @@ export default function App() {
   const [currentYearCode, setCurrentYearCode] = useState("2")
   const [isLoading, setIsLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
+
+  const [showAuthPopup, setShowAuthPopup] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [studentAuthData, setStudentAuthData] = useState(null)
 
   // Teacher Data
   const [teachers, setTeachers] = useState([])
@@ -64,7 +69,26 @@ export default function App() {
   const BASE_REVIEW_LIMIT = 1
   const SPECIAL_ROLL_NUMBER = "23053769"
   const UNLIMITED_ROLL_NUMBERS = ["23053769"]
-  const REVIEW_DISPLAY_MULTIPLIER = 7 // New constant for display multiplier
+  const REVIEW_DISPLAY_MULTIPLIER = 7
+
+  const handleAuthenticated = (authData) => {
+    setStudentAuthData(authData)
+    setIsAuthenticated(true)
+    setShowAuthPopup(false)
+
+    // Set the year based on authenticated semester
+    setCurrentYear(authData.year)
+    setCurrentYearCode(authData.year)
+    setCurrentSemester(authData.semester)
+
+    // If user selected section view, set active section
+    if (authData.viewType === "section") {
+      setActiveSection(authData.filterSection)
+    }
+
+    // Load teachers for the authenticated year
+    loadTeachers(authData.year)
+  }
 
   const extractRollNumber = (email) => {
     if (!email) return null
@@ -149,7 +173,6 @@ export default function App() {
       if (!database) return
 
       setFirebaseListeners((prev) => {
-        // Remove existing listener if it exists
         if (prev.has(listenerKey)) {
           const existingRef = prev.get(listenerKey)
           off(existingRef)
@@ -172,11 +195,10 @@ export default function App() {
           },
         )
 
-        // Return updated Map with new listener
         return new Map(prev).set(listenerKey, dbRef)
       })
     },
-    [database], // Only depend on database, not firebaseListeners
+    [database],
   )
 
   const loadReviews = useCallback(
@@ -204,7 +226,6 @@ export default function App() {
     [setupFirebaseListener],
   )
 
-  // Load all reviews with real-time listeners
   const loadAllReviews = useCallback(() => {
     if (!database) {
       return
@@ -242,7 +263,6 @@ export default function App() {
     })
   }, [setupFirebaseListener, currentYearCode])
 
-  // User reviews with real-time updates
   const loadUserReviews = useCallback(
     (uid) => {
       if (!database) return
@@ -266,7 +286,6 @@ export default function App() {
       const name = teacherName || findTeacherNameById(teacherId)
       let teacherReviews = []
 
-      // Get reviews from current year
       const currentYearReviews = reviews.filter((review) => {
         if (!review || !review.teacherId) return false
 
@@ -277,7 +296,6 @@ export default function App() {
 
       teacherReviews = [...currentYearReviews]
 
-      // Get reviews from other years if teacher exists across multiple years
       if (name && teacherMapping[name]) {
         const teacherInfo = teacherMapping[name]
         for (const yearCode of teacherInfo.years) {
@@ -310,7 +328,6 @@ export default function App() {
         }
       })
 
-      // Initialize rating counters
       const teachingStyleRatings = { excellent: 0, good: 0, average: 0, poor: 0 }
       const markingStyleRatings = { excellent: 0, good: 0, average: 0, poor: 0 }
       const studentFriendlinessRatings = { excellent: 0, good: 0, average: 0, poor: 0 }
@@ -351,14 +368,13 @@ export default function App() {
         attendanceApproachRatings[normalizedAttendance]++
       })
 
-      // Calculate averages
       const teachingStyleAvg = calculateAverage(teachingStyleRatings)
       const markingStyleAvg = calculateAverage(markingStyleRatings)
       const studentFriendlinessAvg = calculateAverage(studentFriendlinessRatings)
       const attendanceApproachAvg = calculateAverage(attendanceApproachRatings)
 
       const actualTotalReviews = uniqueReviews.length
-      const displayTotalReviews = actualTotalReviews * REVIEW_DISPLAY_MULTIPLIER // Multiply by 7 for display
+      const displayTotalReviews = actualTotalReviews * REVIEW_DISPLAY_MULTIPLIER
 
       const overallAverage =
         uniqueReviews.length > 0
@@ -372,8 +388,8 @@ export default function App() {
           : "0.0"
 
       const result = {
-        totalReviews: displayTotalReviews, // This is now multiplied by 7 for display
-        actualReviewCount: actualTotalReviews, // Keep actual count for internal logic
+        totalReviews: displayTotalReviews,
+        actualReviewCount: actualTotalReviews,
         overallAverage,
         teacherReviews: uniqueReviews,
         crossSemesterCount: name && teacherMapping[name] ? teacherMapping[name].years.length : 1,
@@ -491,8 +507,8 @@ export default function App() {
       }
 
       setTeacherMapping(mapping)
-      setCurrentYear("2")
-      await loadTeachers("2")
+
+      setIsLoading(false)
     } catch (error) {
       console.error("Error loading teacher mapping:", error)
       setIsLoading(false)
@@ -503,7 +519,6 @@ export default function App() {
     async (yearCode) => {
       setIsLoading(true)
       setCurrentYearCode(yearCode)
-      setActiveSection(null)
 
       let semester = "3"
       if (yearCode === "2") semester = "3"
@@ -766,13 +781,11 @@ export default function App() {
         teacherId: selectedTeacher.id,
       }
 
-      // Use push() to generate unique keys and avoid conflicts
       const reviewsRef = ref(database, `reviews/year${currentYearCode}`)
       const newReviewRef = push(reviewsRef)
 
       await set(newReviewRef, baseReview)
 
-      // Also save to user reviews
       const userReviewRef = ref(database, `userReviews/${currentUser.uid}/${newReviewRef.key}`)
       await set(userReviewRef, {
         teacherName: selectedTeacher.name,
@@ -800,7 +813,6 @@ export default function App() {
       const newTimestamp = Date.now()
       setReviewsLastUpdated(newTimestamp)
 
-      // Close modal and show success immediately
       setShowGiveReviewModal(false)
 
       const remainingReviews = UNLIMITED_ROLL_NUMBERS.includes(currentUserRollNumber)
@@ -829,7 +841,7 @@ export default function App() {
       })
       return new Map()
     })
-  }, []) // No dependencies needed
+  }, [])
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme")
@@ -888,7 +900,7 @@ export default function App() {
       filtered = teachers.filter((teacher) => {
         const stats = getTeacherReviewStats(teacher.id, teacher.name)
         const rating = Number.parseFloat(stats.overallAverage)
-        const reviewCount = stats.actualReviewCount || 0 // Use actual review count for filtering logic
+        const reviewCount = stats.actualReviewCount || 0
 
         switch (teacherFilter) {
           case "highly-recommended":
@@ -950,11 +962,11 @@ export default function App() {
             }
           }
 
-          // Set up all real-time listeners with the database instance
           loadUserReviews(user.uid)
           loadAllReviews()
-          loadReviews(currentYearCode)
           loadTeacherMapping()
+
+          setShowAuthPopup(true)
         } else {
           window.location.href = "/"
         }
@@ -970,19 +982,31 @@ export default function App() {
     }
 
     return cleanup
-  }, [loadReviews, loadAllReviews, loadUserReviews, cleanupFirebaseListeners, currentYearCode]) // Added proper dependencies
+  }, [loadAllReviews, loadUserReviews, cleanupFirebaseListeners])
 
   useEffect(() => {
-    if (currentUser && database) {
+    if (currentUser && database && isAuthenticated) {
       loadReviews(currentYearCode)
     }
-  }, [currentYearCode, currentUser, loadReviews])
+  }, [currentYearCode, currentUser, isAuthenticated, loadReviews])
 
   useEffect(() => {
     return () => {
       cleanupFirebaseListeners()
     }
   }, [cleanupFirebaseListeners])
+
+  if (showAuthPopup && !isAuthenticated) {
+    return (
+      <div className="app">
+        <AuthPopup
+          userRollNumber={currentUserRollNumber}
+          onAuthenticated={handleAuthenticated}
+          isDarkMode={isDarkMode}
+        />
+      </div>
+    )
+  }
 
   if (isLoading) {
     return (
