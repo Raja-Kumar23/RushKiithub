@@ -10,7 +10,6 @@ import Header from "./components/Header/page"
 import Sidebar from "./components/Sidebar/page"
 import YearTabs from "./components/YearTabs/page"
 import TeacherGrid from "./components/TeacherGrid/page"
-
 import ViewReviewsModal from "./components/ViewReviewsModal/page"
 import GiveReviewModal from "./components/GiveReviewModal/page"
 import Footer from "./components/Footer/page"
@@ -49,7 +48,6 @@ export default function App() {
   const [selectedSection, setSelectedSection] = useState(null)
   const [showViewReviewsModal, setShowViewReviewsModal] = useState(false)
   const [showGiveReviewModal, setShowGiveReviewModal] = useState(false)
-  const [showSectionModal, setShowSectionModal] = useState(false)
 
   // Success/Error Modal States
   const [successModal, setSuccessModal] = useState(null)
@@ -697,14 +695,8 @@ export default function App() {
     setShowGiveReviewModal(true)
   }
 
-  const openSectionModal = (section) => {
-    setSelectedSection(section)
-    setShowSectionModal(true)
-  }
-
   const setActiveSectionFilter = (sectionId) => {
     setActiveSection(sectionId)
-    setShowSectionModal(false)
   }
 
   const showSuccessModal = (title, message) => {
@@ -1019,7 +1011,6 @@ export default function App() {
         teachers={teachers}
         getTeacherReviewStats={getTeacherReviewStats}
         openViewReviewsModal={openViewReviewsModal}
-        openSectionModal={openSectionModal}
         setActiveSectionFilter={setActiveSectionFilter}
         currentView={currentView}
         setCurrentView={setCurrentView}
@@ -1092,17 +1083,6 @@ export default function App() {
       </main>
 
       <Footer />
-
-      {showSectionModal && selectedSection && (
-        <SectionOverviewModal
-          section={selectedSection}
-          teachers={teachers}
-          getTeacherReviewStats={getTeacherReviewStats}
-          onClose={() => setShowSectionModal(false)}
-          openViewReviewsModal={openViewReviewsModal}
-          setActiveSectionFilter={setActiveSectionFilter}
-        />
-      )}
 
       {showViewReviewsModal && selectedTeacher && (
         <ViewReviewsModal
