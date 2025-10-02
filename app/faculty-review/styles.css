@@ -630,3 +630,66 @@ code {
     box-shadow: none !important;
   }
 }
+
+
+.active-section-filter {
+  margin: 1rem 0;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap; /* allows wrapping on small screens */
+}
+
+.filter-badge {
+  display: flex;
+  align-items: center;
+  background-color: #f0f4ff;
+  border: 1px solid #cfd8ff;
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #334155;
+  gap: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  max-width: 100%;        /* never overflows */
+  word-wrap: break-word;  /* wraps text if long */
+}
+
+.clear-filter-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  color: #475569;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.clear-filter-btn:hover {
+  color: #ef4444;
+  transform: scale(1.1);
+}
+
+/* ✅ Responsive tweaks */
+@media (max-width: 768px) {
+  .filter-badge {
+    font-size: 13px;
+    padding: 5px 10px;
+  }
+
+  .clear-filter-btn {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .active-section-filter {
+    justify-content: center; /* center align on very small screens */
+  }
+
+  .filter-badge {
+    width: 100%;
+    justify-content: space-between;
+    font-size: 12px;
+  }
+}

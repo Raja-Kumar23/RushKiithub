@@ -41,23 +41,7 @@ const YearTabs = ({ currentYear, setCurrentYear, loadTeachers, userRollNumber })
         ))}
       </div>
       
-      <div className="tabs-info">
-        <div className="info-card">
-          <div className="info-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="16" x2="12" y2="12" />
-              <line x1="12" y1="8" x2="12.01" y2="8" />
-            </svg>
-          </div>
-          <div className="info-text">
-            <span className="info-title">Pro Tip</span>
-            <span className="info-description">
-              Switch between semesters to compare faculty across different terms
-            </span>
-          </div>
-        </div>
-      </div>
+      
     </div>
   );
 };

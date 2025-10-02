@@ -7,8 +7,8 @@ export default function AuthPopup({ userRollNumber, onAuthenticated, isDarkMode 
   const [isLoading, setIsLoading] = useState(true)
   const [studentData, setStudentData] = useState(null)
   const [selectedSection, setSelectedSection] = useState("")
+  const [selectedView, setSelectedView] = useState("")
   const [error, setError] = useState(null)
-  const [step, setStep] = useState(1) // 1: loading, 2: select section, 3: select view
 
   const allSections = Array.from({ length: 54 }, (_, i) => String(i + 1))
 
@@ -47,7 +47,6 @@ export default function AuthPopup({ userRollNumber, onAuthenticated, isDarkMode 
         semester: semester,
       })
       setIsLoading(false)
-      setStep(2) // Move to section selection
     } catch (err) {
       console.error("Authentication error:", err)
       setError("Failed to authenticate. Please try again.")
@@ -55,17 +54,19 @@ export default function AuthPopup({ userRollNumber, onAuthenticated, isDarkMode 
     }
   }
 
-  const handleSectionSelect = () => {
+  const handleSubmit = () => {
     if (!selectedSection) {
       setError("Please select a section")
       return
     }
-    setError(null)
-    setStep(3) // Move to view selection
-  }
+    if (!selectedView) {
+      setError("Please select a view option")
+      return
+    }
 
-  const handleViewSelection = (viewType) => {
-    if (viewType === "section") {
+    setError(null)
+
+    if (selectedView === "section") {
       onAuthenticated({
         ...studentData,
         section: selectedSection,
@@ -103,8 +104,35 @@ export default function AuthPopup({ userRollNumber, onAuthenticated, isDarkMode 
             <div className="error-icon">⚠️</div>
             <h2>Authentication Failed</h2>
             <p>{error}</p>
+            <div className="contact-admin">
+              <h3>Contact Admin</h3>
+              <div className="contact-methods">
+                <a
+                  href="https://wa.me/917004688371"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="contact-btn whatsapp"
+                >
+                  <span className="contact-icon">📱</span>
+                  <span>WhatsApp: 7004688371</span>
+                </a>
+                <a href="mailto:kiithub025@gmail.com" className="contact-btn email">
+                  <span className="contact-icon">✉️</span>
+                  <span>kiithub025@gmail.com</span>
+                </a>
+                <a
+                  href="https://kiithub.in/feedback/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="contact-btn feedback"
+                >
+                  <span className="contact-icon">📝</span>
+                  <span>Feedback Form</span>
+                </a>
+              </div>
+            </div>
             <button className="retry-btn" onClick={authenticateStudent}>
-              Retry
+              Retry Authentication
             </button>
           </div>
         </div>
@@ -118,85 +146,66 @@ export default function AuthPopup({ userRollNumber, onAuthenticated, isDarkMode 
 
   return (
     <div className="auth-popup-overlay">
-      <div className={`auth-popup ${isDarkMode ? "dark" : ""}`}>
-        <div className="auth-header">
-          <div className="welcome-icon">🎓</div>
-          <h2>Welcome to Faculty Reviews</h2>
-          <p className="roll-number">Roll Number: {studentData.rollNumber}</p>
-        </div>
-
-        <div className="auth-info">
-          <div className="info-card">
-            <span className="info-label">Your Semester</span>
-            <span className="info-value">{studentData.semester}</span>
+      <div className={`auth-popup-compact ${isDarkMode ? "dark" : ""}`}>
+        <div className="auth-header-compact">
+          <div className="welcome-icon-compact">🎓</div>
+          <h2>Faculty Reviews</h2>
+          <div className="student-info-inline">
+            <span className="info-pill">Roll: {studentData.rollNumber}</span>
+            <span className="info-pill">Semester: {studentData.semester}</span>
           </div>
         </div>
 
-        {step === 2 && (
-          <div className="section-selection">
-            <h3>Select Your Section</h3>
-            <p className="selection-description">Choose your section number from the list below</p>
-
-            <div className="section-dropdown-container">
-              <select
-                className="section-dropdown"
-                value={selectedSection}
-                onChange={(e) => setSelectedSection(e.target.value)}
-              >
-                <option value="">-- Select Section --</option>
-                {allSections.map((section) => (
-                  <option key={section} value={section}>
-                    Section {section}
-                  </option>
-                ))}
-              </select>
+        <div className="auth-content-compact">
+          <div className="selection-group">
+            <label className="selection-label">Select Your Section</label>
+            <div className="sections-grid">
+              {allSections.map((section) => (
+                <button
+                  key={section}
+                  className={`section-btn ${selectedSection === section ? "active" : ""}`}
+                  onClick={() => {
+                    setSelectedSection(section)
+                    setError(null)
+                  }}
+                >
+                  {section}
+                </button>
+              ))}
             </div>
-
-            {error && <p className="error-message">{error}</p>}
-
-            <button className="continue-btn" onClick={handleSectionSelect}>
-              Continue
-            </button>
           </div>
-        )}
 
-        {step === 3 && (
-          <>
-            <div className="selected-section-display">
-              <span className="info-label">Selected Section</span>
-              <span className="info-value">{selectedSection}</span>
-              <button className="change-section-btn" onClick={() => setStep(2)}>
-                Change
+          <div className="selection-group">
+            <label className="selection-label">Choose View</label>
+            <div className="view-options-compact">
+              <button
+                className={`view-btn ${selectedView === "section" ? "active" : ""}`}
+                onClick={() => {
+                  setSelectedView("section")
+                  setError(null)
+                }}
+              >
+                <span className="view-icon">👥</span>
+                <span className="view-text">My Section</span>
+              </button>
+              <button
+                className={`view-btn ${selectedView === "all" ? "active" : ""}`}
+                onClick={() => {
+                  setSelectedView("all")
+                  setError(null)
+                }}
+              >
+                <span className="view-icon">🌐</span>
+                <span className="view-text">All Faculties</span>
               </button>
             </div>
+          </div>
 
-            <div className="view-selection">
-              <h3>Choose Your View</h3>
-              <p className="view-description">Select how you want to view faculty information</p>
+          {error && <p className="error-message-compact">{error}</p>}
 
-              <div className="view-options">
-                <button className="view-option-btn section-view" onClick={() => handleViewSelection("section")}>
-                  <div className="option-icon">👥</div>
-                  <div className="option-content">
-                    <h4>My Section Only</h4>
-                    <p>View faculties teaching Section {selectedSection}</p>
-                  </div>
-                </button>
-
-                <button className="view-option-btn all-view" onClick={() => handleViewSelection("all")}>
-                  <div className="option-icon">🌐</div>
-                  <div className="option-content">
-                    <h4>All Faculties</h4>
-                    <p>View all faculties across all sections</p>
-                  </div>
-                </button>
-              </div>
-            </div>
-          </>
-        )}
-
-        <div className="auth-footer">
-          <p className="semester-info">You have access to Semester {studentData.semester} faculty reviews</p>
+          <button className="submit-btn-compact" onClick={handleSubmit} disabled={!selectedSection || !selectedView}>
+            Continue to Reviews
+          </button>
         </div>
       </div>
     </div>
