@@ -1,9 +1,9 @@
 "use client"
 
 import { useEffect, useState, useCallback } from "react"
-import { initializeApp } from "firebase/app"
-import { getAuth, onAuthStateChanged } from "firebase/auth"
-import { getDatabase, ref, onValue, set, push, off } from "firebase/database"
+import { auth, database } from "../../lib/firebase"
+import { onAuthStateChanged } from "firebase/auth"
+import { ref, onValue, set, push, off } from "firebase/database"
 
 // Components
 import Header from "./components/Header/page"
@@ -16,16 +16,6 @@ import GiveReviewModal from "./components/GiveReviewModal/page"
 import Footer from "./components/Footer/page"
 import SuccessModal from "./components/SuccessModal/page"
 import ErrorModal from "./components/ErrorModal/page"
-
-// Firebase Configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyBttVkjVTbgsIhMC_gEmevgmY3X_86itfI",
-  authDomain: "kiithub.in",
-  projectId: "kiithub-1018",
-  storageBucket: "kiithub-1018.firebasestorage.app",
-  messagingSenderId: "560339256269",
-  appId: "1:560339256269:web:dcf89ac3b7d9e553fdfa84",
-}
 
 export default function App() {
   // Core State
@@ -78,10 +68,6 @@ export default function App() {
   const UNLIMITED_ROLL_NUMBERS = ["23053769"]
   const REVIEW_DISPLAY_MULTIPLIER = 7 // New constant for display multiplier
 
-  // Firebase database instance
-  const [database, setDatabase] = useState(null)
-
-  // Utility Functions
   const extractRollNumber = (email) => {
     if (!email) return null
     return email.split("@")[0]
@@ -94,7 +80,6 @@ export default function App() {
     return BASE_REVIEW_LIMIT
   }
 
-  // Helper Functions
   const findTeacherNameById = useCallback(
     (teacherId) => {
       const teacher = teachers.find((t) => t.id === teacherId)
@@ -165,35 +150,35 @@ export default function App() {
     (path, callback, listenerKey) => {
       if (!database) return
 
-      // Remove existing listener if it exists
-      if (firebaseListeners.has(listenerKey)) {
-        const existingRef = firebaseListeners.get(listenerKey)
-        off(existingRef)
-      }
+      setFirebaseListeners((prev) => {
+        // Remove existing listener if it exists
+        if (prev.has(listenerKey)) {
+          const existingRef = prev.get(listenerKey)
+          off(existingRef)
+        }
 
-      const dbRef = ref(database, path)
+        const dbRef = ref(database, path)
 
-      const unsubscribe = onValue(
-        dbRef,
-        (snapshot) => {
-          try {
-            const data = snapshot.val() || {}
-            callback(data, path)
-          } catch (error) {
-            console.error(`Error in Firebase listener ${listenerKey}:`, error)
-          }
-        },
-        (error) => {
-          console.error(`Firebase listener error for ${listenerKey}:`, error)
-        },
-      )
+        const unsubscribe = onValue(
+          dbRef,
+          (snapshot) => {
+            try {
+              const data = snapshot.val() || {}
+              callback(data, path)
+            } catch (error) {
+              console.error(`Error in Firebase listener ${listenerKey}:`, error)
+            }
+          },
+          (error) => {
+            console.error(`Firebase listener error for ${listenerKey}:`, error)
+          },
+        )
 
-      // Store the reference for cleanup
-      setFirebaseListeners((prev) => new Map(prev).set(listenerKey, dbRef))
-
-      return unsubscribe
+        // Return updated Map with new listener
+        return new Map(prev).set(listenerKey, dbRef)
+      })
     },
-    [database],
+    [database], // Only depend on database, not firebaseListeners
   )
 
   const loadReviews = useCallback(
@@ -218,7 +203,7 @@ export default function App() {
         `reviews-${yearCode}`,
       )
     },
-    [database, setupFirebaseListener],
+    [setupFirebaseListener],
   )
 
   // Load all reviews with real-time listeners
@@ -257,7 +242,7 @@ export default function App() {
         `all-reviews-${yearCode}`,
       )
     })
-  }, [database, setupFirebaseListener, currentYearCode])
+  }, [setupFirebaseListener, currentYearCode])
 
   // User reviews with real-time updates
   const loadUserReviews = useCallback(
@@ -275,7 +260,7 @@ export default function App() {
         `user-reviews-${uid}`,
       )
     },
-    [database, setupFirebaseListener],
+    [setupFirebaseListener],
   )
 
   const getTeacherReviewStats = useCallback(
@@ -376,7 +361,7 @@ export default function App() {
 
       const actualTotalReviews = uniqueReviews.length
       const displayTotalReviews = actualTotalReviews * REVIEW_DISPLAY_MULTIPLIER // Multiply by 7 for display
-      
+
       const overallAverage =
         uniqueReviews.length > 0
           ? (
@@ -413,7 +398,6 @@ export default function App() {
     [reviews, allReviews, teacherMapping, currentYearCode, findTeacherNameById],
   )
 
-  // Data Loading Functions
   const extractTeachersFromData = (data, fileCode) => {
     if (!data) return []
 
@@ -627,7 +611,6 @@ export default function App() {
     setIsLoading(false)
   }
 
-  // Search and Filter Functions
   const searchTeachers = (searchTerm) => {
     searchTerm = typeof searchTerm === "string" ? searchTerm.toLowerCase().trim() : ""
     setSearchTerm(searchTerm)
@@ -703,7 +686,6 @@ export default function App() {
     return !canSubmitMoreReviews(teacherId)
   }
 
-  // Modal Functions
   const openViewReviewsModal = (teacher) => {
     setSelectedTeacher(teacher)
     setShowViewReviewsModal(true)
@@ -725,7 +707,6 @@ export default function App() {
     setShowSectionModal(false)
   }
 
-  // Modal Helper Functions
   const showSuccessModal = (title, message) => {
     setSuccessModal({ title, message })
   }
@@ -845,19 +826,19 @@ export default function App() {
     }
   }
 
-  // Cleanup Firebase listeners
   const cleanupFirebaseListeners = useCallback(() => {
-    firebaseListeners.forEach((dbRef) => {
-      try {
-        off(dbRef)
-      } catch (error) {
-        console.warn("Error cleaning up Firebase listener:", error)
-      }
+    setFirebaseListeners((currentListeners) => {
+      currentListeners.forEach((dbRef) => {
+        try {
+          off(dbRef)
+        } catch (error) {
+          console.warn("Error cleaning up Firebase listener:", error)
+        }
+      })
+      return new Map()
     })
-    setFirebaseListeners(new Map())
-  }, [])
+  }, []) // No dependencies needed
 
-  // Effects
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme")
     if (savedTheme) {
@@ -939,18 +920,12 @@ export default function App() {
     setFilteredTeachers(filtered)
   }, [teachers, activeSection, teacherFilter, getTeacherReviewStats])
 
-  // Main Firebase initialization effect
   useEffect(() => {
     if (typeof window === "undefined") return
 
     let cleanup = () => {}
 
     try {
-      const app = initializeApp(firebaseConfig)
-      const auth = getAuth(app)
-      const db = getDatabase(app)
-      setDatabase(db)
-
       const unsubscribe = onAuthStateChanged(auth, async (user) => {
         if (user && user.email) {
           if (!user.email.toLowerCase().endsWith("@kiit.ac.in")) {
@@ -1003,23 +978,20 @@ export default function App() {
     }
 
     return cleanup
-  }, [])
+  }, [loadReviews, loadAllReviews, loadUserReviews, cleanupFirebaseListeners, currentYearCode]) // Added proper dependencies
 
-  // Update reviews listener when year changes
   useEffect(() => {
     if (currentUser && database) {
       loadReviews(currentYearCode)
     }
-  }, [currentYearCode, currentUser, database, loadReviews])
+  }, [currentYearCode, currentUser, loadReviews])
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       cleanupFirebaseListeners()
     }
   }, [cleanupFirebaseListeners])
 
-  // Render Logic
   if (isLoading) {
     return (
       <div className="app">
