@@ -1,113 +1,120 @@
-"use client";
+"use client"
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import './styles.css';
+import { useState, useEffect, useRef, useCallback } from "react"
+import "./styles.css"
 
-const Header = ({ 
-  searchTeachers, 
-  setSidebarOpen, 
-  userName, 
+const Header = ({
+  searchTeachers,
+  userName,
   hasPremiumAccess,
   teachers = [],
   setShowAIChat,
   showAIChat,
   isDarkMode,
-  setIsDarkMode
+  setIsDarkMode,
 }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [filteredSuggestions, setFilteredSuggestions] = useState([]);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const searchRef = useRef(null);
-  const suggestionsRef = useRef(null);
+  const [searchQuery, setSearchQuery] = useState("")
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const [filteredSuggestions, setFilteredSuggestions] = useState([])
+  const [isScrolled, setIsScrolled] = useState(false)
+  const searchRef = useRef(null)
+  const suggestionsRef = useRef(null)
 
   // Handle scroll effect for header
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+      setIsScrolled(window.scrollY > 20)
+    }
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
   // Memoize the filter function
-  const filterTeachers = useCallback((query) => {
-    if (!query || query.length < 2) {
-      return [];
-    }
-    
-    const searchTerm = query.toLowerCase().trim();
-    
-    return teachers
-      .filter(teacher => 
-        teacher && 
-        teacher.name && 
-        teacher.name.toLowerCase().includes(searchTerm)
-      )
-      .slice(0, 8);
-  }, [teachers]);
+  const filterTeachers = useCallback(
+    (query) => {
+      if (!query || query.length < 2) {
+        return []
+      }
+
+      const searchTerm = query.toLowerCase().trim()
+
+      return teachers
+        .filter((teacher) => teacher && teacher.name && teacher.name.toLowerCase().includes(searchTerm))
+        .slice(0, 8)
+    },
+    [teachers],
+  )
 
   // Handle search input changes
-  const handleSearch = useCallback((e) => {
-    const value = e.target.value;
-    setSearchQuery(value);
-    
-    if (searchTeachers) {
-      searchTeachers(value);
-    }
-    
-    if (value.length >= 2) {
-      const filtered = filterTeachers(value);
-      setFilteredSuggestions(filtered);
-      setShowSuggestions(true);
-    } else {
-      setFilteredSuggestions([]);
-      setShowSuggestions(false);
-    }
-  }, [searchTeachers, filterTeachers]);
+  const handleSearch = useCallback(
+    (e) => {
+      const value = e.target.value
+      setSearchQuery(value)
+
+      if (searchTeachers) {
+        searchTeachers(value)
+      }
+
+      if (value.length >= 2) {
+        const filtered = filterTeachers(value)
+        setFilteredSuggestions(filtered)
+        setShowSuggestions(true)
+      } else {
+        setFilteredSuggestions([])
+        setShowSuggestions(false)
+      }
+    },
+    [searchTeachers, filterTeachers],
+  )
 
   // Handle suggestion click
-  const handleSuggestionClick = useCallback((teacher) => {
-    const teacherName = teacher.name;
-    setSearchQuery(teacherName);
-    setShowSuggestions(false);
-    
-    if (searchTeachers) {
-      searchTeachers(teacherName);
-    }
-  }, [searchTeachers]);
+  const handleSuggestionClick = useCallback(
+    (teacher) => {
+      const teacherName = teacher.name
+      setSearchQuery(teacherName)
+      setShowSuggestions(false)
+
+      if (searchTeachers) {
+        searchTeachers(teacherName)
+      }
+    },
+    [searchTeachers],
+  )
 
   // Handle search focus
   const handleSearchFocus = useCallback(() => {
     if (searchQuery.length >= 2 && filteredSuggestions.length > 0) {
-      setShowSuggestions(true);
+      setShowSuggestions(true)
     }
-  }, [searchQuery, filteredSuggestions]);
+  }, [searchQuery, filteredSuggestions])
 
   // Handle click outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
-        searchRef.current && !searchRef.current.contains(event.target) &&
-        suggestionsRef.current && !suggestionsRef.current.contains(event.target)
+        searchRef.current &&
+        !searchRef.current.contains(event.target) &&
+        suggestionsRef.current &&
+        !suggestionsRef.current.contains(event.target)
       ) {
-        setShowSuggestions(false);
+        setShowSuggestions(false)
       }
-    };
+    }
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside)
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
 
   return (
-    <header className={`modern-header ${isScrolled ? 'scrolled' : ''} ${isDarkMode ? 'dark' : ''}`}>
+    <header className={`modern-header ${isScrolled ? "scrolled" : ""} ${isDarkMode ? "dark" : ""}`}>
       <div className="header-glass-overlay"></div>
-      
+
       <div className="header-container">
         {/* Left Section */}
         <div className="header-left">
+          {/* 
           <button
             onClick={() => setSidebarOpen(true)}
             className="menu-button"
@@ -119,7 +126,8 @@ const Header = ({
               <span></span>
             </div>
           </button>
-          
+          */}
+
           <div className="logo-container">
             <div className="logo-gradient">
               <h1 className="logo-text">
@@ -153,9 +161,9 @@ const Header = ({
                 <button
                   className="search-clear"
                   onClick={() => {
-                    setSearchQuery('');
-                    setShowSuggestions(false);
-                    if (searchTeachers) searchTeachers('');
+                    setSearchQuery("")
+                    setShowSuggestions(false)
+                    if (searchTeachers) searchTeachers("")
                   }}
                 >
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -181,9 +189,7 @@ const Header = ({
                       onClick={() => handleSuggestionClick(teacher)}
                     >
                       <div className="suggestion-content">
-                        <div className="teacher-avatar">
-                          {teacher.name.charAt(0).toUpperCase()}
-                        </div>
+                        <div className="teacher-avatar">{teacher.name.charAt(0).toUpperCase()}</div>
                         <div className="suggestion-info">
                           <span className="teacher-name">{teacher.name}</span>
                           <span className="teacher-department">Professor</span>
@@ -231,23 +237,19 @@ const Header = ({
 
             <div className="user-profile">
               <div className="user-avatar">
-                <div className="avatar-image">
-                  {userName?.charAt(0)?.toUpperCase() || 'U'}
-                </div>
+                <div className="avatar-image">{userName?.charAt(0)?.toUpperCase() || "U"}</div>
                 {hasPremiumAccess && <div className="premium-indicator"></div>}
               </div>
               <div className="user-details">
-                <span className="user-name">{userName || 'User'}</span>
-                {hasPremiumAccess && (
-                  <span className="premium-label">Premium</span>
-                )}
+                <span className="user-name">{userName || "User"}</span>
+                {hasPremiumAccess && <span className="premium-label">Premium</span>}
               </div>
             </div>
           </div>
         </div>
       </div>
     </header>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header

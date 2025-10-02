@@ -7,8 +7,6 @@ import { ref, onValue, set, push, off } from "firebase/database"
 import "./styles.css"
 // Components
 import Header from "./components/Header/page"
-import Sidebar from "./components/Sidebar/page"
-import YearTabs from "./components/YearTabs/page"
 import TeacherGrid from "./components/TeacherGrid/page"
 import ViewReviewsModal from "./components/ViewReviewsModal/page"
 import GiveReviewModal from "./components/GiveReviewModal/page"
@@ -482,6 +480,7 @@ export default function App() {
           if (!teacher || !teacher.name) return
 
           const teacherId = teacher.id || teacher.teacherId || `generated_${Math.random().toString(36).substring(2, 9)}`
+
           const normalizedName = teacher.name.trim().toLowerCase()
 
           let existingKey = null
@@ -1029,51 +1028,28 @@ export default function App() {
         userName={userName}
       />
 
-      <Sidebar
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-        teachers={teachers}
-        getTeacherReviewStats={getTeacherReviewStats}
-        openViewReviewsModal={openViewReviewsModal}
-        setActiveSectionFilter={setActiveSectionFilter}
-        currentView={currentView}
-        setCurrentView={setCurrentView}
-        teacherFilter={teacherFilter}
-        setTeacherFilter={setTeacherFilter}
-        allReviews={allReviews}
-        teacherMapping={teacherMapping}
-        currentUser={currentUser}
-        userName={userName}
-        isDarkMode={isDarkMode}
-        setIsDarkMode={setIsDarkMode}
-        activeSection={activeSection}
-        setActiveSection={setActiveSection}
-      />
-
-      {sidebarOpen && (
-        <div
-          className="sidebar-overlay"
-          onClick={() => setSidebarOpen(false)}
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            zIndex: 998,
-          }}
-        />
-      )}
-
-      <main className={`main-content ${sidebarOpen ? "sidebar-open" : ""}`}>
+      <main className="main-content">
         <div className="container">
-          <YearTabs
-            currentYear={currentYear}
-            setCurrentYear={setCurrentYear}
-            loadTeachers={loadTeachers}
-            userRollNumber={currentUserRollNumber}
-          />
+          <div className="user-info-display">
+            <div className="user-info-pill">
+              <span className="user-info-label">Name:</span>
+              <span className="user-info-value">{userName}</span>
+            </div>
+            <div className="user-info-pill">
+              <span className="user-info-label">Roll:</span>
+              <span className="user-info-value">{currentUserRollNumber}</span>
+            </div>
+            <div className="user-info-pill">
+              <span className="user-info-label">Email:</span>
+              <span className="user-info-value">{currentUser?.email}</span>
+            </div>
+            {studentAuthData?.filterSection && (
+              <div className="user-info-pill">
+                <span className="user-info-label">Section:</span>
+                <span className="user-info-value">{studentAuthData.filterSection}</span>
+              </div>
+            )}
+          </div>
 
           {activeSection && (
             <div className="active-section-filter">
