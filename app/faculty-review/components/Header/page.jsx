@@ -3,16 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react"
 import "./styles.css"
 
-const Header = ({
-  searchTeachers,
-  userName,
-  hasPremiumAccess,
-  teachers = [],
-  setShowAIChat,
-  showAIChat,
-  isDarkMode,
-  setIsDarkMode,
-}) => {
+const Header = ({ searchTeachers, userName, hasPremiumAccess, teachers = [], setShowAIChat, showAIChat }) => {
   const [searchQuery, setSearchQuery] = useState("")
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [filteredSuggestions, setFilteredSuggestions] = useState([])
@@ -108,7 +99,7 @@ const Header = ({
   }, [])
 
   return (
-    <header className={`modern-header ${isScrolled ? "scrolled" : ""} ${isDarkMode ? "dark" : ""}`}>
+    <header className={`modern-header ${isScrolled ? "scrolled" : ""}`}>
       <div className="header-glass-overlay"></div>
 
       <div className="header-container">
@@ -211,30 +202,6 @@ const Header = ({
         {/* Right Section - Enhanced User Profile */}
         <div className="header-right">
           <div className="header-actions">
-            <button
-              className="action-button theme-toggle"
-              onClick={() => setIsDarkMode(!isDarkMode)}
-              aria-label="Toggle theme"
-            >
-              {isDarkMode ? (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="5" />
-                  <line x1="12" y1="1" x2="12" y2="3" />
-                  <line x1="12" y1="21" x2="12" y2="23" />
-                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-                  <line x1="1" y1="12" x2="3" y2="12" />
-                  <line x1="21" y1="12" x2="23" y2="12" />
-                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-                </svg>
-              ) : (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-                </svg>
-              )}
-            </button>
-
             <div className="user-profile">
               <div className="user-avatar">
                 <div className="avatar-image">{userName?.charAt(0)?.toUpperCase() || "U"}</div>
