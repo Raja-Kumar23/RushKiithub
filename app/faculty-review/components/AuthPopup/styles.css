@@ -55,10 +55,11 @@
 /* Updated header with kiithub green accent */
 .auth-header-compact {
   text-align: center;
-  padding: 30px 30px 20px;
+  padding: 20px 20px 20px;
   background: #1a1f2e;
   border-bottom: 3px solid #00d9a3;
   color: white;
+
 }
 
 .welcome-icon-compact {
@@ -108,6 +109,14 @@
   color: #ffffff;
 }
 
+/* Added helper text styling for optional section message */
+.helper-text {
+  font-size: 13px;
+  color: #95a5a6;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
 /* Added grid layout for section buttons */
 .sections-grid {
   display: grid;
@@ -118,6 +127,12 @@
   padding: 4px;
   background: rgba(0, 0, 0, 0.2);
   border-radius: 10px;
+}
+
+/* Optional state for sections grid when viewing all faculties */
+.sections-grid.optional {
+  opacity: 0.85;
+  border: 2px dashed rgba(0, 217, 163, 0.3);
 }
 
 .sections-grid::-webkit-scrollbar {

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import "./styles.css"
 
-export default function AuthPopup({ userRollNumber, onAuthenticated, isDarkMode }) {
+export default function AuthPopup({ userRollNumber, onAuthenticated }) {
   const [isLoading, setIsLoading] = useState(true)
   const [studentData, setStudentData] = useState(null)
   const [selectedSection, setSelectedSection] = useState("")
@@ -55,12 +55,12 @@ export default function AuthPopup({ userRollNumber, onAuthenticated, isDarkMode 
   }
 
   const handleSubmit = () => {
-    if (!selectedSection) {
-      setError("Please select a section")
+    if (selectedView === "section" && !selectedSection) {
+      setError("Please select your section to view section-specific reviews")
       return
     }
     if (!selectedView) {
-      setError("Please select a view option")
+      setError("Please choose a view option")
       return
     }
 
@@ -76,7 +76,7 @@ export default function AuthPopup({ userRollNumber, onAuthenticated, isDarkMode 
     } else {
       onAuthenticated({
         ...studentData,
-        section: selectedSection,
+        section: selectedSection || null,
         viewType: "all",
         filterSection: null,
       })
@@ -86,7 +86,7 @@ export default function AuthPopup({ userRollNumber, onAuthenticated, isDarkMode 
   if (isLoading) {
     return (
       <div className="auth-popup-overlay">
-        <div className={`auth-popup ${isDarkMode ? "dark" : ""}`}>
+        <div className="auth-popup dark">
           <div className="auth-loading">
             <div className="spinner"></div>
             <p>Authenticating your access...</p>
@@ -99,7 +99,7 @@ export default function AuthPopup({ userRollNumber, onAuthenticated, isDarkMode 
   if (error && !studentData) {
     return (
       <div className="auth-popup-overlay">
-        <div className={`auth-popup ${isDarkMode ? "dark" : ""}`}>
+        <div className="auth-popup dark">
           <div className="auth-error">
             <div className="error-icon">⚠️</div>
             <h2>Authentication Failed</h2>
@@ -146,7 +146,7 @@ export default function AuthPopup({ userRollNumber, onAuthenticated, isDarkMode 
 
   return (
     <div className="auth-popup-overlay">
-      <div className={`auth-popup-compact ${isDarkMode ? "dark" : ""}`}>
+      <div className="auth-popup-compact dark">
         <div className="auth-header-compact">
           <div className="welcome-icon-compact">🎓</div>
           <h2>Faculty Reviews</h2>
@@ -158,8 +158,45 @@ export default function AuthPopup({ userRollNumber, onAuthenticated, isDarkMode 
 
         <div className="auth-content-compact">
           <div className="selection-group">
-            <label className="selection-label">Select Your Section</label>
-            <div className="sections-grid">
+            <label className="selection-label">Choose Your View</label>
+            <div className="view-options-compact">
+              <button
+                className={`view-btn ${selectedView === "section" ? "active" : ""}`}
+                onClick={() => {
+                  setSelectedView("section")
+                  setError(null)
+                }}
+              >
+                <span className="view-icon">👥</span>
+                <span className="view-text">My Section Only</span>
+              </button>
+              <button
+                className={`view-btn ${selectedView === "all" ? "active" : ""}`}
+                onClick={() => {
+                  setSelectedView("all")
+                  setError(null)
+                }}
+              >
+                <span className="view-icon">🌐</span>
+                <span className="view-text">All Faculties</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="selection-group">
+            <label className="selection-label">
+              {selectedView === "section"
+                ? "Select Your Section (Required)"
+                : selectedView === "all"
+                  ? "Your Section (Optional)"
+                  : "Select Your Section"}
+            </label>
+            {selectedView === "all" && (
+              <p className="helper-text">
+                You can optionally select your section for reference, but you'll see all faculty reviews
+              </p>
+            )}
+            <div className={`sections-grid ${selectedView === "all" ? "optional" : ""}`}>
               {allSections.map((section) => (
                 <button
                   key={section}
@@ -175,36 +212,14 @@ export default function AuthPopup({ userRollNumber, onAuthenticated, isDarkMode 
             </div>
           </div>
 
-          <div className="selection-group">
-            <label className="selection-label">Choose View</label>
-            <div className="view-options-compact">
-              <button
-                className={`view-btn ${selectedView === "section" ? "active" : ""}`}
-                onClick={() => {
-                  setSelectedView("section")
-                  setError(null)
-                }}
-              >
-                <span className="view-icon">👥</span>
-                <span className="view-text">My Section</span>
-              </button>
-              <button
-                className={`view-btn ${selectedView === "all" ? "active" : ""}`}
-                onClick={() => {
-                  setSelectedView("all")
-                  setError(null)
-                }}
-              >
-                <span className="view-icon">🌐</span>
-                <span className="view-text">All Faculties</span>
-              </button>
-            </div>
-          </div>
-
           {error && <p className="error-message-compact">{error}</p>}
 
-          <button className="submit-btn-compact" onClick={handleSubmit} disabled={!selectedSection || !selectedView}>
-            Continue to Reviews
+          <button
+            className="submit-btn-compact"
+            onClick={handleSubmit}
+            disabled={!selectedView || (selectedView === "section" && !selectedSection)}
+          >
+            {selectedView === "all" ? "View All Faculty Reviews" : "View My Section Reviews"}
           </button>
         </div>
       </div>
