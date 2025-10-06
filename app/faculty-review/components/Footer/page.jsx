@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, Heart, Info, HelpCircle, Users, Mail, Bug, MessageCircle, Calendar, Megaphone, BookOpen, UserPlus } from 'lucide-react';
 import './styles.css';
