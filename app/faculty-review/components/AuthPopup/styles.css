@@ -10,7 +10,6 @@
   align-items: center;
   justify-content: center;
   z-index: 9999;
-  padding: 20px;
   animation: fadeIn 0.3s ease-out;
 }
 
@@ -23,14 +22,16 @@
   }
 }
 
-/* Updated popup with kiithub dark navy background */
 .auth-popup-compact {
   background: #1a1f2e;
   border-radius: 20px;
   max-width: 600px;
   width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
+  min-height: 70vh;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   animation: slideUp 0.4s ease-out;
   color: #e0e0e0;
@@ -52,14 +53,13 @@
   color: #e0e0e0;
 }
 
-/* Updated header with kiithub green accent */
 .auth-header-compact {
   text-align: center;
-  padding: 20px 20px 20px;
+  padding: 30px 20px;
   background: #1a1f2e;
   border-bottom: 3px solid #00d9a3;
   color: white;
-
+  flex-shrink: 0;
 }
 
 .welcome-icon-compact {
@@ -81,7 +81,6 @@
   flex-wrap: wrap;
 }
 
-/* Updated pills with kiithub green */
 .info-pill {
   display: inline-block;
   padding: 6px 14px;
@@ -95,6 +94,11 @@
 
 .auth-content-compact {
   padding: 30px;
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .selection-group {
@@ -109,7 +113,6 @@
   color: #ffffff;
 }
 
-/* Added helper text styling for optional section message */
 .helper-text {
   font-size: 13px;
   color: #95a5a6;
@@ -117,19 +120,17 @@
   line-height: 1.5;
 }
 
-/* Added grid layout for section buttons */
 .sections-grid {
   display: grid;
   grid-template-columns: repeat(9, 1fr);
   gap: 8px;
-  max-height: 200px;
+  max-height: 220px;
   overflow-y: auto;
-  padding: 4px;
+  padding: 8px;
   background: rgba(0, 0, 0, 0.2);
   border-radius: 10px;
 }
 
-/* Optional state for sections grid when viewing all faculties */
 .sections-grid.optional {
   opacity: 0.85;
   border: 2px dashed rgba(0, 217, 163, 0.3);
@@ -150,12 +151,12 @@
 }
 
 .section-btn {
-  padding: 10px 8px;
+  padding: 12px 10px;
   background: #2a3142;
   border: 2px solid #3a4152;
   border-radius: 8px;
   color: #e0e0e0;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
@@ -181,13 +182,12 @@
   gap: 12px;
 }
 
-/* Updated view buttons with kiithub colors */
 .view-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 16px 12px;
+  gap: 10px;
+  padding: 20px 12px;
   background: #2a3142;
   border: 2px solid #3a4152;
   border-radius: 10px;
@@ -212,11 +212,11 @@
 }
 
 .view-icon {
-  font-size: 28px;
+  font-size: 36px;
 }
 
 .view-text {
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .error-message-compact {
@@ -230,19 +230,19 @@
   border-radius: 8px;
 }
 
-/* Updated submit button with kiithub green */
 .submit-btn-compact {
   width: 100%;
-  padding: 14px;
+  padding: 16px;
   background: #00d9a3;
   color: #1a1f2e;
   border: none;
   border-radius: 10px;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 17px;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.3s;
-  margin-top: 10px;
+  margin-top: auto;
+  box-shadow: 0 4px 15px rgba(0, 217, 163, 0.3);
 }
 
 .submit-btn-compact:hover:not(:disabled) {
@@ -260,12 +260,16 @@
   cursor: not-allowed;
 }
 
-/* Loading and Error States */
 .auth-popup {
   background: #1a1f2e;
   border-radius: 20px;
-  max-width: 480px;
+  max-width: 540px;
   width: 100%;
+  min-height: 70vh;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   animation: slideUp 0.4s ease-out;
   color: #e0e0e0;
@@ -276,13 +280,24 @@
   color: #e0e0e0;
 }
 
-.auth-loading,
-.auth-error {
-  padding: 60px 30px;
+.auth-loading {
+  padding: 60px 40px;
   text-align: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Updated spinner with kiithub green */
+.auth-error {
+  padding: 0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .auth-loading .spinner {
   width: 50px;
   height: 50px;
@@ -308,50 +323,157 @@
   margin: 0;
 }
 
+.error-header {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+  padding: 35px 30px 30px;
+  border-radius: 20px 20px 0 0;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.error-header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 200px;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  animation: float 6s ease-in-out infinite;
+}
+
+.error-header::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: -5%;
+  width: 150px;
+  height: 150px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  animation: float 8s ease-in-out infinite reverse;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-20px) scale(1.1);
+  }
+}
+
+.error-icon-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
 .error-icon {
-  font-size: 60px;
-  margin-bottom: 20px;
+  font-size: 65px;
+  display: inline-block;
+  animation: errorPulse 2s ease-in-out infinite;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+}
+
+@keyframes errorPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.error-icon-bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 110px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  z-index: -1;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0.2;
+  }
 }
 
 .auth-error h2 {
   font-size: 24px;
-  font-weight: 600;
-  margin: 0 0 10px;
-  color: #ff6b6b;
+  font-weight: 700;
+  margin: 0;
+  color: #ffffff;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.auth-error p {
-  font-size: 16px;
-  color: #95a5a6;
-  margin: 0 0 30px;
+.auth-error > p {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 8px 0 0;
+  line-height: 1.5;
+  position: relative;
+  z-index: 1;
 }
 
-/* Added contact admin section styling */
+.error-content {
+  padding: 25px 30px 30px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  min-height: 0;
+}
+
 .contact-admin {
-  margin: 30px 0;
-  padding: 25px;
-  background: rgba(0, 217, 163, 0.05);
-  border: 2px solid rgba(0, 217, 163, 0.2);
-  border-radius: 12px;
+  margin: 0 0 20px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  flex-shrink: 0;
 }
 
 .contact-admin h3 {
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 600;
-  margin: 0 0 20px;
-  color: #00d9a3;
+  margin: 0 0 12px;
+  color: #ffffff;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.contact-admin h3::before {
+  content: '📞';
+  font-size: 20px;
 }
 
 .contact-methods {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
 .contact-btn {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   padding: 12px 16px;
   background: #2a3142;
   border: 2px solid #3a4152;
@@ -359,56 +481,123 @@
   color: #e0e0e0;
   text-decoration: none;
   font-size: 14px;
-  font-weight: 500;
-  transition: all 0.3s;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.contact-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+  transition: left 0.5s ease;
+}
+
+.contact-btn:hover::before {
+  left: 100%;
 }
 
 .contact-btn:hover {
-  border-color: #00d9a3;
-  background: #323a4d;
-  transform: translateX(5px);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.contact-btn.whatsapp {
+  border-color: rgba(37, 211, 102, 0.3);
 }
 
 .contact-btn.whatsapp:hover {
   border-color: #25d366;
+  background: rgba(37, 211, 102, 0.1);
+}
+
+.contact-btn.email {
+  border-color: rgba(234, 67, 53, 0.3);
 }
 
 .contact-btn.email:hover {
   border-color: #ea4335;
+  background: rgba(234, 67, 53, 0.1);
+}
+
+.contact-btn.feedback {
+  border-color: rgba(0, 217, 163, 0.3);
 }
 
 .contact-btn.feedback:hover {
   border-color: #00d9a3;
+  background: rgba(0, 217, 163, 0.1);
 }
 
 .contact-icon {
   font-size: 20px;
+  flex-shrink: 0;
 }
 
-/* Updated retry button with kiithub green */
+.contact-btn span:last-child {
+  flex: 1;
+  text-align: left;
+}
+
 .retry-btn {
-  padding: 12px 30px;
-  background: #00d9a3;
+  width: 100%;
+  padding: 14px 30px;
+  background: linear-gradient(135deg, #00d9a3 0%, #00c993 100%);
   color: #1a1f2e;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s;
-  margin-top: 20px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 217, 163, 0.3);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.retry-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.retry-btn:hover::before {
+  left: 100%;
 }
 
 .retry-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 217, 163, 0.4);
-  background: #00f0b8;
+  box-shadow: 0 6px 25px rgba(0, 217, 163, 0.4);
+  background: linear-gradient(135deg, #00f0b8 0%, #00d9a3 100%);
+}
+
+.retry-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(0, 217, 163, 0.3);
 }
 
 @media (max-width: 768px) {
   .auth-popup-compact {
     max-width: 100%;
+    min-height: 75vh;
+    max-height: 85vh;
     border-radius: 20px 20px 0 0;
+  }
+
+  .auth-popup {
+    min-height: 75vh;
+    max-height: 85vh;
   }
 
   .auth-header-compact {
@@ -436,7 +625,6 @@
     margin-bottom: 20px;
   }
 
-  /* Responsive grid for mobile */
   .sections-grid {
     grid-template-columns: repeat(6, 1fr);
     gap: 6px;
@@ -459,12 +647,37 @@
     font-size: 12px;
   }
 
+  .error-header {
+    padding: 35px 25px;
+  }
+
+  .error-icon {
+    font-size: 60px;
+  }
+
+  .error-icon-bg {
+    width: 100px;
+    height: 100px;
+  }
+
+  .auth-error h2 {
+    font-size: 22px;
+  }
+
+  .error-content {
+    padding: 30px 25px 35px;
+  }
+
   .contact-methods {
     gap: 10px;
   }
 
   .contact-btn {
-    padding: 10px 14px;
+    padding: 12px 16px;
     font-size: 13px;
+  }
+
+  .contact-icon {
+    font-size: 20px;
   }
 }

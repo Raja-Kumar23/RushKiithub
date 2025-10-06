@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import "./styles.css"
 
@@ -101,39 +99,46 @@ export default function AuthPopup({ userRollNumber, onAuthenticated }) {
       <div className="auth-popup-overlay">
         <div className="auth-popup dark">
           <div className="auth-error">
-            <div className="error-icon">⚠️</div>
-            <h2>Authentication Failed</h2>
-            <p>{error}</p>
-            <div className="contact-admin">
-              <h3>Contact Admin</h3>
-              <div className="contact-methods">
-                <a
-                  href="https://wa.me/917004688371"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="contact-btn whatsapp"
-                >
-                  <span className="contact-icon">📱</span>
-                  <span>WhatsApp: 7004688371</span>
-                </a>
-                <a href="mailto:kiithub025@gmail.com" className="contact-btn email">
-                  <span className="contact-icon">✉️</span>
-                  <span>kiithub025@gmail.com</span>
-                </a>
-                <a
-                  href="https://kiithub.in/feedback/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="contact-btn feedback"
-                >
-                  <span className="contact-icon">📝</span>
-                  <span>Feedback Form</span>
-                </a>
+            <div className="error-header">
+              <div className="error-icon-wrapper">
+                <div className="error-icon-bg"></div>
+                <div className="error-icon">🚫</div>
               </div>
+              <h2>Access Denied</h2>
+              <p>{error}</p>
             </div>
-            <button className="retry-btn" onClick={authenticateStudent}>
-              Retry Authentication
-            </button>
+            <div className="error-content">
+              <div className="contact-admin">
+                <h3>Get Help from Admin</h3>
+                <div className="contact-methods">
+                  <a
+                    href="https://wa.me/917004688371"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="contact-btn whatsapp"
+                  >
+                    <span className="contact-icon">💬</span>
+                    <span>WhatsApp: 7004688371</span>
+                  </a>
+                  <a href="mailto:kiithub025@gmail.com" className="contact-btn email">
+                    <span className="contact-icon">✉️</span>
+                    <span>kiithub025@gmail.com</span>
+                  </a>
+                  <a
+                    href="https://kiithub.in/feedback/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="contact-btn feedback"
+                  >
+                    <span className="contact-icon">📝</span>
+                    <span>Submit Feedback</span>
+                  </a>
+                </div>
+              </div>
+              <button className="retry-btn" onClick={authenticateStudent}>
+                🔄 Try Again
+              </button>
+            </div>
           </div>
         </div>
       </div>
