@@ -995,6 +995,70 @@ export default function App() {
     }
   }, [cleanupFirebaseListeners])
 
+  useEffect(() => {
+    async function syncFromStudentsJSON() {
+      try {
+        const res = await fetch("/students.json")
+        if (!res.ok) return
+        const data = await res.json()
+
+        // Try to find the current student by roll number or email
+        let student = null
+        if (Array.isArray(data)) {
+          student = data.find(
+            (s) =>
+              s &&
+              (s.roll === currentUserRollNumber ||
+                s.rollNumber === currentUserRollNumber ||
+                s.email === currentUser?.email),
+          )
+        } else if (data && typeof data === "object") {
+          // look in values
+          const values = Object.values(data)
+          student =
+            values.find(
+              (s) =>
+                s &&
+                (s.roll === currentUserRollNumber ||
+                  s.rollNumber === currentUserRollNumber ||
+                  s.email === currentUser?.email),
+            ) || data[currentUserRollNumber]
+        }
+
+        if (!student) return
+
+        // Map student's year to semester per the user's rules
+        let semester = "3"
+        if (student.year === "2") semester = "3"
+        else if (student.year === "21") semester = "4"
+        else if (student.year === "3") semester = "5"
+        else if (student.year === "31") semester = "6"
+
+        // Update current year/semester and load teachers for that year
+        if (student.year && student.year !== currentYearCode) {
+          setCurrentYear(student.year)
+          setCurrentYearCode(student.year)
+          setCurrentSemester(semester)
+          await loadTeachers(student.year)
+        } else {
+          // still set semester if year matches
+          setCurrentSemester(semester)
+        }
+
+        // If a section exists in students.json, prefer it
+        if (student.section) {
+          setActiveSection(String(student.section))
+        }
+      } catch (e) {
+        console.warn("[v0] Failed to sync from students.json", e)
+      }
+    }
+
+    if (currentUser && currentUserRollNumber) {
+      syncFromStudentsJSON()
+    }
+  }, [currentUser, currentUserRollNumber, loadTeachers])
+
   if (showAuthPopup && !isAuthenticated) {
     return (
       <div className="app">
@@ -1030,24 +1094,27 @@ export default function App() {
 
       <main className="main-content">
         <div className="container">
-          <div className="user-info-display">
-            <div className="user-info-pill">
-              <span className="user-info-label">Name:</span>
-              <span className="user-info-value">{userName}</span>
-            </div>
-            <div className="user-info-pill">
-              <span className="user-info-label">Roll:</span>
-              <span className="user-info-value">{currentUserRollNumber}</span>
-            </div>
-            <div className="user-info-pill">
-              <span className="user-info-label">Email:</span>
-              <span className="user-info-value">{currentUser?.email}</span>
-            </div>
-            {studentAuthData?.filterSection && (
-              <div className="user-info-pill">
-                <span className="user-info-label">Section:</span>
-                <span className="user-info-value">{studentAuthData.filterSection}</span>
-              </div>
+          <div className="section-grid" role="group" aria-label="Sections 1 to 54">
+            {Array.from({ length: 54 }, (_, i) => String(i + 1)).map((sec) => (
+              <button
+                key={sec}
+                type="button"
+                className={`section-item${activeSection === sec ? " active" : ""}`}
+                onClick={() => setActiveSection(sec)}
+                aria-pressed={activeSection === sec}
+              >
+                {sec}
+              </button>
+            ))}
+            {activeSection && (
+              <button
+                type="button"
+                className="section-item clear"
+                onClick={() => setActiveSection(null)}
+                aria-pressed="false"
+              >
+                Clear
+              </button>
             )}
           </div>
 
