@@ -253,7 +253,7 @@ export default FeatureGrid
 
 //   const premiumFeatures = ["faculty", "section"]
 
-//   const PREMIUM_BUNDLE_PRICE = 25
+//   const PREMIUM_BUNDLE_PRICE = 9
 
 //   const features = [
 //     {
@@ -432,7 +432,7 @@ export default FeatureGrid
 //       key: "rzp_live_RKYVyU8WqW2Oyk",
 //       amount: amount,
 //       currency: "INR",
-//       name: "Academic Platform",
+//       name: "KIITHub",
 //       description: "Unlock Premium Features Bundle (Faculty Reviews + Section Swapping)",
 //       image: "/logo.png",
 //       handler: async (response) => {
