@@ -2,12 +2,12 @@
   "name": "finalkiithub",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
+"scripts": {
+  "dev": "next dev",
+  "build": "next build ",
+  "start": "next start",
+  "lint": "next lint"
+},
   "dependencies": {
     "crypto-js": "^4.2.0",
     "firebase": "^11.10.0",
@@ -24,6 +24,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "eslint": "^9",
-    "eslint-config-next": "15.3.4"
+    "eslint-config-next": "15.3.4",
+    "next-sitemap": "^4.2.3"
   }
 }

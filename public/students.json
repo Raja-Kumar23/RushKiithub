@@ -1,5 +1,7 @@
 {
   "students": [
+    { "rollNumber": "23053769", "year": "2" },
+    { "rollNumber": "2306105", "year": "3" },
   { "rollNumber": "2305051", "year": "3" },
   { "rollNumber": "2305208", "year": "3" },
   { "rollNumber": "2305342", "year": "3" },
@@ -298,9 +300,8 @@
   { "rollNumber": "23053567", "year": "3" },
   { "rollNumber": "23053607", "year": "3" },
   { "rollNumber": "23053629", "year": "3" },
-  { "rollNumber": "23053668", "year": "21" },
+  { "rollNumber": "23053668", "year": "3" },
   { "rollNumber": "23053691", "year": "3" },
-  { "rollNumber": "23053769", "year": "3" },
   { "rollNumber": "23053842", "year": "3" },
   { "rollNumber": "23053852", "year": "3" },
   { "rollNumber": "23053892", "year": "3" },

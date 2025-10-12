@@ -351,7 +351,6 @@
 
 // export default TeacherGrid
 
-
 "use client"
 
 import { useState, useMemo } from "react"
@@ -368,6 +367,7 @@ const TeacherGrid = ({
   hasReviewedTeacherInAnyYear,
   getTeacherReviewStats,
   canSubmitMoreReviews,
+  reviewsLastUpdated, // added
 }) => {
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -392,7 +392,6 @@ const TeacherGrid = ({
       const stats = getTeacherReviewStats(teacher.id, teacher.name)
       const hasReviewed = hasReviewedTeacherInAnyYear(teacher.id)
       const canReview = canSubmitMoreReviews(teacher.id)
-
       return {
         ...teacher,
         stats,
@@ -400,7 +399,14 @@ const TeacherGrid = ({
         canReview,
       }
     })
-  }, [currentTeachers, currentPage])
+  }, [
+    currentTeachers,
+    currentPage,
+    reviewsLastUpdated, // added
+    hasReviewedTeacherInAnyYear, // added
+    canSubmitMoreReviews, // added
+    getTeacherReviewStats, // added (ensures stats refresh if logic changes)
+  ])
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
@@ -540,9 +546,12 @@ const TeacherGrid = ({
               className={`action-btn review-btn ${!teacher.canReview ? "disabled" : ""}`}
               onClick={() => teacher.canReview && openGiveReviewModal(teacher)}
               disabled={!teacher.canReview}
+              aria-disabled={!teacher.canReview}
+              title={!teacher.canReview ? "You have already reviewed this faculty." : "Give a review"}
+              type="button"
             >
               <Edit3 size={16} />
-              {teacher.hasReviewed ? "Update" : "Review"}
+              {teacher.canReview ? "Review" : "Reviewed"}
             </button>
           </div>
         </div>

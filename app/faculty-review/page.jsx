@@ -61,7 +61,7 @@ export default function App() {
   const [teacherFilter, setTeacherFilter] = useState("all")
   const [activeSection, setActiveSection] = useState(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [isDarkMode, setIsDarkMode] = useState(false)
+  const [isDarkMode, setIsDarkMode] = useState(true)
 
   // Constants
   const BASE_REVIEW_LIMIT = 1
@@ -744,7 +744,7 @@ export default function App() {
       const currentCount = getUserReviewCount(selectedTeacher.id)
       showErrorModal(
         "Review Limit Reached",
-        `You have submitted ${currentCount} out of ${limit} allowed reviews for this teacher.`,
+        "You can submit only 1 review per teacher. You’ve already reviewed this teacher.",
       )
       return
     }
@@ -814,13 +814,9 @@ export default function App() {
 
       setShowGiveReviewModal(false)
 
-      const remainingReviews = UNLIMITED_ROLL_NUMBERS.includes(currentUserRollNumber)
-        ? "unlimited"
-        : getUserReviewLimit() - (getUserReviewCount(selectedTeacher.id) + 1)
-
       const successMessage = UNLIMITED_ROLL_NUMBERS.includes(currentUserRollNumber)
         ? "Your review has been submitted and is now visible to all users in real-time!"
-        : `Your review has been submitted and is now visible to all users. You have ${remainingReviews} more reviews available for this teacher.`
+        : "Your review has been submitted and is now visible to all users. You won’t be able to review this teacher again."
 
       showSuccessModal("Review Submitted Successfully!", successMessage)
     } catch (error) {

@@ -2,9 +2,10 @@ import './globals.css'
 import { Toaster } from 'react-hot-toast'
 
 export const metadata = {
-  title: 'KIITHub | The PYQ Hub for KIITians',
-  description: 'Access previous year question papers for KIIT University',
+  title: 'KIITHub | The Ultimate Toolkit for Every KIITian',
+  description: 'KIITHub brings everything a KIIT student needs in one place — PYQs, faculty reviews, section swapping, CGPA calculator, and many more useful academic tools.',
 }
+
 
 export default function RootLayout({ children }) {
   return (
