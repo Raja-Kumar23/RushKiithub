@@ -889,7 +889,7 @@
   { "id": "2200", "name": "Dr. Leena Das", "subjects": ["SE"], "sections": ["1", "32"] },
   { "id": "2201", "name": "Ms. Ipsita Paul", "subjects": ["SE"], "sections": ["2", "43"] },
   { "id": "2202", "name": "Dr. Ambika Prasad Mishra", "subjects": ["SE"], "sections": ["3", "27"] },
-  { "id": "2203", "name": "Prof. (Dr.) Arghya Kundu", "subjects": ["SE"], "sections": ["4", "26"] },
+  { "id": "2203", "name": "Dr. Arghya Kundu", "subjects": ["SE"], "sections": ["4", "26"] },
   { "id": "2204", "name": "Dr. Raghunath Dey", "subjects": ["SE"], "sections": ["5", "44"] },
   { "id": "2205", "name": "Dr. Siddharth Swarup Rautaray", "subjects": ["SE"], "sections": ["6", "20"] },
   { "id": "2206", "name": "Ms. Shilpa Das", "subjects": ["SE"], "sections": ["7", "45"] },

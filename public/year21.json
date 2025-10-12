@@ -151,7 +151,7 @@
 { "id": "1267", "name": "Dr. Saurabh Jha", "subjects": ["OOPJ | OOPJ(L)"], "sections": ["29", "33"] },
 { "id": "1268", "name": "Ms. Aradhana Behura", "subjects": ["OOPJ | OOPJ(L)"], "sections": ["39", "41"] },
 { "id": "1269", "name": "Ms. Uppada Gautami", "subjects": ["OOPJ | OOPJ(L)"], "sections": ["40"] },
-{ "id": "1270", "name": "Dr. Arghya Kundu", "subjects": ["OOPJ | OOPJ(L)"], "sections": ["42"] },
+{ "id": "1270", "name": "Dr. Arghya Kundu", "subjects": ["OOPJ "], "sections": ["42"] },
 { "id": "1271", "name": "Ms. Ipsita Paul", "subjects": ["OOPJ | OOPJ(L)"], "sections": ["42"] },
 { "id": "1272", "name": "Dr. Manas Ranjan Nayak", "subjects": ["OOPJ | OOPJ(L)"], "sections": ["43"] },
 { "id": "1273", "name": "Dr. Nibedan Panda", "subjects": ["OOPJ | OOPJ(L)"], "sections": ["44"] },

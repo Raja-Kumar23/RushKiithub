@@ -1,7 +1,7 @@
 {
   "students": [
-    { "rollNumber": "23053769", "year": "2" },
-    { "rollNumber": "2306105", "year": "3" },
+  { "rollNumber": "23053769", "year": "3" },
+  { "rollNumber": "2306105", "year": "3" },
   { "rollNumber": "2305051", "year": "3" },
   { "rollNumber": "2305208", "year": "3" },
   { "rollNumber": "2305342", "year": "3" },
