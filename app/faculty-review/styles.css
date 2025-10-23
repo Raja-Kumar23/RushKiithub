@@ -124,8 +124,10 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  /* Removed smooth scroll behavior to prevent conflicts with modal scroll restoration */
+  scroll-behavior: auto;
 }
+
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",

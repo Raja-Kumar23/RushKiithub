@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useCallback, useRef } from "react"
 import { auth, database } from "../../lib/firebase"
 import { onAuthStateChanged } from "firebase/auth"
 import { ref, onValue, set, push, off } from "firebase/database"
@@ -279,6 +279,7 @@ export default function App() {
     [setupFirebaseListener],
   )
 
+  // Replace the normalization block inside getTeacherReviewStats with this version
   const getTeacherReviewStats = useCallback(
     (teacherId, teacherName = null) => {
       const name = teacherName || findTeacherNameById(teacherId)
@@ -286,9 +287,7 @@ export default function App() {
 
       const currentYearReviews = reviews.filter((review) => {
         if (!review || !review.teacherId) return false
-
         const matches = review.teacherId === teacherId || review.teacherId.toString() === teacherId.toString()
-
         return matches
       })
 
@@ -315,50 +314,80 @@ export default function App() {
 
       teacherReviews.forEach((review) => {
         if (!review) return
-
         const uniqueKey = review.userId
           ? `${review.userId}-${review.timestamp || review.id}`
           : review.id || `${review.timestamp}-${Math.random()}`
-
         if (!seenReviews.has(uniqueKey)) {
           seenReviews.add(uniqueKey)
           uniqueReviews.push(review)
         }
       })
 
+      // Canonical buckets for aggregation
       const teachingStyleRatings = { excellent: 0, good: 0, average: 0, poor: 0 }
       const markingStyleRatings = { excellent: 0, good: 0, average: 0, poor: 0 }
       const studentFriendlinessRatings = { excellent: 0, good: 0, average: 0, poor: 0 }
       const attendanceApproachRatings = { excellent: 0, good: 0, average: 0, poor: 0 }
 
+      const normalizeToBucket = (category, value) => {
+        if (!value || typeof value !== "string") return "average"
+        const v = value.toLowerCase().trim()
+
+        // legacy direct buckets
+        if (["excellent", "good", "average", "poor"].includes(v)) return v
+
+        // new per-category mappings
+        switch (category) {
+          case "markingStyle": {
+            // loose -> good (lenient), fair -> excellent (balanced), strict -> average, harsh -> poor
+            if (v === "fair") return "excellent"
+            if (v === "loose") return "good"
+            if (v === "strict") return "average"
+            if (v === "harsh") return "poor"
+            return "average"
+          }
+          case "studentFriendliness": {
+            // friendly -> excellent, helpful -> good, formal -> average, strict -> poor
+            if (v === "friendly") return "excellent"
+            if (v === "helpful") return "good"
+            if (v === "formal") return "average"
+            if (v === "strict") return "poor"
+            return "average"
+          }
+          case "attendanceApproach": {
+            // flexible -> excellent, moderate -> good, strict_but_fair -> average, very_strict -> poor
+            if (v === "flexible") return "excellent"
+            if (v === "moderate") return "good"
+            if (v === "strict_but_fair") return "average"
+            if (v === "very_strict") return "poor"
+            return "average"
+          }
+          case "teachingStyle":
+          default: {
+            // if someone stored alternative words, make a best-effort mapping
+            if (["great", "very_good", "awesome"].includes(v)) return "excellent"
+            if (["ok", "fine", "decent"].includes(v)) return "average"
+            if (["bad", "terrible"].includes(v)) return "poor"
+            return "average"
+          }
+        }
+      }
+
       uniqueReviews.forEach((review) => {
         if (!review) return
 
-        const teachingStyle = review.teachingStyle || review.teaching || review.teachingQuality || "average"
-        const markingStyle = review.markingStyle || review.knowledge || review.marking || review.grading || "average"
-        const studentFriendliness =
-          review.studentFriendliness ||
-          review.communication ||
-          review.friendliness ||
-          review.approachability ||
-          "average"
-        const attendanceApproach =
-          review.attendanceApproach || review.availability || review.attendance || review.punctuality || "average"
+        // Support legacy aliases present in stored reviews
+        const teachingStyleRaw = review.teachingStyle || review.teaching || review.teachingQuality
+        const markingStyleRaw = review.markingStyle || review.knowledge || review.marking || review.grading
+        const friendlinessRaw =
+          review.studentFriendliness || review.communication || review.friendliness || review.approachability
+        const attendanceRaw =
+          review.attendanceApproach || review.availability || review.attendance || review.punctuality
 
-        const validRatings = ["excellent", "good", "average", "poor"]
-
-        const normalizeRating = (rating) => {
-          if (typeof rating === "string") {
-            const normalized = rating.toLowerCase().trim()
-            return validRatings.includes(normalized) ? normalized : "average"
-          }
-          return "average"
-        }
-
-        const normalizedTeaching = normalizeRating(teachingStyle)
-        const normalizedMarking = normalizeRating(markingStyle)
-        const normalizedFriendliness = normalizeRating(studentFriendliness)
-        const normalizedAttendance = normalizeRating(attendanceApproach)
+        const normalizedTeaching = normalizeToBucket("teachingStyle", teachingStyleRaw)
+        const normalizedMarking = normalizeToBucket("markingStyle", markingStyleRaw)
+        const normalizedFriendliness = normalizeToBucket("studentFriendliness", friendlinessRaw)
+        const normalizedAttendance = normalizeToBucket("attendanceApproach", attendanceRaw)
 
         teachingStyleRatings[normalizedTeaching]++
         markingStyleRatings[normalizedMarking]++
@@ -756,13 +785,21 @@ export default function App() {
         throw new Error("Please rate all categories before submitting.")
       }
 
-      const validRatings = ["excellent", "good", "average", "poor"]
-      if (
-        !validRatings.includes(teachingStyle) ||
-        !validRatings.includes(markingStyle) ||
-        !validRatings.includes(studentFriendliness) ||
-        !validRatings.includes(attendanceApproach)
-      ) {
+      // Accept old (excellent/good/average/poor) and new values per category
+      const validRatings = {
+        teachingStyle: ["excellent", "good", "average", "poor"],
+        markingStyle: ["loose", "fair", "strict", "harsh"],
+        studentFriendliness: ["friendly", "helpful", "formal", "strict"],
+        attendanceApproach: ["flexible", "moderate", "strict_but_fair", "very_strict"],
+      }
+
+      const isValid =
+        validRatings.teachingStyle.includes(String(teachingStyle).toLowerCase()) &&
+        validRatings.markingStyle.includes(String(markingStyle).toLowerCase()) &&
+        validRatings.studentFriendliness.includes(String(studentFriendliness).toLowerCase()) &&
+        validRatings.attendanceApproach.includes(String(attendanceApproach).toLowerCase())
+
+      if (!isValid) {
         throw new Error("Invalid rating values provided.")
       }
 
@@ -1054,6 +1091,47 @@ export default function App() {
       syncFromStudentsJSON()
     }
   }, [currentUser, currentUserRollNumber, loadTeachers])
+
+  // Track scroll position to prevent jump-to-top on modal open/close
+  const scrollYRef = useRef(0)
+
+  // Prevent scroll jump when opening/closing review modals
+  useEffect(() => {
+    if (typeof window === "undefined") return
+
+    const anyModalOpen = showGiveReviewModal || showViewReviewsModal
+
+    if (anyModalOpen) {
+      // lock the scroll and preserve position
+      scrollYRef.current = window.scrollY || 0
+      const body = document.body
+      // Avoid re-applying if already fixed
+      if (body.style.position !== "fixed") {
+        body.style.position = "fixed"
+        body.style.top = `-${scrollYRef.current}px`
+        body.style.width = "100%"
+        // Do not clobber sidebar's overflow setting here
+      }
+    } else {
+      // restore scroll only when both modals are closed
+      const body = document.body
+      if (body.style.position === "fixed") {
+        const top = body.style.top
+        body.style.position = ""
+        body.style.top = ""
+        body.style.width = ""
+        // If sidebar is open on mobile, preserve overflow hidden; otherwise unset
+        if (sidebarOpen && window.innerWidth <= 768) {
+          body.style.overflow = "hidden"
+        } else {
+          body.style.overflow = ""
+        }
+        // Restore scroll position
+        const y = top ? Number.parseInt(top, 10) : 0
+        window.scrollTo(0, Math.abs(y))
+      }
+    }
+  }, [showGiveReviewModal, showViewReviewsModal, sidebarOpen])
 
   if (showAuthPopup && !isAuthenticated) {
     return (

@@ -1,7 +1,6 @@
-
 "use client"
 import { useState } from "react"
-import './styles.css';
+import "./styles.css"
 const GiveReviewModal = ({
   selectedTeacher,
   setShowGiveReviewModal,
@@ -52,6 +51,62 @@ const GiveReviewModal = ({
       icon: "📅",
     },
   ]
+
+  const ratingExplanations = {
+    teachingStyle: {
+      excellent: "Very clear explanations, good examples, answers questions, classes feel engaging.",
+      good: "Usually clear and helpful with examples, small gaps sometimes.",
+      average: "Sometimes clear, but often rushed or confusing.",
+      poor: "Hard to follow, unclear explanations, little support for questions.",
+    },
+    markingStyle: {
+      loose: "Very lenient grading, little emphasis on criteria.",
+      fair: "Balanced grading with clear criteria, reasonable feedback.",
+      strict: "Strict grading with clear criteria, sometimes harsh feedback.",
+      harsh: "Very strict grading, unclear criteria, minimal feedback.",
+    },
+    studentFriendliness: {
+      friendly: "Respectful, approachable, patient, and supportive.",
+      helpful: "Friendly and helpful, generally approachable.",
+      formal: "Neutral; limited availability or warmth.",
+      strict: "Unfriendly or dismissive; hard to approach.",
+    },
+    attendanceApproach: {
+      flexible: "Rules are clear, fair, and applied consistently. Genuine reasons are considered.",
+      moderate: "Mostly clear and fair; minor inconsistencies.",
+      strict_but_fair: "Sometimes unclear; enforcement varies by day or class.",
+      very_strict: "Unclear, unfair, or inconsistent; small delays overly penalized.",
+    },
+  }
+
+  const getOptionsForCategory = (key) => {
+    switch (key) {
+      case "markingStyle":
+        return [
+          { value: "loose", label: "Loose", color: "#10b981", icon: "😌" },
+          { value: "fair", label: "Fair", color: "#3b82f6", icon: "🙂" },
+          { value: "strict", label: "Strict", color: "#f59e0b", icon: "😐" },
+          { value: "harsh", label: "Harsh", color: "#ef4444", icon: "😣" },
+        ]
+      case "studentFriendliness":
+        return [
+          { value: "friendly", label: "Friendly", color: "#10b981", icon: "😊" },
+          { value: "helpful", label: "Helpful", color: "#3b82f6", icon: "🤝" },
+          { value: "formal", label: "Formal", color: "#f59e0b", icon: "🎓" },
+          { value: "strict", label: "Strict", color: "#ef4444", icon: "😐" },
+        ]
+      case "attendanceApproach":
+        return [
+          { value: "flexible", label: "Flexible", color: "#10b981", icon: "🕒" },
+          { value: "moderate", label: "Moderate", color: "#3b82f6", icon: "⚖️" },
+          { value: "strict_but_fair", label: "Strict but fair", color: "#f59e0b", icon: "✅" },
+          { value: "very_strict", label: "Very strict", color: "#ef4444", icon: "⛔️" },
+        ]
+      default:
+        // Teaching Style keeps the original Excellent/Good/Average/Poor options
+        return ratingOptions
+    }
+  }
 
   if (!selectedTeacher) {
     return null
@@ -143,11 +198,7 @@ const GiveReviewModal = ({
               <p>Rate your experience across different categories</p>
             </div>
           </div>
-          <button 
-            className="dark-close-btn" 
-            onClick={() => setShowGiveReviewModal?.(false)}
-            aria-label="Close modal"
-          >
+          <button className="dark-close-btn" onClick={() => setShowGiveReviewModal?.(false)} aria-label="Close modal">
             ×
           </button>
         </div>
@@ -159,7 +210,9 @@ const GiveReviewModal = ({
               <div className="dark-warning-icon">⚠️</div>
               <div className="dark-warning-content">
                 <strong>Review limit reached</strong>
-                <p>You've submitted {currentCount}/{reviewLimit} reviews for this teacher.</p>
+                <p>
+                  You've submitted {currentCount}/{reviewLimit} reviews for this teacher.
+                </p>
               </div>
             </div>
           )}
@@ -173,19 +226,21 @@ const GiveReviewModal = ({
                     <span className="dark-section-icon">{category.icon}</span>
                     <h3>{category.label}</h3>
                   </div>
-                  
+
                   <div className="dark-rating-options">
-                    {ratingOptions.map((option) => (
+                    {getOptionsForCategory(category.key).map((option) => (
                       <label
                         key={option.value}
-                        className={`dark-rating-option ${
-                          formData[category.key] === option.value ? 'selected' : ''
-                        }`}
-                        style={formData[category.key] === option.value ? { 
-                          borderColor: option.color, 
-                          backgroundColor: `${option.color}20`,
-                          color: option.color
-                        } : {}}
+                        className={`dark-rating-option ${formData[category.key] === option.value ? "selected" : ""}`}
+                        style={
+                          formData[category.key] === option.value
+                            ? {
+                                borderColor: option.color,
+                                backgroundColor: `${option.color}20`,
+                                color: option.color,
+                              }
+                            : {}
+                        }
                       >
                         <input
                           type="radio"
@@ -194,16 +249,15 @@ const GiveReviewModal = ({
                           checked={formData[category.key] === option.value}
                           onChange={(e) => handleRatingChange(category.key, e.target.value)}
                           disabled={!canSubmit}
+                          aria-label={`${category.label}: ${option.label}`}
                         />
                         <span className="dark-option-emoji">{option.icon}</span>
                         <span className="dark-option-label">{option.label}</span>
                       </label>
                     ))}
                   </div>
-                  
-                  {errors[category.key] && (
-                    <div className="dark-error-message">{errors[category.key]}</div>
-                  )}
+
+                  {errors[category.key] && <div className="dark-error-message">{errors[category.key]}</div>}
                 </div>
               ))}
             </div>
@@ -213,7 +267,9 @@ const GiveReviewModal = ({
               <div className="dark-comment-section">
                 <div className="dark-section-header">
                   <span className="dark-section-icon">💬</span>
-                  <h3>Additional Comments <span className="dark-optional">(optional)</span></h3>
+                  <h3>
+                    Additional Comments <span className="dark-optional">(optional)</span>
+                  </h3>
                 </div>
                 <textarea
                   className="dark-comment-textarea"
@@ -253,7 +309,7 @@ const GiveReviewModal = ({
               </button>
               <button
                 type="submit"
-                className={`dark-submit-btn ${!canSubmit ? 'disabled' : ''}`}
+                className={`dark-submit-btn ${!canSubmit ? "disabled" : ""}`}
                 disabled={!canSubmit || isSubmitting}
               >
                 {isSubmitting ? (

@@ -27,22 +27,13 @@
     "id": "2002",
     "name": "Dr. Mukesh Kumar",
     "subjects": [
-      "DAA(L)"
+        "DAA | DAA(L)"
     ],
     "sections": [
-      "2"
+      "2","5"
     ]
   },
-  {
-    "id": "2003",
-    "name": "Dr. Mukesh Kumar",
-    "subjects": [
-      "DAA | DAA(L)"
-    ],
-    "sections": [
-      "5"
-    ]
-  },
+  
   {
     "id": "2004",
     "name": "Dr. Bindu Agarwalla",

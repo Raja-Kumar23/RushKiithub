@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Shield, Clock, CheckCircle2, Globe, AlertCircle, RefreshCw } from "lucide-react"
+import { Shield, Clock, CheckCircle2, AlertCircle, RefreshCw } from "lucide-react"
 import "./styles.css"
 
 export default function AuthPopup({ userRollNumber, onAuthenticated }) {
@@ -10,14 +10,13 @@ export default function AuthPopup({ userRollNumber, onAuthenticated }) {
   const [selectedSemester, setSelectedSemester] = useState("")
   const [error, setError] = useState(null)
   const [accessType, setAccessType] = useState(null)
-  const [semesterSelected, setSemesterSelected] = useState(false)
 
   const getSemesterYearMapping = (semester) => {
     const mapping = {
-      "3": "2",
-      "4": "21",
-      "5": "3",
-      "6": "31",
+      3: "2",
+      4: "21",
+      5: "3",
+      6: "31",
     }
     return mapping[semester]
   }
@@ -31,6 +30,12 @@ export default function AuthPopup({ userRollNumber, onAuthenticated }) {
     setError(null)
 
     try {
+      if (!userRollNumber) {
+        setError("Roll number is required for authentication")
+        setIsLoading(false)
+        return
+      }
+
       const rollPrefix = userRollNumber.substring(0, 2)
 
       if (rollPrefix === "22") {
@@ -90,7 +95,6 @@ export default function AuthPopup({ userRollNumber, onAuthenticated }) {
         viewType: "all",
         filterSection: null,
       })
-      // </CHANGE>
 
       setIsLoading(false)
     } catch (err) {
@@ -100,31 +104,16 @@ export default function AuthPopup({ userRollNumber, onAuthenticated }) {
     }
   }
 
-  const handleSubmit = () => {
-    if (accessType === "senior") {
-      if (!selectedSemester) {
-        setError("Please select a semester to view faculty reviews")
-        return
-      }
-      const yearFile = getSemesterYearMapping(selectedSemester)
-      onAuthenticated({
-        ...studentData,
-        semester: selectedSemester,
-        year: yearFile,
-        section: null,
-        viewType: "all",
-        filterSection: null,
-        isSenior: true,
-      })
-      return
-    }
-
-    setError(null)
+  const handleContinue = () => {
+    const yearFile = getSemesterYearMapping("3")
     onAuthenticated({
       ...studentData,
+      semester: "3",
+      year: yearFile,
       section: null,
       viewType: "all",
       filterSection: null,
+      isSenior: true,
     })
   }
 
@@ -153,7 +142,6 @@ export default function AuthPopup({ userRollNumber, onAuthenticated }) {
   if (accessType === "normal") {
     return null
   }
-  // </CHANGE>
 
   if (accessType === "firstYear") {
     return (
@@ -226,89 +214,29 @@ export default function AuthPopup({ userRollNumber, onAuthenticated }) {
   if (accessType === "senior") {
     return (
       <div className="auth-overlay">
-        <div className="auth-modal modal-wide">
+        <div className="auth-modal modal-minimal">
           <div className="modal-header header-success header-compact">
-            <div className="header-pattern"></div>
-            <div className="header-glow"></div>
-            <div className="header-content">
-              <div className="header-icon-wrapper">
-                <div className="header-icon header-icon-small">
-                  <CheckCircle2 size={40} />
-                </div>
-              </div>
-              <h2 className="header-title header-title-compact">Welcome, Senior!</h2>
-              <p className="header-subtitle">Full access to all faculty reviews</p>
-              <div className="header-badges">
-                <div className="badge">
-                  <span className="badge-icon">🎓</span>
-                  Roll: {studentData.rollNumber}
-                </div>
-                <div className="badge">
-                  <span className="badge-icon">📚</span>
-                  Year: {studentData.year}
-                </div>
+            <div className="header-icon-wrapper">
+              <div className="header-icon header-icon-small">
+                <CheckCircle2 size={40} />
               </div>
             </div>
+            <h2 className="header-title header-title-compact">Welcome, Senior!</h2>
+            <p className="header-subtitle">Ready to help juniors?</p>
           </div>
 
-          <div className="modal-body modal-body-scrollable modal-body-compact">
-            <div className="access-card access-card-compact">
-              <div className="access-content">
-                <div className="access-icon access-icon-small">
-                  <Globe size={28} />
-                </div>
-                <div className="access-text">
-                  <h3 className="access-title">Full Access Granted</h3>
-                  <p className="access-description">
-                    As a senior student, you have unrestricted access to view all faculty reviews across all sections
-                    and semesters. Select any semester below to view its faculty reviews.
-                  </p>
-                </div>
-              </div>
+          <div className="modal-body modal-body-compact">
+            <div className="confirm-message">
+              <p>
+                Dear seniors, we need your support for 3rd semester. You have experienced all faculties with your
+                expertise. With your help, many juniors can be helped like this.
+              </p>
             </div>
-
-            <div className="form-section form-section-compact">
-              <label className="form-label">Select Semester to View</label>
-              <p className="form-helper">Choose which semester's faculty reviews you want to explore</p>
-              <div className="semester-grid">
-                {["3", "4", "5", "6"].map((sem) => (
-                  <button
-                    key={sem}
-                    onClick={() => {
-                      setSelectedSemester(sem)
-                      setError(null)
-                      setSemesterSelected(true)
-                    }}
-                    className={`semester-option ${selectedSemester === sem ? "active" : ""}`}
-                  >
-                    <div className="semester-icon-wrapper">
-                      <Globe size={32} className="semester-icon" />
-                    </div>
-                    <p className="semester-title">Semester {sem}</p>
-                    <p className="semester-subtitle">View all faculties</p>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {semesterSelected && (
-              <div className="reload-message">
-                <AlertCircle size={18} />
-                <p>To select a different semester again, please reload the page</p>
-              </div>
-            )}
-
-            {error && (
-              <div className="validation-error">
-                <AlertCircle size={20} />
-                <p>{error}</p>
-              </div>
-            )}
           </div>
 
           <div className="modal-footer modal-footer-compact">
-            <button onClick={handleSubmit} disabled={!selectedSemester} className="btn btn-primary btn-large btn-full">
-              {selectedSemester ? `View Semester ${selectedSemester} Faculty Reviews` : "Select a Semester to Continue"}
+            <button onClick={handleContinue} className="btn btn-primary btn-large btn-full">
+              Okay, Let's Continue
             </button>
           </div>
         </div>
@@ -389,5 +317,4 @@ export default function AuthPopup({ userRollNumber, onAuthenticated }) {
   }
 
   return null
-  // </CHANGE>
 }
