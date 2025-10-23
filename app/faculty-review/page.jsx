@@ -69,6 +69,66 @@ export default function App() {
   const UNLIMITED_ROLL_NUMBERS = ["23053769"]
   const REVIEW_DISPLAY_MULTIPLIER = 7
 
+  const updateHash = useCallback((hash) => {
+    if (typeof window !== "undefined") {
+      window.location.hash = hash
+    }
+  }, [])
+
+  const parseHash = useCallback(() => {
+    if (typeof window === "undefined") return null
+    const hash = window.location.hash.slice(1) // Remove #
+    if (!hash) return null
+
+    // Parse formats: teacher-{id}-view, teacher-{id}-give, section-{number}
+    if (hash.startsWith("teacher-")) {
+      const parts = hash.split("-")
+      if (parts.length >= 3) {
+        const id = parts[1]
+        const action = parts[2]
+        return { type: "teacher", id, action }
+      }
+    } else if (hash.startsWith("section-")) {
+      const section = hash.replace("section-", "")
+      return { type: "section", section }
+    }
+    return null
+  }, [])
+
+  const handleHashChange = useCallback(() => {
+    const parsed = parseHash()
+    if (!parsed) {
+      setShowViewReviewsModal(false)
+      setShowGiveReviewModal(false)
+      return
+    }
+
+    if (parsed.type === "teacher") {
+      // Find teacher by ID
+      const teacher = allTeachersData.find((t) => t.id === parsed.id)
+      if (teacher) {
+        setSelectedTeacher(teacher)
+        if (parsed.action === "view") {
+          setShowViewReviewsModal(true)
+          setShowGiveReviewModal(false)
+        } else if (parsed.action === "give") {
+          setShowGiveReviewModal(true)
+          setShowViewReviewsModal(false)
+        }
+      }
+    } else if (parsed.type === "section") {
+      setActiveSection(parsed.section)
+    }
+  }, [parseHash, allTeachersData])
+
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    window.addEventListener("hashchange", handleHashChange)
+    // Parse initial hash on mount
+    handleHashChange()
+    return () => window.removeEventListener("hashchange", handleHashChange)
+  }, [handleHashChange])
+
   const handleAuthenticated = (authData) => {
     setStudentAuthData(authData)
     setIsAuthenticated(true)
@@ -123,19 +183,31 @@ export default function App() {
   )
 
   const getUserReviewCount = (teacherId) => {
+    if (!currentUser || !reviews) return 0
+
     const teacherName = findTeacherNameById(teacherId)
     let reviewCount = 0
 
+    // Check if user has reviewed THIS specific teacher in current year
+    const currentYearReviews = reviews.filter((review) => {
+      if (!review || !review.userId || !review.teacherId) return false
+      return review.userId === currentUser.uid && review.teacherId === teacherId
+    })
+    reviewCount += currentYearReviews.length
+
+    // Check if user has reviewed this teacher in other years (by name mapping)
     if (teacherName && teacherMapping[teacherName]) {
       const teacherInfo = teacherMapping[teacherName]
-      for (const year in teacherInfo.ids) {
-        const yearTeacherId = teacherInfo.ids[year]
-        const teacherReviews = userReviews.filter((reviewId) => reviewId.includes(yearTeacherId))
-        reviewCount += teacherReviews.length
+      for (const yearCode of teacherInfo.years) {
+        if (yearCode !== currentYearCode) {
+          const yearTeacherId = teacherInfo.ids[yearCode]
+          const yearReviews = (allReviews[yearCode] || []).filter((review) => {
+            if (!review || !review.userId || !review.teacherId) return false
+            return review.userId === currentUser.uid && review.teacherId === yearTeacherId
+          })
+          reviewCount += yearReviews.length
+        }
       }
-    } else {
-      const teacherReviews = userReviews.filter((reviewId) => reviewId.includes(teacherId))
-      reviewCount = teacherReviews.length
     }
 
     return reviewCount
@@ -145,9 +217,8 @@ export default function App() {
     if (UNLIMITED_ROLL_NUMBERS.includes(currentUserRollNumber)) {
       return true
     }
-    const limit = getUserReviewLimit()
     const currentCount = getUserReviewCount(teacherId)
-    return currentCount < limit
+    return currentCount === 0 // Only allow if they haven't reviewed yet
   }
 
   const calculateAverage = (ratings) => {
@@ -279,7 +350,6 @@ export default function App() {
     [setupFirebaseListener],
   )
 
-  // Replace the normalization block inside getTeacherReviewStats with this version
   const getTeacherReviewStats = useCallback(
     (teacherId, teacherName = null) => {
       const name = teacherName || findTeacherNameById(teacherId)
@@ -730,16 +800,26 @@ export default function App() {
   const openViewReviewsModal = (teacher) => {
     setSelectedTeacher(teacher)
     setShowViewReviewsModal(true)
+    setShowGiveReviewModal(false)
+    updateHash(`teacher-${teacher.id}-view`)
   }
 
   const openGiveReviewModal = (teacher) => {
     setSelectedTeacher(teacher)
-    setShowViewReviewsModal(false)
     setShowGiveReviewModal(true)
+    setShowViewReviewsModal(false)
+    updateHash(`teacher-${teacher.id}-give`)
   }
+
+  const closeModals = useCallback(() => {
+    setShowViewReviewsModal(false)
+    setShowGiveReviewModal(false)
+    updateHash("")
+  }, [updateHash])
 
   const setActiveSectionFilter = (sectionId) => {
     setActiveSection(sectionId)
+    updateHash(`section-${sectionId}`)
   }
 
   const showSuccessModal = (title, message) => {
@@ -773,7 +853,7 @@ export default function App() {
       const currentCount = getUserReviewCount(selectedTeacher.id)
       showErrorModal(
         "Review Limit Reached",
-        "You can submit only 1 review per teacher. You’ve already reviewed this teacher.",
+        "You can submit only 1 review per teacher. You've already reviewed this teacher.",
       )
       return
     }
@@ -849,11 +929,11 @@ export default function App() {
       const newTimestamp = Date.now()
       setReviewsLastUpdated(newTimestamp)
 
-      setShowGiveReviewModal(false)
+      closeModals()
 
       const successMessage = UNLIMITED_ROLL_NUMBERS.includes(currentUserRollNumber)
         ? "Your review has been submitted and is now visible to all users in real-time!"
-        : "Your review has been submitted and is now visible to all users. You won’t be able to review this teacher again."
+        : "Your review has been submitted and is now visible to all users. You won't be able to review this teacher again."
 
       showSuccessModal("Review Submitted Successfully!", successMessage)
     } catch (error) {
@@ -1174,7 +1254,7 @@ export default function App() {
                 key={sec}
                 type="button"
                 className={`section-item${activeSection === sec ? " active" : ""}`}
-                onClick={() => setActiveSection(sec)}
+                onClick={() => setActiveSectionFilter(sec)}
                 aria-pressed={activeSection === sec}
               >
                 {sec}
@@ -1184,7 +1264,10 @@ export default function App() {
               <button
                 type="button"
                 className="section-item clear"
-                onClick={() => setActiveSection(null)}
+                onClick={() => {
+                  setActiveSection(null)
+                  updateHash("")
+                }}
                 aria-pressed="false"
               >
                 Clear
@@ -1196,7 +1279,13 @@ export default function App() {
             <div className="active-section-filter">
               <div className="filter-badge">
                 <span>Showing teachers from Section {activeSection}</span>
-                <button onClick={() => setActiveSection(null)} className="clear-filter-btn">
+                <button
+                  onClick={() => {
+                    setActiveSection(null)
+                    updateHash("")
+                  }}
+                  className="clear-filter-btn"
+                >
                   ✕
                 </button>
               </div>
@@ -1228,7 +1317,7 @@ export default function App() {
       {showViewReviewsModal && selectedTeacher && (
         <ViewReviewsModal
           selectedTeacher={selectedTeacher}
-          setShowViewReviewsModal={setShowViewReviewsModal}
+          setShowViewReviewsModal={closeModals}
           getTeacherReviewStats={getTeacherReviewStats}
           calculateAverage={calculateAverage}
           reviewsLastUpdated={reviewsLastUpdated}
@@ -1239,7 +1328,7 @@ export default function App() {
       {showGiveReviewModal && selectedTeacher && selectedTeacher.id && selectedTeacher.name && (
         <GiveReviewModal
           selectedTeacher={selectedTeacher}
-          setShowGiveReviewModal={setShowGiveReviewModal}
+          setShowGiveReviewModal={closeModals}
           submitReview={submitReview}
           canSubmitMoreReviews={canSubmitMoreReviews}
           getUserReviewLimit={getUserReviewLimit}
