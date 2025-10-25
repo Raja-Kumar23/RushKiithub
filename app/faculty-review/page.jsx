@@ -67,7 +67,7 @@ export default function App() {
   const BASE_REVIEW_LIMIT = 1
   const SPECIAL_ROLL_NUMBER = "23053769"
   const UNLIMITED_ROLL_NUMBERS = ["23053769"]
-  const REVIEW_DISPLAY_MULTIPLIER = 7
+  const REVIEW_DISPLAY_MULTIPLIER = 6.5
 
   const updateHash = useCallback((hash) => {
     if (typeof window !== "undefined") {
@@ -387,6 +387,7 @@ export default function App() {
         const uniqueKey = review.userId
           ? `${review.userId}-${review.timestamp || review.id}`
           : review.id || `${review.timestamp}-${Math.random()}`
+
         if (!seenReviews.has(uniqueKey)) {
           seenReviews.add(uniqueKey)
           uniqueReviews.push(review)
@@ -471,7 +472,7 @@ export default function App() {
       const attendanceApproachAvg = calculateAverage(attendanceApproachRatings)
 
       const actualTotalReviews = uniqueReviews.length
-      const displayTotalReviews = actualTotalReviews * REVIEW_DISPLAY_MULTIPLIER
+      const displayTotalReviews = Math.round(actualTotalReviews * REVIEW_DISPLAY_MULTIPLIER)
 
       const overallAverage =
         uniqueReviews.length > 0

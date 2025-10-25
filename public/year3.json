@@ -88,6 +88,17 @@
     ]
   },
   {
+    "id": "2000001",
+    "name": "Jyotiranjan Swain",
+    "subjects": [
+      "DAA | DAA(L)"
+    ],
+    "sections": [
+      "34"
+      
+    ]
+  },
+  {
     "id": "2009",
     "name": "Dr. Rinku Datta Rakshit",
     "subjects": [
@@ -390,7 +401,7 @@
       "DAA | DAA(L)"
     ],
     "sections": [
-      "34"
+      ""
     ]
   },
   {

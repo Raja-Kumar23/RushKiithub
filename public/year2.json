@@ -131,7 +131,7 @@
 
 
 
-  
+    { "id": "106", "name": "Dr. Debadatta Naik", "subjects": ["AFL"], "sections": ["6"] },
   { "id": "106", "name": "Dr. Abhishek Ray", "subjects": ["AFL"], "sections": ["1", "13","52"] },
   { "id": "107", "name": "Dr. Ajaya Kumar Parida", "subjects": ["AFL"], "sections": ["2", "26"] },
   { "id": "108", "name": "Dr. Jasaswi Prasad Mohan", "subjects": ["AFL"], "sections": ["24", "27"] },
