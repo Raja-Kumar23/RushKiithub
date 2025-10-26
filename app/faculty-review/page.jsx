@@ -67,7 +67,7 @@ export default function App() {
   const BASE_REVIEW_LIMIT = 1
   const SPECIAL_ROLL_NUMBER = "23053769"
   const UNLIMITED_ROLL_NUMBERS = ["23053769"]
-  const REVIEW_DISPLAY_MULTIPLIER = 6.5
+  const REVIEW_DISPLAY_MULTIPLIER = 7
 
   const updateHash = useCallback((hash) => {
     if (typeof window !== "undefined") {
