@@ -9,53 +9,7 @@ const HeroSection = ({ user, theme }) => {
   return (
     <section className="hero-section" style={{ color: theme.textPrimary }}>
       
-      {/* 🔹 WhatsApp Join Section at Top Left (with close button) */}
-      {showWhatsapp && (
-        <div className="hero-whatsapp" style={{ 
-          position: 'absolute',
-          top: '15px',
-          left: '20px',
-          background: theme.glassBg,
-          border: `1px solid ${theme.border}`,
-          borderRadius: '12px',
-          padding: '8px 14px',
-          fontSize: '14px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-        }}>
-          <img 
-            src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
-            alt="WhatsApp" 
-            style={{ width: '20px', height: '20px' }}
-          />
-          <a 
-            href="https://chat.whatsapp.com/L49NFqYQ1aWCRObYUBpZax" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            style={{ color: theme.primary, fontWeight: '500', textDecoration: 'none' }}
-          >
-            Join WhatsApp for updates
-          </a>
-
-          {/* ❌ Close Button */}
-          <button 
-            onClick={() => setShowWhatsapp(false)} 
-            style={{ 
-              background: 'transparent', 
-              border: 'none', 
-              cursor: 'pointer',
-              marginLeft: '8px',
-              display: 'flex',
-              alignItems: 'center'
-            }}
-          >
-            <X size={16} color={theme.textMuted} />
-          </button>
-        </div>
-      )}
-
+      
       <div className="hero-container">
         <div className="hero-content">
           <div className="hero-text">

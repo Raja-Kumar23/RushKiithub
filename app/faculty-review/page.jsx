@@ -1356,6 +1356,7 @@ import { auth, database } from "../../lib/firebase"
 import { onAuthStateChanged } from "firebase/auth"
 import { ref, onValue, set, push, off } from "firebase/database"
 import { getTeacherReviewMultiplier } from "../../lib/review-multiplier"
+import { initializePageSecurity } from "../../lib/page-security"
 import "./styles.css"
 // Components
 import Header from "./components/Header/page"
@@ -1425,6 +1426,10 @@ export default function App() {
       window.location.hash = hash
     }
   }, [])
+  
+   useEffect(() => {
+      initializePageSecurity()
+    }, [])
 
   const parseHash = useCallback(() => {
     if (typeof window === "undefined") return null

@@ -72,17 +72,27 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes spin-reverse {
-  0% { transform: rotate(360deg); }
-  100% { transform: rotate(0deg); }
+  0% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
 }
 
 @keyframes dot-bounce {
-  0%, 80%, 100% {
+  0%,
+  80%,
+  100% {
     transform: scale(0.8);
     opacity: 0.5;
   }
@@ -96,16 +106,16 @@
   .loading-text h2 {
     font-size: 2rem;
   }
-  
+
   .loading-text p {
     font-size: 1rem;
   }
-  
+
   .loading-spinner {
     width: 60px;
     height: 60px;
   }
-  
+
   .spinner-inner {
     width: 45px;
     height: 45px;
